@@ -73,7 +73,7 @@ const Result = ({ data, isLoading, solPrice }) => {
       ) : null}
       {!data && !isLoading ? (
         <>
-          Check how much an Solana wallet has spent on fees, by entering it&apos;s address. ☝️
+          Check how much a Solana wallet has spent on fees, by entering it&apos;s address. ☝️
         </>
       ) : null}
       {data && !isLoading ? (
