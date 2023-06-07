@@ -77,7 +77,7 @@ const Result = ({ data, isLoading, solPrice }) => {
         </>
       ) : null}
       {data && !isLoading ? (
-        <div className="">
+        <div>
           <p>
             This account has spent{' '}
             <span className="text-solana">
@@ -96,9 +96,33 @@ const Result = ({ data, isLoading, solPrice }) => {
               )}
             </span>.
           </p>
-          <p className="my-2 text-4xl font-bold text-center text-solana">
+          <p
+            className={classNames(
+              "my-2",
+              "text-4xl",
+              "font-bold",
+              "text-transparent",
+              "bg-clip-text",
+              "bg-gradient-to-br",
+              "from-solana",
+              "to-[#14F195]",
+              "drop-shadow-lg",
+              "text-center"
+            )}
+          >
             OPOS
           </p>
+          <a
+            className="block max-w-xs mx-auto mt-12 text-center text-base text-[#145D3E]"
+            href="https://app.sunrisestake.com"
+          >
+            If you like this tool, thank me by offsetting emissions while you sleep.<br />
+            <img
+              className="inline max-w-[128px]"
+              alt="Sunrise Stake - Offset emissions while you sleep."
+              src="/sunrisestake.svg"
+            />
+          </a>
         </div>
       ) : null}
     </div>
