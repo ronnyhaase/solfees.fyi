@@ -6,13 +6,17 @@ import useSWR from 'swr'
 
 const SOL_PER_LAMPORT = 0.000000001
 
-const isBase58 = value => /^[1-9ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]*$/.test(value)
+const isSolanaAddress = value => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value)
 
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
+  const [valid, setValid] = useState(true)
 
   const handleInputChange = (ev) => {
-    setValue(ev.target.value)
+    const val = ev.target.value.trim()
+
+    setValue(val)
+    setValid(isSolanaAddress(ev.target.value.trim()) || !ev.target.value)
   }
 
   const handleFormSubmit = (ev) => {
@@ -21,15 +25,16 @@ const Form = ({ setAddress }) => {
   }
 
   return (
-    <div className="bg-purple-100">
+    <div className="bg-purple-200">
       <form className="container flex items-center justify-center py-4" onSubmit={handleFormSubmit}>
         <label className="sr-only sm:not-sr-only">Address:</label>
         <input
           className={classNames(
-            "border",
-            "border-purple-500",
+            "border-2",
+            valid ? "border-purple-500" : "border-red-800",
             "border-solid",
             "mx-2",
+            "outline-none",
             "px-4",
             "py-2",
             "rounded-md",
@@ -39,12 +44,13 @@ const Form = ({ setAddress }) => {
         />
         <button
           className={classNames(
-            "bg-purple-500",
+            valid ? "bg-purple-500" : "bg-purple-400",
             "rounded-md",
-            "text-white",
+            valid ? "text-white" : "text-gray-100",
             "px-4",
             "py-2",
           )}
+          disabled={!valid}
           type="submit"
         >
           Let&apos;s go!
@@ -73,11 +79,11 @@ const Result = ({ data, isLoading, solPrice }) => {
       {data && !isLoading ? (
         <div className="">
           <p>
-            The account spent{' '}
+            This account has spent{' '}
             <span className="text-solana">
               {(data.feesTotal * SOL_PER_LAMPORT).toFixed(5)} ◎{' '}
             </span>
-            of fees on{' '}
+            in fees for{' '}
             <span className="text-solana">{data.transactionsCount} transactions</span>.
           </p>
           <p>
@@ -132,13 +138,32 @@ const SolFeesApp = () => {
         />
       </main>
       <footer className="container mt-16">
-        This little tool was built by your favorite Solana fren,<br />
-        &copy; <a href="https://ronnyhaase.com">Ronny Haase</a>, 2023<br />
-        <br />
-        It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
-        GNU General Public License version 3</a> and you&apos;re invited{' '}
-        <a href="https://github.com/ronnyhaase/solfees.wtf">to contribute</a>.<br />
-        This program comes with ABSOLUTELY NO WARRANTY.
+        <p className="mb-2">
+          This little tool was built by your favorite Solana fren,<br />
+          &copy; <a href="https://ronnyhaase.com">Ronny Haase</a>, 2023<br />
+        </p>
+        <p className="mb-2">
+          The transaction data are powered by {' '}
+          <span className="text-red-700 whitespace-nowrap">
+            <a href="https://www.helius.dev/">
+              Helius
+            </a>
+            {' '}&hearts;
+          </span> and the SOL/USD price is powered by {' '}
+          <span className="text-red-700 whitespace-nowrap">
+            <a href="https://birdeye.so/">
+              Birdeye
+            </a>
+            {' '}&hearts;
+          </span>
+        </p>
+        <p className="mb-2">
+          It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
+          GNU General Public License version 3</a> and you&apos;re invited{' '}
+          <a href="https://github.com/ronnyhaase/solfees.wtf">to contribute</a>.
+          <br />
+          This program comes with ABSOLUTELY NO WARRANTY.
+        </p>
         <div className="text-center">
           <img
             alt="Ronny Haase PFP"
