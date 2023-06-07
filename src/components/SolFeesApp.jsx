@@ -26,7 +26,7 @@ const Form = ({ setAddress }) => {
 
   return (
     <div className="bg-purple-200">
-      <form className="container flex items-center justify-center py-4" onSubmit={handleFormSubmit}>
+      <form className="flex items-center justify-center py-4" onSubmit={handleFormSubmit}>
         <label className="sr-only sm:not-sr-only">Address:</label>
         <input
           className={classNames(
@@ -62,7 +62,7 @@ const Form = ({ setAddress }) => {
 
 const Result = ({ data, isLoading, solPrice }) => {
   return (
-    <div className="container mt-8 text-3xl">
+    <div className="mt-8 text-3xl">
       {isLoading ? (
         <div className="text-center mx-auto py-8">
           <svg className="inline animate-spin -ml-1 mr-3 h-10 w-10 text-purple-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@ const Result = ({ data, isLoading, solPrice }) => {
           <p
             className={classNames(
               "my-2",
-              "text-4xl",
+              "text-6xl",
               "font-bold",
               "text-transparent",
               "bg-clip-text",
@@ -148,7 +148,7 @@ const SolFeesApp = () => {
       <header>
         <Form setAddress={setAddress} />
       </header>
-      <main>
+      <main className="container max-w-2xl">
         {feesError ? (<div className="bg-red-800 container text-white">
           <div className="text-xl">Oops...</div>
           <p>
@@ -161,7 +161,7 @@ const SolFeesApp = () => {
           solPrice={price?.data?.value}
         />
       </main>
-      <footer className="container mt-16">
+      <footer className="container max-w-xl mt-16">
         <p className="mb-2">
           This little tool was built by your favorite Solana fren,<br />
           &copy; <a href="https://ronnyhaase.com">Ronny Haase</a>, 2023<br />
