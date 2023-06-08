@@ -98,7 +98,7 @@ const Result = ({ data, isLoading, solPrice }) => {
           </p>
           <p
             className={classNames(
-              "my-2",
+              "mt-12",
               "text-6xl",
               "font-bold",
               "text-transparent",
