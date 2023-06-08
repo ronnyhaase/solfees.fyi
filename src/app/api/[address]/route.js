@@ -1,8 +1,15 @@
+import { Connection, PublicKey } from '@solana/web3.js'
 import { NextResponse } from 'next/server'
 
 const sleep = (ms) => new Promise((resolve, reject) => setTimeout(() => resolve(), ms))
 
 async function GET (_, { params: { address } }) {
+  const account = await new Connection(`https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`)
+    .getAccountInfo(new PublicKey(address))
+  if (!account || !account.owner) return NextResponse.json({}, { status: 404 })
+  if (account.owner.toString() !== '11111111111111111111111111111111') return NextResponse
+    .json({}, { status: 400 })
+
   let transactions = []
   let partial = []
   let prevLast = undefined

@@ -152,7 +152,11 @@ const Result = ({ data, isLoading, solPrice }) => {
   )
 }
 
-const fetcher = (...args) => fetch(...args).then(res => res.json())
+const fetcher = (...args) => fetch(...args).then((res) => {
+  if (res.ok) return res.json()
+  else if (res.status === 404) throw new Error('Account not found.')
+  else if (res.status === 400) throw new Error('Special accounts like PDAs and token accounts are not allowed.')
+})
 
 const SolFeesApp = () => {
   const [address, setAddress] = useState(null)
@@ -160,6 +164,7 @@ const SolFeesApp = () => {
   const { data: fees, error: feesError, isLoading: isLoadingFees } = useSWR(
     address ? `/api/${address}` : null,
     fetcher,
+    { shouldRetryOnError: false }
   )
   const { data: price, error: priceError, isLoading: isLoadingPrice } = useSWR(
     'https://public-api.birdeye.so/public/price?address=So11111111111111111111111111111111111111112',
@@ -171,13 +176,15 @@ const SolFeesApp = () => {
       <header>
         <Form setAddress={setAddress} />
       </header>
+      {feesError ? (<div className="bg-red-500 text-white">
+        <div className="container max-w-2xl py-4">
+        <div className="text-2xl">Oops...</div>
+        <p>
+          {feesError.message}
+        </p>
+        </div>
+      </div>) : null}
       <main className="container max-w-2xl">
-        {feesError ? (<div className="bg-red-800 container text-white">
-          <div className="text-xl">Oops...</div>
-          <p>
-            {feesError.message}
-          </p>
-        </div>) : null}
         <Result
           data={fees}
           isLoading={isLoadingFees}
