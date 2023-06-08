@@ -188,7 +188,7 @@ const SolFeesApp = () => {
         <p className="mb-2">
           It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
           GNU General Public License version 3</a> and you&apos;re invited{' '}
-          <a href="https://github.com/ronnyhaase/solfees.wtf">to contribute</a>.
+          <a href="https://github.com/ronnyhaase/solfees.fyi">to contribute</a>.
           <br />
           This program comes with ABSOLUTELY NO WARRANTY.
         </p>
