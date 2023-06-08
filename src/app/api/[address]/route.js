@@ -13,10 +13,13 @@ async function GET (_, { params: { address } }) {
     ).then(r => r.json())
 
     if (!partial.length) break;
+
     transactions = transactions.concat(partial)
     prevLast = partial.slice(-1)[0].signature
 
-    await sleep(250)
+    if (transactions.length >= 1000) break;
+
+    await sleep(500)
   }
 
   let data = { transactionsCount: transactions.length, feesAvg: 0, feesTotal: 0 }
