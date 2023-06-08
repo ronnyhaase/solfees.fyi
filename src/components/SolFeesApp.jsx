@@ -61,7 +61,7 @@ const Form = ({ setAddress }) => {
 }
 
 const generateTweetMessage = (fees, transactions) =>
-  `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%0A%0AOPOS.%0A%0ACheck yours at https://solfees.fyi!`
+  `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi!`
 
 const Result = ({ data, isLoading, solPrice }) => {
   return (
