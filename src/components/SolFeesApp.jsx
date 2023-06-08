@@ -87,7 +87,7 @@ const Result = ({ data, isLoading, solPrice }) => {
             in fees for{' '}
             <span className="text-solana">{data.transactionsCount} transactions</span>.
             {data.transactionsCount >= 1000 ? (
-              <p className="text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at 1000 transactions, sorry</p>
+              <div className="text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at 1000 transactions, sorry</div>
             ) : null}
           </p>
           <p>
