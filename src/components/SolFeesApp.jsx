@@ -60,6 +60,9 @@ const Form = ({ setAddress }) => {
   )
 }
 
+const generateTweetMessage = (fees, transactions) =>
+  `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%0A%0AOPOS.%0A%0ACheck yours at https://solfees.fyi!`
+
 const Result = ({ data, isLoading, solPrice }) => {
   return (
     <div className="mt-8 text-3xl">
@@ -102,7 +105,7 @@ const Result = ({ data, isLoading, solPrice }) => {
           </p>
           <p
             className={classNames(
-              "mt-12",
+              "my-12",
               "text-6xl",
               "font-bold",
               "text-transparent",
@@ -116,6 +119,22 @@ const Result = ({ data, isLoading, solPrice }) => {
           >
             OPOS
           </p>
+          <div className="flex justify-center my-4">
+            <a
+              className={classNames(
+                "bg-[#0C9DED]",
+                "px-8",
+                "py-4",
+                "rounded-full",
+                "text-lg",
+                "text-white",
+              )}
+              href={`https://twitter.com/share?text=${generateTweetMessage(
+                (data.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2),
+                data.transactionsCount
+              )}`}
+            >Tweet it!</a>
+          </div>
           <a
             className="block max-w-xs mx-auto mt-12 text-center text-base text-[#145D3E]"
             href="https://app.sunrisestake.com"
