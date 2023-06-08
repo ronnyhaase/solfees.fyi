@@ -1,8 +1,9 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'solfees.wtf',
-  description: '',
+  title: 'solfees.fyi',
+  description: 'Check how much a Solana wallet has spent on fees',
+
 }
 
 export default function RootLayout({ children }) {
