@@ -164,7 +164,12 @@ const SolFeesApp = () => {
   const { data: fees, error: feesError, isLoading: isLoadingFees } = useSWR(
     address ? `/api/${address}` : null,
     fetcher,
-    { shouldRetryOnError: false }
+    {
+      shouldRetryOnError: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   )
   const { data: price, error: priceError, isLoading: isLoadingPrice } = useSWR(
     'https://public-api.birdeye.so/public/price?address=So11111111111111111111111111111111111111112',
