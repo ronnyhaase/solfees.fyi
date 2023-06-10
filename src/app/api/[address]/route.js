@@ -3,9 +3,7 @@ import { NextResponse } from 'next/server'
 
 const sleep = (ms) => new Promise((resolve, reject) => setTimeout(() => resolve(), ms))
 
-const config = {
-  runtime: 'edge',
-}
+const runtime = 'edge'
 
 async function GET (_, { params: { address } }) {
   const account = await new Connection(`https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`)
@@ -48,5 +46,5 @@ async function GET (_, { params: { address } }) {
 
 export {
   GET,
-  config,
+  runtime,
 }
