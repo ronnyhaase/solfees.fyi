@@ -1,8 +1,12 @@
 "use client";
 
+import {
+  useSolPrice,
+  useTransactionAggregator,
+  useTransactions,
+} from '@/hooks'
 import classNames from 'classnames'
-import { useState } from 'react';
-import useSWR from 'swr'
+import { useEffect, useState } from 'react'
 
 const SOL_PER_LAMPORT = 0.000000001
 
@@ -16,7 +20,7 @@ const Form = ({ setAddress }) => {
     const val = ev.target.value.trim()
 
     setValue(val)
-    setValid(isSolanaAddress(ev.target.value.trim()) || !ev.target.value)
+    setValid(isSolanaAddress(val) || !val)
   }
 
   const handleFormSubmit = (ev) => {
@@ -50,7 +54,7 @@ const Form = ({ setAddress }) => {
             "px-4",
             "py-2",
           )}
-          disabled={!valid}
+          disabled={!isSolanaAddress(value)}
           type="submit"
         >
           Let&apos;s go!
@@ -63,173 +67,168 @@ const Form = ({ setAddress }) => {
 const generateTweetMessage = (fees, transactions) =>
   `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi!`
 
-const Result = ({ data, isLoading, solPrice }) => {
-  return (
-    <div className="mt-8 text-3xl">
-      {isLoading ? (
-        <div className="text-center mx-auto py-8 text-sm">
-          <svg className="inline animate-spin -ml-1 mr-3 h-10 w-10 text-purple-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <div>Stay tuned, this may takes a little while...</div>
-        </div>
-      ) : null}
-      {!data && !isLoading ? (
-        <>
-          Check how much a Solana wallet has spent on fees, by entering it&apos;s address. ☝️
-        </>
-      ) : null}
-      {data && !isLoading ? (
-        <div>
-          <p>
-            This account has spent{' '}
-            <span className="text-solana">
-              {(data.feesTotal * SOL_PER_LAMPORT).toFixed(5)} ◎{' '}
-            </span>
-            in fees for{' '}
-            <span className="text-solana">{data.transactionsCount} transactions</span>.
-            {data.transactionsCount >= 1000 ? (
-              <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at 1000 transactions, sorry</span>
-            ) : null}
-          </p>
-          <p>
-            Right now, that&apos;s{' '}
-            <span className="text-solana">
-              {solPrice ? (
-                <>{(data.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2)} $</>
-              ) : (
-                <><span>¯\_(ツ)_/¯</span> $</>
-              )}
-            </span>.
-          </p>
-          <p
-            className={classNames(
-              "my-12",
-              "text-6xl",
-              "font-bold",
-              "text-transparent",
-              "bg-clip-text",
-              "bg-gradient-to-br",
-              "from-solana",
-              "to-[#14F195]",
-              "drop-shadow-lg",
-              "text-center"
-            )}
-          >
-            OPOS
-          </p>
-          <div className="flex justify-center my-4">
-            <a
-              className={classNames(
-                "bg-[#0C9DED]",
-                "px-8",
-                "py-4",
-                "rounded-full",
-                "text-lg",
-                "text-white",
-              )}
-              href={`https://twitter.com/share?text=${generateTweetMessage(
-                (data.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2),
-                data.transactionsCount
-              )}`}
-            >Tweet it!</a>
-          </div>
-          <a
-            className="block max-w-xs mx-auto mt-12 text-center text-base text-[#145D3E]"
-            href="https://app.sunrisestake.com"
-          >
-            If you like this tool, thank me by offsetting emissions while you sleep.<br />
-            <img
-              className="inline max-w-[128px]"
-              alt="Sunrise Stake - Offset emissions while you sleep."
-              src="/sunrisestake.svg"
-            />
-          </a>
-        </div>
-      ) : null}
+const Result = ({ summary, solPrice }) => summary ? (
+  <div className="mt-8">
+      <p>
+        This account has spent{' '}
+        <span className="text-solana">
+          {(summary.feesTotal * SOL_PER_LAMPORT).toFixed(5)} ◎{' '}
+        </span>
+        in fees for{' '}
+        <span className="text-solana">{summary.transactionsCount} transactions</span>.
+        {summary.transactionsCount >= 1000 ? (
+          <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at 1000 transactions, sorry</span>
+        ) : null}
+      </p>
+      <p>
+        Right now, that&apos;s{' '}
+        <span className="text-solana">
+          {solPrice ? (
+            <>{(summary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2)} $</>
+          ) : (
+            <><span>¯\_(ツ)_/¯</span> $</>
+          )}
+        </span>.
+      </p>
+      <p
+        className={classNames(
+          "drop-shadow-lg",
+          "font-bold",
+          "from-solana",
+          "bg-clip-text",
+          "bg-gradient-to-br",
+          "my-12",
+          "text-6xl",
+          "text-center",
+          "text-transparent",
+          "to-[#14F195]",
+        )}
+      >
+        OPOS
+      </p>
+      <div className="flex justify-center my-4">
+        <a
+          className={classNames(
+            "bg-[#0C9DED]",
+            "px-8",
+            "py-4",
+            "rounded-full",
+            "text-lg",
+            "text-white",
+          )}
+          href={`https://twitter.com/share?text=${generateTweetMessage(
+            (summary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2),
+            summary.transactionsCount
+          )}`}
+        >Tweet it!</a>
+      </div>
+      <a
+        className="block max-w-xs mx-auto mt-12 text-center text-base text-[#145D3E]"
+        href="https://app.sunrisestake.com"
+      >
+        If you like this tool, thank me by offsetting emissions while you sleep.<br />
+        <img
+          className="inline max-w-[128px]"
+          alt="Sunrise Stake - Offset emissions while you sleep."
+          src="/sunrisestake.svg"
+        />
+      </a>
     </div>
-  )
-}
+) : null
 
-const fetcher = (...args) => fetch(...args).then((res) => {
-  if (res.ok) return res.json()
-  else if (res.status === 404) throw new Error('Account not found.')
-  else if (res.status === 400) throw new Error('Special accounts like PDAs and token accounts are not allowed.')
-})
+const ErrorDisplay = ({ error }) => error ? (
+  <div className="bg-red-500 text-white">
+    <div className="container max-w-2xl py-4">
+    <div className="text-2xl">Oops...</div>
+    <p>
+      {error.message}
+    </p>
+    </div>
+  </div>
+) : null
+
+const Intro = ({ show }) => show ? (
+  <div className="mt-8">
+    Check how much a Solana wallet has spent on fees, by entering it&apos;s
+    address. ☝️
+  </div>
+) : null
+
+const LoadingIndicator = ({ isLoading, progress }) => isLoading ? (
+  <div className="mx-auto py-8 text-center text-sm">
+    <svg className="inline animate-spin -ml-1 mr-3 h-10 w-10 text-purple-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <div>
+      <strong className="block font-bold">
+        Stay tuned, this may takes a little while...
+      </strong>
+      So far {progress} transactions, and counting.
+    </div>
+  </div>
+) : null
+
+const About = () => (
+  <div className="text-sm">
+    <p className="mb-2">
+      This little tool was built by your favorite Solana fren,<br />
+      &copy; <a href="https://ronnyhaase.com">Ronny Haase</a>, 2023<br />
+    </p>
+    <p className="mb-2">
+      The transaction data are powered by {' '}
+      <span className="text-red-700 whitespace-nowrap">
+        <a href="https://www.helius.dev/">
+          Helius
+        </a>
+        {' '}&hearts;
+      </span> and the SOL/USD price is powered by {' '}
+      <span className="text-red-700 whitespace-nowrap">
+        <a href="https://birdeye.so/">
+          Birdeye
+        </a>
+        {' '}&hearts;
+      </span>
+    </p>
+    <p className="mb-2">
+      It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
+      GNU General Public License version 3</a> and you&apos;re invited{' '}
+      <a href="https://github.com/ronnyhaase/solfees.fyi">to contribute</a>.
+      <br />
+      This program comes with ABSOLUTELY NO WARRANTY.
+    </p>
+    <div className="text-center">
+      <img
+        alt="Ronny Haase PFP"
+        className="inline"
+        src="/ronnyhaase.png"
+      />
+    </div>
+  </div>
+)
 
 const SolFeesApp = () => {
   const [address, setAddress] = useState(null)
-
-  const { data: fees, error: feesError, isLoading: isLoadingFees } = useSWR(
-    address ? `/api/${address}` : null,
-    fetcher,
-    {
-      shouldRetryOnError: false,
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  )
-  const { data: price, error: priceError, isLoading: isLoadingPrice } = useSWR(
-    'https://public-api.birdeye.so/public/price?address=So11111111111111111111111111111111111111112',
-    fetcher,
-  )
+  const { price } = useSolPrice()
+  const { transactions, isLoading, progress, error } = useTransactions(address)
+  const summary = useTransactionAggregator(address, transactions)
 
   return (
     <>
       <header>
         <Form setAddress={setAddress} />
       </header>
-      {feesError ? (<div className="bg-red-500 text-white">
-        <div className="container max-w-2xl py-4">
-        <div className="text-2xl">Oops...</div>
-        <p>
-          {feesError.message}
-        </p>
-        </div>
-      </div>) : null}
-      <main className="container max-w-2xl">
+      <ErrorDisplay error={error} />
+      <main className="container max-w-2xl text-3xl">
+        <Intro show={!transactions && !isLoading} />
+        <LoadingIndicator isLoading={isLoading} progress={progress} />
         <Result
-          data={fees}
-          isLoading={isLoadingFees}
+          summary={summary}
           solPrice={price?.data?.value}
         />
       </main>
       <footer className="container max-w-xl mt-16">
-        <p className="mb-2">
-          This little tool was built by your favorite Solana fren,<br />
-          &copy; <a href="https://ronnyhaase.com">Ronny Haase</a>, 2023<br />
-        </p>
-        <p className="mb-2">
-          The transaction data are powered by {' '}
-          <span className="text-red-700 whitespace-nowrap">
-            <a href="https://www.helius.dev/">
-              Helius
-            </a>
-            {' '}&hearts;
-          </span> and the SOL/USD price is powered by {' '}
-          <span className="text-red-700 whitespace-nowrap">
-            <a href="https://birdeye.so/">
-              Birdeye
-            </a>
-            {' '}&hearts;
-          </span>
-        </p>
-        <p className="mb-2">
-          It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
-          GNU General Public License version 3</a> and you&apos;re invited{' '}
-          <a href="https://github.com/ronnyhaase/solfees.fyi">to contribute</a>.
-          <br />
-          This program comes with ABSOLUTELY NO WARRANTY.
-        </p>
-        <div className="text-center">
-          <img
-            alt="Ronny Haase PFP"
-            className="inline"
-            src="/ronnyhaase.png"
-          />
-        </div>
+        <About />
       </footer>
     </>
   )

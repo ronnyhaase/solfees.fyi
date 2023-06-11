@@ -1,50 +1,39 @@
-import { Connection, PublicKey } from '@solana/web3.js'
 import { NextResponse } from 'next/server'
 
-const sleep = (ms) => new Promise((resolve, reject) => setTimeout(() => resolve(), ms))
-
-const runtime = 'edge'
-
-async function GET (_, { params: { address } }) {
-  const account = await new Connection(`https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`)
-    .getAccountInfo(new PublicKey(address))
-  if (!account || !account.owner) return NextResponse.json({}, { status: 404 })
-  if (account.owner.toString() !== '11111111111111111111111111111111') return NextResponse
-    .json({}, { status: 400 })
-
-  let transactions = []
-  let partial = []
-  let prevLast = undefined
-  while (true) {
-    partial = await fetch(
-      `https://api.helius.xyz/v0/addresses/${address}/transactions?api-key=${
-        process.env.API_KEY}${prevLast ? `&before=${prevLast}` : ''}`
-    ).then(r => r.json())
-
-    if (!partial.length) break;
-
-    transactions = transactions.concat(partial)
-    prevLast = partial.slice(-1)[0].signature
-
-    if (transactions.length >= 1000) break;
-
-    await sleep(500)
+async function GET (request, { params: { address } }) {
+  const account = await fetch(
+    `https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`,
+    {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 123,
+        method: 'getAccountInfo',
+        params: [address]
+      })
+    },
+  )
+    .then(resp => resp.json())
+    .then(data => data.result.value)
+  if (!account || !account.owner) {
+    return NextResponse.json({ error: 'Account not found or not funded.' }, { status: 404 })
+  }
+  if (account.owner !== '11111111111111111111111111111111') {
+    return NextResponse.json({ error: 'PDA accounts are not allowed.' }, { status: 400 })
   }
 
-  let data = { transactionsCount: transactions.length, feesAvg: 0, feesTotal: 0 }
-  transactions.map((tx) => {
-    if (tx.feePayer === address) {
-      data.feesTotal += tx.fee
-    }
-  })
-  data.feesAvg = data.transactionsCount !== 0
-    ? data.feesTotal / data.transactionsCount
-    : 0
+  const before = request.nextUrl.searchParams.get('before')
+  const data = await fetch(
+    `https://api.helius.xyz/v0/addresses/${address}/transactions?api-key=${
+      process.env.API_KEY}${before ? `&before=${before}` : ''}`
+  ).then(r => r.json())
 
   return NextResponse.json(data)
 }
 
 export {
   GET,
-  runtime,
 }
