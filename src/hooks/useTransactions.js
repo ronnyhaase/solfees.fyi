@@ -36,6 +36,7 @@ function useTransactions(address) {
     if (address === null) return
 
     if (address !== null) {
+      setTransactions(null)
       setIsLoading(true)
       setProgress(0)
       setError(false)

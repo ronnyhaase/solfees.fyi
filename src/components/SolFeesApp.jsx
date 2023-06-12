@@ -30,19 +30,21 @@ const Form = ({ setAddress }) => {
   }
 
   return (
-    <div className="bg-purple-200">
+    <div className="bg-black/10">
       <form className="flex items-center justify-center py-4" onSubmit={handleFormSubmit}>
         <label className="sr-only sm:not-sr-only">Address:</label>
         <input
           className={classNames(
             "border-2",
-            valid ? "border-purple-500" : "border-red-800",
+            valid ? "border-purple-400" : "border-red-400",
             "border-solid",
-            "mx-2",
+            "mr-2",
+            "sm:mx-2",
             "outline-none",
             "px-4",
             "py-2",
             "rounded-md",
+            "shadow",
           )}
           onChange={handleInputChange}
           placeholder="wtfXqc5AzvRUA5ob1UgjwTrcPcoD9bSqxzkPfHLAWye"
@@ -50,8 +52,9 @@ const Form = ({ setAddress }) => {
         <button
           className={classNames(
             valid ? "bg-purple-500" : "bg-purple-400",
+            "shadow",
             "rounded-md",
-            valid ? "text-white" : "text-gray-100",
+            valid ? "text-white" : "text-gray-300",
             "px-4",
             "py-2",
           )}
@@ -78,7 +81,7 @@ const Result = ({ summary, solPrice }) => summary ? (
         in fees for{' '}
         <span className="text-solana">{summary.transactionsCount} transactions</span>.
         {summary.transactionsCount >= TX_CAP ? (
-          <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at {TX_CAP} transactions, sorry</span>
+          <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at {TX_CAP} transactions, sorry!</span>
         ) : null}
       </p>
       <p>
@@ -89,7 +92,8 @@ const Result = ({ summary, solPrice }) => summary ? (
           ) : (
             <><span>¯\_(ツ)_/¯</span> $</>
           )}
-        </span>.
+        </span>
+        .
       </p>
       <p
         className={classNames(
@@ -138,7 +142,7 @@ const Result = ({ summary, solPrice }) => summary ? (
 ) : null
 
 const ErrorDisplay = ({ error }) => error ? (
-  <div className="bg-red-500 text-white">
+  <div className="bg-red-500/50 border-b border-b-white/80 border-solid border-t border-t-black/20 text-white">
     <div className="container max-w-2xl py-4">
     <div className="text-2xl">Oops...</div>
     <p>
@@ -215,23 +219,27 @@ const SolFeesApp = () => {
   const summary = useTransactionAggregator(address, transactions)
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <header>
         <Form setAddress={setAddress} />
       </header>
       <ErrorDisplay error={error} />
-      <main className="container max-w-2xl text-3xl">
-        <Intro show={!transactions && !isLoading} />
-        <LoadingIndicator isLoading={isLoading} progress={progress} />
-        <Result
-          summary={summary}
-          solPrice={price?.data?.value}
-        />
-      </main>
-      <footer className="container max-w-xl mt-16">
-        <About />
-      </footer>
-    </>
+      <div className="flex flex-col grow mt-8 px-2">
+        <div className="bg-white flex flex-col grow max-w-2xl min-w-2xl mx-auto px-2 sm:px-4 md:px-8 py-2 rounded-t-lg shadow-2xl">
+          <main className="grow text-3xl">
+            <Intro show={!transactions && !isLoading} />
+            <LoadingIndicator isLoading={isLoading} progress={progress} />
+            <Result
+              summary={summary}
+              solPrice={price?.data?.value}
+            />
+          </main>
+          <footer className="mt-8 sm:mt-16 sm:px-16">
+            <About />
+          </footer>
+        </div>
+      </div>
+    </div>
   )
 }
 

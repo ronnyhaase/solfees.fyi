@@ -4,7 +4,11 @@ function useTransactionAggregator(address, transactions) {
   const [summary, setSummary] = useState(null)
 
   useEffect(() => {
-    if (!address || !transactions) return
+    if (!address) return
+    else if (!transactions) {
+      setSummary(null)
+      return
+    }
 
     let agg = { transactionsCount: transactions.length, feesAvg: 0, feesTotal: 0 }
     transactions.map((tx) => {
