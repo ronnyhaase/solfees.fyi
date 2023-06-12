@@ -2,7 +2,7 @@ import ky from 'ky'
 import { useEffect, useState } from 'react'
 
 const TIMEOUT = 0
-const TX_CAP = 1000
+const TX_CAP = 10000
 
 const fetchTransactions = (address, before) => ky.get(
   `/api/${address}`,
