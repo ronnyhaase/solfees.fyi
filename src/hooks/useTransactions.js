@@ -50,5 +50,6 @@ function useTransactions(address) {
 }
 
 export {
+  TX_CAP,
   useTransactions,
 }

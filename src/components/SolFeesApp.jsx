@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  TX_CAP,
   useSolPrice,
   useTransactionAggregator,
   useTransactions,
@@ -76,8 +77,8 @@ const Result = ({ summary, solPrice }) => summary ? (
         </span>
         in fees for{' '}
         <span className="text-solana">{summary.transactionsCount} transactions</span>.
-        {summary.transactionsCount >= 1000 ? (
-          <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at 1000 transactions, sorry</span>
+        {summary.transactionsCount >= TX_CAP ? (
+          <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at {TX_CAP} transactions, sorry</span>
         ) : null}
       </p>
       <p>
