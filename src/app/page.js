@@ -11,7 +11,7 @@ export async function generateMetadata() {
       url: '/',
       siteName: 'solfees.fyi',
       images: [{
-        url: '/solfeesfyi-3.jpeg',
+        url: '/solfeesfyi-4.jpeg',
         width: 700,
         height: 350,
       }],
@@ -21,7 +21,7 @@ export async function generateMetadata() {
       title: 'solfees.fyi',
       description: 'Check how much a Solana wallet has spent on fees',
       creator: '@ronnyhaase',
-      images: ['/solfeesfyi-3.jpeg'],
+      images: ['/solfeesfyi-4.jpeg'],
     },
   }
 }
