@@ -10,7 +10,7 @@ export const metadata = {
     url: '/',
     siteName: 'solfees.fyi',
     images: [{
-      url: 'https://www.solfees.fyi/solfeesfyi.jpeg',
+      url: '/solfeesfyi.jpeg',
       width: 700,
       height: 350,
     }],
@@ -20,7 +20,7 @@ export const metadata = {
     title: 'solfees.fyi',
     description: 'Check how much a Solana wallet has spent on fees',
     creator: '@ronnyhaase',
-    images: ['/https://www.solfees.fyi/solfeesfyi.jpeg'],
+    images: ['/solfeesfyi.jpeg'],
   },
 }
 
