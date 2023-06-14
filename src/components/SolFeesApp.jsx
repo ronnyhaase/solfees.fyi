@@ -69,7 +69,7 @@ const Form = ({ setAddress }) => {
 }
 
 const generateTweetMessage = (fees, transactions) =>
-  `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
+  `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%2A%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !%0A%0A%2AAt current SOL price`
 
 const Result = ({ summary, solPrice }) => summary ? (
   <div className="mt-8">
@@ -85,7 +85,7 @@ const Result = ({ summary, solPrice }) => summary ? (
         ) : null}
       </p>
       <p>
-        Right now, that&apos;s{' '}
+        <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
         <span className="text-solana">
           {solPrice ? (
             <>{(summary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2)} $</>
