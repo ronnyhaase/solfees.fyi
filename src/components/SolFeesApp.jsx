@@ -6,12 +6,11 @@ import {
   useTransactionAggregator,
   useTransactions,
 } from '@/hooks'
+import { isSolanaAddress } from '@/utils';
 import classNames from 'classnames'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const SOL_PER_LAMPORT = 0.000000001
-
-const isSolanaAddress = value => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value)
 
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
