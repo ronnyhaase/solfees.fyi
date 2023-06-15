@@ -68,7 +68,7 @@ const Form = ({ setAddress }) => {
 }
 
 const generateTweetMessage = (fees, transactions) =>
-  `I have spent only ${fees}$ on all of my ${transactions} Solana transactions!%2A%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !%0A%0A%2AAt current SOL price`
+  `I have spent only ${fees}$ on all of my ${transactions} Solana transaction fees!%2A%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !%0A%0A%2AAt current SOL price`
 
 const Result = ({ summary, solPrice }) => summary ? (
   <div className="mt-8">
@@ -153,7 +153,7 @@ const ErrorDisplay = ({ error }) => error ? (
 
 const Intro = ({ show }) => show ? (
   <div className="mt-8">
-    Check how much a Solana wallet has spent on fees, by entering it&apos;s
+    Check how much a Solana wallet has spent on transaction fees, by entering it&apos;s
     address. ☝️
   </div>
 ) : null
@@ -177,7 +177,7 @@ const About = () => (
   <div className="text-sm">
     <p className="mb-2">
       This little tool was built by your favorite Solana fren,<br />
-      &copy; <a href="https://ronnyhaase.com">Ronny Haase</a>, 2023<br />
+      &copy; <a href="https://twitter.com/ronnyhaase">Ronny Haase</a>, 2023<br />
     </p>
     <p className="mb-2">
       The transaction data are powered by {' '}
