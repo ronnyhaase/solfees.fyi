@@ -1,16 +1,16 @@
 "use client";
 
+import { Transition } from '@headlessui/react';
+import classNames from 'classnames'
+import { useLayoutEffect, useState } from 'react'
+
 import {
   TX_CAP,
   useSolPrice,
   useTransactionAggregator,
   useTransactions,
 } from '@/hooks'
-import { isSolanaAddress } from '@/utils';
-import classNames from 'classnames'
-import { useState } from 'react'
-
-const SOL_PER_LAMPORT = 0.000000001
+import { SOL_PER_LAMPORT, isSolanaAddress } from '@/utils'
 
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
@@ -74,18 +74,18 @@ const Result = ({ summary, solPrice }) => summary ? (
   <div className="mt-8">
       <p>
         This account has spent{' '}
-        <span className="text-solana">
+        <span className="text-solana-purple">
           {(summary.feesTotal * SOL_PER_LAMPORT).toFixed(5)} ◎{' '}
         </span>
         in fees for{' '}
-        <span className="text-solana">{summary.transactionsCount} transactions</span>.
+        <span className="text-solana-purple">{summary.transactionsCount} transactions</span>.
         {summary.transactionsCount >= TX_CAP ? (
           <span className="block text-blue-500 text-sm">ℹ︎ We&apos;re currently stopping at {TX_CAP} transactions, sorry!</span>
         ) : null}
       </p>
       <p>
         <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
-        <span className="text-solana">
+        <span className="text-solana-purple">
           {solPrice ? (
             <>{(summary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2)} $</>
           ) : (
@@ -98,14 +98,14 @@ const Result = ({ summary, solPrice }) => summary ? (
         className={classNames(
           "drop-shadow-lg",
           "font-bold",
-          "from-solana",
+          "from-solana-purple",
           "bg-clip-text",
           "bg-gradient-to-br",
           "my-12",
           "text-6xl",
           "text-center",
           "text-transparent",
-          "to-[#14F195]",
+          "to-solana-green",
         )}
       >
         OPOS
@@ -158,20 +158,28 @@ const Intro = ({ show }) => show ? (
   </div>
 ) : null
 
-const LoadingIndicator = ({ isLoading, progress }) => isLoading ? (
-  <div className="mx-auto py-8 text-center text-sm">
-    <svg className="inline animate-spin -ml-1 mr-3 h-10 w-10 text-purple-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-    </svg>
-    <div>
-      <strong className="block font-bold">
-        Stay tuned, this may takes a little while...
-      </strong>
-      So far {progress} transactions, and counting.
+const LoadingIndicator = ({ isLoading, progress }) => {
+  const sharedCircleClasses = ["animate-zoom absolute top-0 left-0 h-full opacity-60 bg-solana-green rounded-[50%] w-full"]
+
+  return isLoading ? (
+    <div className="items-center flex flex-col text-center text-lg">
+      <div className="h-10 m-4 relative w-10">
+          <div
+            className={classNames(sharedCircleClasses, "bg-solana-green" )}
+          />
+          <div
+            className={classNames(sharedCircleClasses, "animation-delay-750", "bg-solana-purple")}
+          />
+      </div>
+      <div>
+        <strong className="block font-bold">
+          Stay tuned, this may takes a little while...
+        </strong>
+        So far {progress} transactions, and counting.
+      </div>
     </div>
-  </div>
-) : null
+  ) : null
+}
 
 const About = () => (
   <div className="text-sm">
@@ -204,14 +212,45 @@ const SolFeesApp = () => {
   const { transactions, isLoading, progress, error } = useTransactions(address)
   const summary = useTransactionAggregator(address, transactions)
 
+  const [appReady, setAppReady] = useState(false)
+  useLayoutEffect(() => {
+    setAppReady(true)
+  }, [])
+
   return (
     <div className="flex flex-col min-h-screen">
-      <header>
+      <Transition
+        as="header"
+        show={appReady}
+        enter="transition-opacity transition-transform duration-200"
+        enterFrom="opacity-0 -translate-y-full"
+        enterTo="opacity-100 translate-y-0"
+      >
         <Form setAddress={setAddress} />
-      </header>
+      </Transition>
       <ErrorDisplay error={error} />
-      <div className="flex flex-col grow mt-8 px-2">
-        <div className="bg-white flex flex-col grow max-w-2xl min-w-2xl mx-auto px-2 sm:px-4 md:px-8 py-2 rounded-t-lg shadow-2xl">
+      <div className="flex flex-col grow mt-8 overflow-y-hidden px-2">
+        <Transition
+          className={classNames(
+            "bg-white",
+            "flex",
+            "flex-col",
+            "grow",
+            "max-w-2xl",
+            "min-w-2xl",
+            "mx-auto",
+            "px-2",
+            "sm:px-4",
+            "md:px-8",
+            "py-2",
+            "rounded-t-lg",
+            "shadow-2xl",
+          )}
+          show={appReady}
+          enter="transition-opacity transition-transform duration-200"
+          enterFrom="opacity-0 translate-y-full"
+          enterTo="opacity-100 translate-y-0"
+        >
           <main className="grow text-3xl">
             <Intro show={!transactions && !isLoading} />
             <LoadingIndicator isLoading={isLoading} progress={progress} />
@@ -223,7 +262,7 @@ const SolFeesApp = () => {
           <footer className="mt-8 sm:mt-16 sm:px-16">
             <About />
           </footer>
-        </div>
+        </Transition>
       </div>
     </div>
   )

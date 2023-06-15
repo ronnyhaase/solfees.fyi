@@ -1,5 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
+const animationDelayPlugin = require('./src/tw-plugins/animation-delay')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -13,13 +15,25 @@ module.exports = {
       padding: '0.5rem',
     },
     extend: {
+      animation: {
+        'zoom': 'zoom 1.5s infinite ease-in-out',
+      },
+      keyframes: {
+        zoom: {
+          '0%, 100%': { transform: 'scale(0.0 )' },
+          '50%': { transform: 'scale(1.0 )' },
+        },
+      },
       colors: {
-        'solana': '#9945FF',
+        'solana-green': '#14F195',
+        'solana-purple': '#9945FF',
       },
       fontFamily: {
         'sans': ['Noto Sans', ...defaultTheme.fontFamily.sans],
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('./src/tw-plugins/animation-delay'),
+  ],
 }
