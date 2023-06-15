@@ -175,24 +175,18 @@ const LoadingIndicator = ({ isLoading, progress }) => isLoading ? (
 
 const About = () => (
   <div className="text-sm">
-    <p className="mb-2">
-      This little tool was built by your favorite Solana fren,<br />
-      &copy; <a href="https://twitter.com/ronnyhaase">Ronny Haase</a>, 2023<br />
-    </p>
-    <p className="mb-2">
-      The transaction data are powered by {' '}
-      <span className="text-red-700 whitespace-nowrap">
-        <a href="https://www.helius.dev/">
-          Helius
+    <p className="mb-2 flex flex-col text-center">
+      <span>This useless tool was built by your favorite Solana fren,</span>
+      <span>
+        <a href="https://twitter.com/ronnyhaase">
+          <img
+            alt="Ronny Haase PFP"
+            className="inline"
+            src="/ronnyhaase.png"
+          />
         </a>
-        {' '}&hearts;
-      </span> and the SOL/USD price is powered by {' '}
-      <span className="text-red-700 whitespace-nowrap">
-        <a href="https://birdeye.so/">
-          Birdeye
-        </a>
-        {' '}&hearts;
       </span>
+      <span>&copy; <a href="https://twitter.com/ronnyhaase">Ronny Haase</a>, 2023</span>
     </p>
     <p className="mb-2">
       It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
@@ -201,13 +195,6 @@ const About = () => (
       <br />
       This program comes with ABSOLUTELY NO WARRANTY.
     </p>
-    <div className="text-center">
-      <img
-        alt="Ronny Haase PFP"
-        className="inline"
-        src="/ronnyhaase.png"
-      />
-    </div>
   </div>
 )
 
