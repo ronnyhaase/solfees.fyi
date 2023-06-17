@@ -1,7 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
-const animationDelayPlugin = require('./src/tw-plugins/animation-delay')
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -29,7 +27,7 @@ module.exports = {
         'solana-purple': '#9945FF',
       },
       fontFamily: {
-        'sans': ['Noto Sans', ...defaultTheme.fontFamily.sans],
+        'sans': ['var(--font-notosans)', ...defaultTheme.fontFamily.sans],
       },
     },
   },

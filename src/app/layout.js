@@ -1,16 +1,21 @@
+import { Noto_Sans } from 'next/font/google'
 import PlausibleProvider from 'next-plausible'
-import './globals.css'
 import classNames from 'classnames'
 
-export const metadata = {
-  title: 'solfees.fyi',
-  description: 'Check how much a Solana wallet has spent on fees',
-}
+import './globals.css'
+
+const notoSans = Noto_Sans({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-notosans',
+  display: 'swap'
+})
 
 export default function RootLayout({ children }) {
   return (
     <html
       className={classNames(
+        notoSans.variable,
         "bg-gradient-to-tr",
         "font-sans",
         "from-[#f67cb9]",
