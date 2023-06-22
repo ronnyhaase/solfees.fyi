@@ -26,28 +26,48 @@ const next = async ({ address, before, result, resolve, reject, setProgress }) =
   }
 }
 
+const aggregateTransactions = (address, transactions) => {
+  let agg = { transactionsCount: transactions.length, feesAvg: 0, feesTotal: 0 }
+  transactions.map((tx) => {
+    if (tx.feePayer === address) {
+      agg.feesTotal += tx.fee
+    }
+  })
+  agg.feesAvg = agg.transactionsCount !== 0
+    ? agg.feesTotal / agg.transactionsCount
+    : 0
+  return agg
+}
+
 function useTransactions(address) {
-  const [transactions, setTransactions] = useState(null)
+  const [state, setState] = useState({
+    error: null,
+    isLoading: false,
+    summary: null,
+    transactions: null,
+  })
   const [progress, setProgress] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (address === null) return
 
     if (address !== null) {
-      setTransactions(null)
-      setIsLoading(true)
+      setState({ error: null, isLoading: true, summary: null, transactions: null })
       setProgress(0)
-      setError(false)
     }
-    new Promise((resolve, reject) => next({ address, setProgress, resolve, reject }))
-      .then(setTransactions)
-      .catch(setError)
-      .finally(() => setIsLoading(false))
+    setTimeout(() => {
+      new Promise((resolve, reject) => next({ address, setProgress, resolve, reject }))
+        .then(transactions => setState({
+          error: null,
+          isLoading: false,
+          summary: aggregateTransactions(address, transactions),
+          transactions
+        }))
+        .catch(error => setState({ error, isLoading: false, summary: null, transactions: null }))
+    }, 200)
   }, [address])
 
-  return { transactions, isLoading, progress, error }
+  return { progress, ...state }
 }
 
 export {

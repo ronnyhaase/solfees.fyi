@@ -29,6 +29,9 @@ module.exports = {
       fontFamily: {
         'sans': ['var(--font-notosans)', ...defaultTheme.fontFamily.sans],
       },
+      transitionDelay: {
+        '250': '250ms',
+      }
     },
   },
   plugins: [

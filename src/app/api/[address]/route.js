@@ -21,7 +21,7 @@ async function GET (request, { params: { address } }) {
     },
   )
     .then(resp => resp.json())
-    .then(data => data.result.value)
+    .then(data => data?.result?.value)
   if (!account || !account.owner) {
     return NextResponse.json({ error: 'Account not found or not funded.' }, { status: 404 })
   }
