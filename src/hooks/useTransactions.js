@@ -44,6 +44,7 @@ function useTransactions(address) {
     error: null,
     isLoading: false,
     summary: null,
+    state: 'intro',
     transactions: null,
   })
   const [progress, setProgress] = useState(0)
@@ -52,19 +53,21 @@ function useTransactions(address) {
     if (address === null) return
 
     if (address !== null) {
-      setState({ error: null, isLoading: true, summary: null, transactions: null })
+      setState({ error: null, isLoading: true, summary: null, state: 'loading', transactions: null })
       setProgress(0)
     }
+    // Timeout prevents animations from overlapping
     setTimeout(() => {
       new Promise((resolve, reject) => next({ address, setProgress, resolve, reject }))
         .then(transactions => setState({
           error: null,
           isLoading: false,
           summary: aggregateTransactions(address, transactions),
-          transactions
+          state: 'done',
+          transactions,
         }))
-        .catch(error => setState({ error, isLoading: false, summary: null, transactions: null }))
-    }, 200)
+        .catch(error => setState({ error, isLoading: false, summary: null, state: 'error', transactions: null }))
+    }, 250)
   }, [address])
 
   return { progress, ...state }

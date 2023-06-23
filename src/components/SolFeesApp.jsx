@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import Image from 'next/image';
 import { useEffect, useLayoutEffect, useState } from 'react'
 import Confetti from 'react-confetti';
-import { useMeasure, useWindowSize } from 'react-use';
+import { useMeasure } from 'react-use';
 
 import {
   TX_CAP,
@@ -253,10 +253,9 @@ const SolFeesApp = () => {
   const { price } = useSolPrice()
   const {
     error,
-    isLoading,
     progress,
     summary,
-    transactions,
+    state,
   } = useTransactions(address)
 
   const [appReady, setAppReady] = useState(false)
@@ -264,18 +263,9 @@ const SolFeesApp = () => {
     setAppReady(true)
   }, [])
   const [measureRef, { width: confettiWidth, height: confettiHeight }] = useMeasure()
-
-  const [state, setState] = useState('intro')
-  useEffect(() => {
-    let newState
-    if (!isLoading && !transactions && !error) newState = 'intro'
-    else if (isLoading && !transactions && !error) newState = 'loading'
-    else if (!isLoading && transactions && !error) newState = 'done'
-    else if (error) newState = 'error'
-    setState(newState)
-  }, [error, isLoading, transactions])
-
   const [isElementLeaving, setIsElementLeaving] = useState(false)
+  const setElementLeaving = () => setIsElementLeaving(true)
+  const setElementNotLeaving = () => setIsElementLeaving(false)
 
   return (
     <>
@@ -329,23 +319,23 @@ const SolFeesApp = () => {
             <main className="grow text-3xl">
               <FadeInOutTransition
                 show={(state === 'error') && !isElementLeaving}
-                beforeLeave={() => setIsElementLeaving(true)}
-                afterLeave={() => setIsElementLeaving(false)}
+                beforeLeave={setElementLeaving}
+                afterLeave={setElementNotLeaving}
               >
                 <ErrorDisplay error={error} />
                 <Info />
               </FadeInOutTransition>
               <FadeInOutTransition
                 show={(state === 'intro') && !isElementLeaving}
-                beforeLeave={() => setIsElementLeaving(true)}
-                afterLeave={() => setIsElementLeaving(false)}
+                beforeLeave={setElementLeaving}
+                afterLeave={setElementNotLeaving}
               >
                 <Info />
               </FadeInOutTransition>
               <FadeInOutTransition
                 show={state === 'loading' && !isElementLeaving}
-                beforeLeave={() => setIsElementLeaving(true)}
-                afterLeave={() => setIsElementLeaving(false)}
+                beforeLeave={setElementLeaving}
+                afterLeave={setElementNotLeaving}
               >
                 <LoadingIndicator progress={progress} />
               </FadeInOutTransition>
