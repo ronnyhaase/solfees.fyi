@@ -4,6 +4,8 @@ import { Transition } from '@headlessui/react';
 import classNames from 'classnames'
 import Image from 'next/image';
 import { useEffect, useLayoutEffect, useState } from 'react'
+import Confetti from 'react-confetti';
+import { useMeasure, useWindowSize } from 'react-use';
 
 import {
   TX_CAP,
@@ -261,6 +263,7 @@ const SolFeesApp = () => {
   useLayoutEffect(() => {
     setAppReady(true)
   }, [])
+  const [measureRef, { width: confettiWidth, height: confettiHeight }] = useMeasure()
 
   const [state, setState] = useState('intro')
   useEffect(() => {
@@ -275,81 +278,95 @@ const SolFeesApp = () => {
   const [isElementLeaving, setIsElementLeaving] = useState(false)
 
   return (
-    <Transition
-      show={appReady}
-      className="flex flex-col min-h-screen"
-    >
-      <Transition.Child
-        as="header"
-        enter="transition-opacity transition-transform duration-200 ease-in"
-        enterFrom="opacity-0 -translate-y-full"
-        enterTo="opacity-100 translate-y-0"
+    <>
+      {state === 'done' ? (
+        <Confetti
+          height={confettiHeight}
+          numberOfPieces={200}
+          recycle={false}
+          run={state === 'done'}
+          width={confettiWidth}
+        />
+      ) : null}
+      <Transition
+        show={appReady}
+        className="flex flex-col min-h-screen"
       >
-        <Form setAddress={setAddress} />
-      </Transition.Child>
-      <div className="flex flex-col grow mt-8 overflow-y-hidden px-2">
         <Transition.Child
-          className={classNames(
-            "bg-white",
-            "flex",
-            "flex-col",
-            "grow",
-            "max-w-2xl",
-            "mx-auto",
-            "pt-2",
-            "sm:pt-4",
-            "md:pt-8",
-            "px-2",
-            "sm:px-4",
-            "md:px-8",
-            "rounded-t-lg",
-            "shadow-2xl",
-            "w-full",
-          )}
+          as="header"
           enter="transition-opacity transition-transform duration-200 ease-in"
-          enterFrom="opacity-0 translate-y-full"
+          enterFrom="opacity-0 -translate-y-full"
           enterTo="opacity-100 translate-y-0"
         >
-          <main className="grow text-3xl">
-            <FadeInOutTransition
-              show={(state === 'error') && !isElementLeaving}
-              beforeLeave={() => setIsElementLeaving(true)}
-              afterLeave={() => setIsElementLeaving(false)}
-            >
-              <ErrorDisplay error={error} />
-              <Info />
-            </FadeInOutTransition>
-            <FadeInOutTransition
-              show={(state === 'intro') && !isElementLeaving}
-              beforeLeave={() => setIsElementLeaving(true)}
-              afterLeave={() => setIsElementLeaving(false)}
-            >
-              <Info />
-            </FadeInOutTransition>
-            <FadeInOutTransition
-              show={state === 'loading' && !isElementLeaving}
-              beforeLeave={() => setIsElementLeaving(true)}
-              afterLeave={() => setIsElementLeaving(false)}
-            >
-              <LoadingIndicator progress={progress} />
-            </FadeInOutTransition>
-            <FadeInOutTransition
-              show={state === 'done' && !isElementLeaving}
-              beforeLeave={() => setIsElementLeaving(true)}
-              afterLeave={() => setIsElementLeaving(false)}
-            >
-              <Result
-                summary={summary}
-                solPrice={price?.data?.value}
-              />
-            </FadeInOutTransition>
-          </main>
-          <footer className="mt-8 sm:mt-12 sm:px-16">
-            <About />
-          </footer>
+          <Form setAddress={setAddress} />
         </Transition.Child>
-      </div>
-    </Transition>
+        <div
+          className="flex flex-col grow mt-8 overflow-y-hidden px-2"
+          ref={measureRef}
+        >
+          <Transition.Child
+            className={classNames(
+              "bg-white",
+              "flex",
+              "flex-col",
+              "grow",
+              "max-w-2xl",
+              "mx-auto",
+              "pt-2",
+              "sm:pt-4",
+              "md:pt-8",
+              "px-2",
+              "sm:px-4",
+              "md:px-8",
+              "rounded-t-lg",
+              "shadow-2xl",
+              "w-full",
+            )}
+            enter="transition-opacity transition-transform duration-200 ease-in"
+            enterFrom="opacity-0 translate-y-full"
+            enterTo="opacity-100 translate-y-0"
+          >
+            <main className="grow text-3xl">
+              <FadeInOutTransition
+                show={(state === 'error') && !isElementLeaving}
+                beforeLeave={() => setIsElementLeaving(true)}
+                afterLeave={() => setIsElementLeaving(false)}
+              >
+                <ErrorDisplay error={error} />
+                <Info />
+              </FadeInOutTransition>
+              <FadeInOutTransition
+                show={(state === 'intro') && !isElementLeaving}
+                beforeLeave={() => setIsElementLeaving(true)}
+                afterLeave={() => setIsElementLeaving(false)}
+              >
+                <Info />
+              </FadeInOutTransition>
+              <FadeInOutTransition
+                show={state === 'loading' && !isElementLeaving}
+                beforeLeave={() => setIsElementLeaving(true)}
+                afterLeave={() => setIsElementLeaving(false)}
+              >
+                <LoadingIndicator progress={progress} />
+              </FadeInOutTransition>
+              <FadeInOutTransition
+                show={state === 'done' && !isElementLeaving}
+                beforeLeave={() => setIsElementLeaving(true)}
+                afterLeave={() => setIsElementLeaving(false)}
+              >
+                <Result
+                  summary={summary}
+                  solPrice={price?.data?.value}
+                />
+              </FadeInOutTransition>
+            </main>
+            <footer className="mt-8 sm:mt-12 sm:px-16">
+              <About />
+            </footer>
+          </Transition.Child>
+        </div>
+      </Transition>
+    </>
   )
 }
 
