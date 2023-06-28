@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useEffect, useLayoutEffect, useState } from 'react'
 import Confetti from 'react-confetti';
 import { useMeasure } from 'react-use';
+import Info from './Info';
+import Footer from './Footer';
 
 import {
   TX_CAP,
@@ -171,12 +173,7 @@ const ErrorDisplay = ({ error }) => {
   )
 }
 
-const Info = () => (
-  <div>
-    Check how much a Solana wallet has spent on transaction fees, by entering it&apos;s
-    address. ☝️
-  </div>
-)
+
 
 const LoadingIndicator = ({ progress = 0 }) => {
   const sharedCircleClasses = ["animate-zoom h-10 opacity-60 rounded-[50%] w-10"]
@@ -205,34 +202,6 @@ const LoadingIndicator = ({ progress = 0 }) => {
     </div>
   )
 }
-
-const About = () => (
-  <div className="text-sm">
-    <p className="mb-2 flex flex-col text-center">
-      <span>This useless tool was built by your favorite Solana fren,</span>
-      <span>
-        <a href="https://twitter.com/ronnyhaase">
-          <Image
-            alt="Ronny Haase PFP"
-            className="inline"
-            height={128}
-            priority
-            src="/ronnyhaase.png"
-            width={128}
-          />
-        </a>
-      </span>
-      <span>&copy; <a href="https://twitter.com/ronnyhaase">Ronny Haase</a>, 2023</span>
-    </p>
-    <p className="mb-2">
-      It is free software under <a href="https://www.gnu.org/licenses/gpl-3.0">
-      GNU General Public License version 3</a> and you&apos;re invited{' '}
-      <a href="https://github.com/ronnyhaase/solfees.fyi">to contribute</a>.
-      <br />
-      This program comes with ABSOLUTELY NO WARRANTY.
-    </p>
-  </div>
-)
 
 const FadeInOutTransition = ({ children, ...rest }) => (
   <Transition
@@ -350,9 +319,7 @@ const SolFeesApp = () => {
                 />
               </FadeInOutTransition>
             </main>
-            <footer className="mt-8 sm:mt-12 sm:px-16">
-              <About />
-            </footer>
+            <Footer />
           </Transition.Child>
         </div>
       </Transition>
