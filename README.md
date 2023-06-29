@@ -1,6 +1,19 @@
-1. npm install
-2. Create .env.local and set "API_KEY" to your Helius API key
-3. npm run dev
+# [Solfees.fyi](https://www.solfees.fyi/) - Check how much a Solana wallet has spent on transaction fees
+
+## Developing
+First, install dependencies
+```
+npm install
+```
+Create an `.env.local` file and add your Helius API key as `API_KEY`
+```
+touch .env.local
+echo API_KEY=YOUR_API_KEY > .env.local
+```
+Then, run the development server
+```
+npm run dev
+```
 
 Copyright © 2023, [Ronny Haase](https://ronnyhaase.com)
 
