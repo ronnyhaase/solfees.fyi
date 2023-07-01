@@ -6,29 +6,47 @@ import Image from 'next/image';
 import { useEffect, useLayoutEffect, useState } from 'react'
 import Confetti from 'react-confetti';
 import { useMeasure } from 'react-use';
+import { walletNameToAddressAndProfilePicture } from '@portal-payments/solana-wallet-names';
+import { Connection } from '@solana/web3.js';
 
 import {
   TX_CAP,
   useSolPrice,
   useTransactions,
 } from '@/hooks'
-import { SOL_PER_LAMPORT, isSolanaAddress } from '@/utils'
+import { SOL_PER_LAMPORT, hasValidTLD, isSolanaAddress } from '@/utils'
 
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(true)
+  const [isDomain, setIsDomain] = useState(false)
 
   const handleInputChange = (ev) => {
     const val = ev.target.value.trim()
 
     setValue(val)
-    setValid(isSolanaAddress(val) || !val)
+	setIsDomain(hasValidTLD(val))
+    setValid(isSolanaAddress(val) || hasValidTLD(val) || !val)
   }
 
-  const handleFormSubmit = (ev) => {
-    ev.preventDefault()
-    setAddress(value)
-  }
+  const handleFormSubmit = async (ev) => {
+    ev.preventDefault();
+    if (isDomain) {
+      const connection = new Connection(
+        `https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`
+      );
+      const walletAddressAndProfilePicture =
+        await walletNameToAddressAndProfilePicture(
+          // A Solana connection
+          connection,
+          // One of: .abc .backpack .bonk .glow .poor .sol
+          value
+        );
+      setAddress(walletAddressAndProfilePicture.walletAddress);
+      return;
+    }
+    setAddress(value);
+  };
 
   return (
     <div className="bg-black/10">
@@ -59,7 +77,7 @@ const Form = ({ setAddress }) => {
             "px-4",
             "py-2",
           )}
-          disabled={!isSolanaAddress(value)}
+          disabled={!(isSolanaAddress(value) || hasValidTLD(value))}
           type="submit"
         >
           Let&apos;s go!
