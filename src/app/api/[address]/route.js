@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { isSolanaAddress } from '@/utils'
 
 async function GET (request, { params: { address } }) {
-  if (!isSolanaAddress(address)) return NextResponse.json({ error: 'Invalid address (domains are not yet supported).' }, { status: 400 })
+  if (!isSolanaAddress(address)) return NextResponse.json({ error: 'Invalid address.' }, { status: 400 })
 
   const account = await fetch(
     `https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`,
