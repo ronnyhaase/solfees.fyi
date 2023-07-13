@@ -3,7 +3,9 @@ import { NextResponse } from 'next/server'
 import { isSolanaAddress } from '@/utils'
 
 async function GET (request, { params: { address } }) {
-  if (!isSolanaAddress(address)) return NextResponse.json({ error: 'Invalid address.' }, { status: 400 })
+  if (!isSolanaAddress(address)) {
+    return NextResponse.json({ error: 'Invalid address.' }, { status: 400 })
+  }
 
   const account = await fetch(
     `https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`,
@@ -23,7 +25,9 @@ async function GET (request, { params: { address } }) {
     .then(resp => resp.json())
     .then(data => data?.result?.value)
   if (!account || !account.owner) {
-    return NextResponse.json({ error: 'Account not found or not funded.' }, { status: 404 })
+    return NextResponse.json(
+      { error: 'Account not found or not funded.' }, { status: 404 }
+    )
   }
   if (account.owner !== '11111111111111111111111111111111') {
     return NextResponse.json({ error: 'PDA accounts are not allowed.' }, { status: 400 })

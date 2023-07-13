@@ -1,12 +1,11 @@
 "use client";
 
-import { Transition } from '@headlessui/react';
+import { Transition } from '@headlessui/react'
 import classNames from 'classnames'
-import Image from 'next/image';
+import Image from 'next/image'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import Confetti from 'react-confetti';
-import { useMeasure } from 'react-use';
-import ky from 'ky';
+import Confetti from 'react-confetti'
+import { useMeasure } from 'react-use'
 
 import {
   TX_CAP,
@@ -18,26 +17,18 @@ import { isSolanaAddress, isSolanaDomain, SOL_PER_LAMPORT  } from '@/utils'
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
   const [isValid, setIsValid] = useState(true)
-  const [isDomain, setIsDomain] = useState(false)
 
   const handleInputChange = (ev) => {
     const val = ev.target.value.trim()
 
     setValue(val)
-    setIsDomain(isSolanaDomain(val))
     setIsValid(isSolanaAddress(val) || isSolanaDomain(val) || !val)
   }
 
   const handleFormSubmit = async (ev) => {
-    ev.preventDefault();
-    if (isDomain) {
-      const walletAddress = await ky.get(`/api/domain/${value}`).json();
-      setAddress(walletAddress);
-      return;
-    } else {
-      setAddress(value);
-    }
-  };
+    ev.preventDefault()
+    setAddress(value)
+  }
 
   return (
     <div className="bg-black/10">
@@ -187,8 +178,11 @@ const Info = () => (
   </div>
 )
 
-const LoadingIndicator = ({ progress = 0 }) => {
+const LoadingIndicator = ({ progress = 0, state }) => {
   const sharedCircleClasses = ["animate-zoom h-10 opacity-60 rounded-[50%] w-10"]
+  const message = state === 'resolving'
+    ? 'Resolving domain.'
+    : `So far ${progress} transactions, and counting.`
 
   return (
     <div className="flex flex-col items-center text-center text-lg">
@@ -209,7 +203,7 @@ const LoadingIndicator = ({ progress = 0 }) => {
         <strong className="block font-bold">
           Stay tuned, this may takes a little while...
         </strong>
-        So far {progress} transactions, and counting.
+        {message}
       </div>
     </div>
   )
@@ -342,11 +336,11 @@ const SolFeesApp = () => {
                 <Info />
               </FadeInOutTransition>
               <FadeInOutTransition
-                show={state === 'loading' && !isElementLeaving}
+                show={(state === 'loading' || state === 'resolving') && !isElementLeaving}
                 beforeLeave={setElementLeaving}
                 afterLeave={setElementNotLeaving}
               >
-                <LoadingIndicator progress={progress} />
+                <LoadingIndicator state={state} progress={progress} />
               </FadeInOutTransition>
               <FadeInOutTransition
                 show={state === 'done' && !isElementLeaving}
