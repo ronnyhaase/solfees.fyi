@@ -6,29 +6,38 @@ import Image from 'next/image';
 import { useEffect, useLayoutEffect, useState } from 'react'
 import Confetti from 'react-confetti';
 import { useMeasure } from 'react-use';
+import ky from 'ky';
 
 import {
   TX_CAP,
   useSolPrice,
   useTransactions,
 } from '@/hooks'
-import { SOL_PER_LAMPORT, isSolanaAddress } from '@/utils'
+import { isSolanaAddress, isSolanaDomain, SOL_PER_LAMPORT  } from '@/utils'
 
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
-  const [valid, setValid] = useState(true)
+  const [isValid, setIsValid] = useState(true)
+  const [isDomain, setIsDomain] = useState(false)
 
   const handleInputChange = (ev) => {
     const val = ev.target.value.trim()
 
     setValue(val)
-    setValid(isSolanaAddress(val) || !val)
+    setIsDomain(isSolanaDomain(val))
+    setIsValid(isSolanaAddress(val) || isSolanaDomain(val) || !val)
   }
 
-  const handleFormSubmit = (ev) => {
-    ev.preventDefault()
-    setAddress(value)
-  }
+  const handleFormSubmit = async (ev) => {
+    ev.preventDefault();
+    if (isDomain) {
+      const walletAddress = await ky.get(`/api/domain/${value}`).json();
+      setAddress(walletAddress);
+      return;
+    } else {
+      setAddress(value);
+    }
+  };
 
   return (
     <div className="bg-black/10">
@@ -37,7 +46,7 @@ const Form = ({ setAddress }) => {
         <input
           className={classNames(
             "border-2",
-            valid ? "border-purple-400" : "border-red-400",
+            isValid ? "border-purple-400" : "border-red-400",
             "border-solid",
             "mr-2",
             "sm:mx-2",
@@ -52,14 +61,14 @@ const Form = ({ setAddress }) => {
         />
         <button
           className={classNames(
-            valid ? "bg-purple-500" : "bg-purple-400",
+            isValid ? "bg-purple-500" : "bg-purple-400",
             "shadow",
             "rounded-md",
-            valid ? "text-white" : "text-gray-300",
+            isValid ? "text-white" : "text-gray-300",
             "px-4",
             "py-2",
           )}
-          disabled={!isSolanaAddress(value)}
+          disabled={!isSolanaAddress(value) && !isSolanaDomain(value)}
           type="submit"
         >
           Let&apos;s go!

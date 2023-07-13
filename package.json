@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
+    "@portal-payments/solana-wallet-names": "^2.1.0",
+    "@solana/web3.js": "^1.77.3",
     "classnames": "^2.3.2",
     "ky": "^0.33.3",
     "next": "13.4.7",

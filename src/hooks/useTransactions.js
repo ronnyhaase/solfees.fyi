@@ -5,7 +5,7 @@ const TIMEOUT = 0
 const TX_CAP = 10000
 
 const fetchTransactions = (address, before) => ky.get(
-  `/api/${address}`,
+  `/api/transactions/${address}`,
   {
     searchParams: before ? { before } : '',
     throwHttpErrors: false,
