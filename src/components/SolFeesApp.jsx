@@ -31,11 +31,12 @@ const Form = ({ setAddress }) => {
   const handleFormSubmit = async (ev) => {
     ev.preventDefault();
     if (isDomain) {
-      const walletAddress = await ky.get(`/api/domainInfo/${value}`).json();
+      const walletAddress = await ky.get(`/api/domain/${value}`).json();
       setAddress(walletAddress);
       return;
+    } else {
+      setAddress(value);
     }
-    setAddress(value);
   };
 
   return (
