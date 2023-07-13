@@ -79,7 +79,7 @@ const Form = ({ setAddress }) => {
 }
 
 const generateTweetMessage = (fees, transactions) =>
-  `I have spent only ${fees}$ on all of my ${transactions} Solana transaction fees!%2A%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !%0A%0A%2AAt current SOL price`
+  `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
 
 const Result = ({ summary, solPrice }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
