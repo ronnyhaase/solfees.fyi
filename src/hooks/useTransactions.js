@@ -80,7 +80,7 @@ function useTransactions(address) {
           .then(transactions => setState({
             error: null,
             isLoading: false,
-            summary: aggregateTransactions(address, transactions),
+            summary: aggregateTransactions(fullAddress, transactions),
             state: 'done',
             transactions,
           }))
