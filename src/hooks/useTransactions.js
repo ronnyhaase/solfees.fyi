@@ -58,10 +58,10 @@ function useTransactions(address) {
       let fullAddress = address
       if (isSolanaDomain(address)) {
         setState({ error: null, isLoading: true, summary: null, state: 'resolving', transactions: null })
-        fullAddress = await ky.get(`/api/domain/${address}`, { throwHttpErrors: false }).json()
-        if (fullAddress.error) {
+        const domainInfo = await ky.get(`/api/domain/${address}`, { throwHttpErrors: false }).json()
+        if (domainInfo.error) {
           setState({
-            error: new Error(fullAddress.error),
+            error: new Error(domainInfo.error),
             isLoading: false,
             summary: null,
             state: 'error',
@@ -69,6 +69,7 @@ function useTransactions(address) {
           })
           return
         }
+        fullAddress = domainInfo.address
       }
 
       setState({ error: null, isLoading: true, summary: null, state: 'loading', transactions: null })

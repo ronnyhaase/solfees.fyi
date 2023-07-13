@@ -18,7 +18,7 @@ async function GET(request, { params: { domain } }) {
     return NextResponse.json({ error: "Domain not found." }, { status: 404 })
   }
 
-  return NextResponse.json(domainInfo.walletAddress)
+  return NextResponse.json({ address: domainInfo.walletAddress })
 }
 
 export { GET }
