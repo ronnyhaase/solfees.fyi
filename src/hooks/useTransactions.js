@@ -1,11 +1,13 @@
 import ky from 'ky'
 import { useEffect, useState } from 'react'
 
+import { isSolanaDomain } from '@/utils'
+
 const TIMEOUT = 0
 const TX_CAP = 10000
 
 const fetchTransactions = (address, before) => ky.get(
-  `/api/${address}`,
+  `/api/transactions/${address}`,
   {
     searchParams: before ? { before } : '',
     throwHttpErrors: false,
@@ -50,24 +52,41 @@ function useTransactions(address) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    if (address === null) return
+    (async () => {
+      if (address === null) return
 
-    if (address !== null) {
+      let fullAddress = address
+      if (isSolanaDomain(address)) {
+        setState({ error: null, isLoading: true, summary: null, state: 'resolving', transactions: null })
+        const domainInfo = await ky.get(`/api/domain/${address}`, { throwHttpErrors: false }).json()
+        if (domainInfo.error) {
+          setState({
+            error: new Error(domainInfo.error),
+            isLoading: false,
+            summary: null,
+            state: 'error',
+            transactions: null
+          })
+          return
+        }
+        fullAddress = domainInfo.address
+      }
+
       setState({ error: null, isLoading: true, summary: null, state: 'loading', transactions: null })
       setProgress(0)
-    }
-    // Timeout prevents animations from overlapping
-    setTimeout(() => {
-      new Promise((resolve, reject) => next({ address, setProgress, resolve, reject }))
-        .then(transactions => setState({
-          error: null,
-          isLoading: false,
-          summary: aggregateTransactions(address, transactions),
-          state: 'done',
-          transactions,
-        }))
-        .catch(error => setState({ error, isLoading: false, summary: null, state: 'error', transactions: null }))
-    }, 250)
+      // Timeout prevents animations from overlapping
+      setTimeout(() => {
+        new Promise((resolve, reject) => next({ address: fullAddress, setProgress, resolve, reject }))
+          .then(transactions => setState({
+            error: null,
+            isLoading: false,
+            summary: aggregateTransactions(fullAddress, transactions),
+            state: 'done',
+            transactions,
+          }))
+          .catch(error => setState({ error, isLoading: false, summary: null, state: 'error', transactions: null }))
+      }, 250)
+    })()
   }, [address])
 
   return { progress, ...state }
