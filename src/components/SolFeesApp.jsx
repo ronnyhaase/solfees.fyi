@@ -1,31 +1,31 @@
 "use client";
 
-import { Transition } from '@headlessui/react';
+import { Transition } from '@headlessui/react'
 import classNames from 'classnames'
-import Image from 'next/image';
+import Image from 'next/image'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import Confetti from 'react-confetti';
-import { useMeasure } from 'react-use';
+import Confetti from 'react-confetti'
+import { useMeasure } from 'react-use'
 
 import {
   TX_CAP,
   useSolPrice,
   useTransactions,
 } from '@/hooks'
-import { SOL_PER_LAMPORT, isSolanaAddress } from '@/utils'
+import { isSolanaAddress, isSolanaDomain, SOL_PER_LAMPORT  } from '@/utils'
 
 const Form = ({ setAddress }) => {
   const [value, setValue] = useState('')
-  const [valid, setValid] = useState(true)
+  const [isValid, setIsValid] = useState(true)
 
   const handleInputChange = (ev) => {
     const val = ev.target.value.trim()
 
     setValue(val)
-    setValid(isSolanaAddress(val) || !val)
+    setIsValid(isSolanaAddress(val) || isSolanaDomain(val) || !val)
   }
 
-  const handleFormSubmit = (ev) => {
+  const handleFormSubmit = async (ev) => {
     ev.preventDefault()
     setAddress(value)
   }
@@ -37,7 +37,7 @@ const Form = ({ setAddress }) => {
         <input
           className={classNames(
             "border-2",
-            valid ? "border-purple-400" : "border-red-400",
+            isValid ? "border-purple-400" : "border-red-400",
             "border-solid",
             "mr-2",
             "sm:mx-2",
@@ -52,14 +52,14 @@ const Form = ({ setAddress }) => {
         />
         <button
           className={classNames(
-            valid ? "bg-purple-500" : "bg-purple-400",
+            isValid ? "bg-purple-500" : "bg-purple-400",
             "shadow",
             "rounded-md",
-            valid ? "text-white" : "text-gray-300",
+            isValid ? "text-white" : "text-gray-300",
             "px-4",
             "py-2",
           )}
-          disabled={!isSolanaAddress(value)}
+          disabled={!isSolanaAddress(value) && !isSolanaDomain(value)}
           type="submit"
         >
           Let&apos;s go!
@@ -70,7 +70,7 @@ const Form = ({ setAddress }) => {
 }
 
 const generateTweetMessage = (fees, transactions) =>
-  `I have spent only ${fees}$ on all of my ${transactions} Solana transaction fees!%2A%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !%0A%0A%2AAt current SOL price`
+  `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
 
 const Result = ({ summary, solPrice }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
@@ -178,8 +178,11 @@ const Info = () => (
   </div>
 )
 
-const LoadingIndicator = ({ progress = 0 }) => {
+const LoadingIndicator = ({ progress = 0, state }) => {
   const sharedCircleClasses = ["animate-zoom h-10 opacity-60 rounded-[50%] w-10"]
+  const message = state === 'resolving'
+    ? 'Resolving domain.'
+    : `So far ${progress} transactions, and counting.`
 
   return (
     <div className="flex flex-col items-center text-center text-lg">
@@ -200,7 +203,7 @@ const LoadingIndicator = ({ progress = 0 }) => {
         <strong className="block font-bold">
           Stay tuned, this may takes a little while...
         </strong>
-        So far {progress} transactions, and counting.
+        {message}
       </div>
     </div>
   )
@@ -333,11 +336,11 @@ const SolFeesApp = () => {
                 <Info />
               </FadeInOutTransition>
               <FadeInOutTransition
-                show={state === 'loading' && !isElementLeaving}
+                show={(state === 'loading' || state === 'resolving') && !isElementLeaving}
                 beforeLeave={setElementLeaving}
                 afterLeave={setElementNotLeaving}
               >
-                <LoadingIndicator progress={progress} />
+                <LoadingIndicator state={state} progress={progress} />
               </FadeInOutTransition>
               <FadeInOutTransition
                 show={state === 'done' && !isElementLeaving}
