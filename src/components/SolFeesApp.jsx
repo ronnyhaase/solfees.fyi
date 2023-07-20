@@ -78,9 +78,24 @@ const Result = ({ summary, solPrice }) => {
     setCachedSummary(summary ? summary : cachedSummary)
   }, [summary])
 
+  const firstTransaction = cachedSummary
+    ? new Intl.DateTimeFormat(undefined, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+      })
+        .format(new Date(cachedSummary.firstTransactionTS))
+    : null
   const solFees = cachedSummary ? (cachedSummary.feesTotal * SOL_PER_LAMPORT).toFixed(5) : 0
   const txCount = cachedSummary ? cachedSummary.transactionsCount : 0
+  const txCountUnpaid = cachedSummary ? cachedSummary.unpaidTransactionsCount : 0
   const usdFees = cachedSummary && solPrice ? (cachedSummary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2) : 0
+  const solAvgFee = cachedSummary ? (cachedSummary.feesAvg * SOL_PER_LAMPORT).toFixed(5) : 0
+
   const tweetMessage = generateTweetMessage(usdFees, txCount)
 
   return (
@@ -88,7 +103,7 @@ const Result = ({ summary, solPrice }) => {
       <p>
         This account has spent{' '}
         <span className="text-solana-purple">
-          {solFees} ◎{' '}
+          ◎ {solFees}{' '}
         </span>
         in fees for{' '}
         <span className="text-solana-purple">{txCount} transactions</span>.
@@ -102,13 +117,18 @@ const Result = ({ summary, solPrice }) => {
         <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
         <span className="text-solana-purple">
           {solPrice ? (
-            <>{usdFees} $</>
+            <>$ {usdFees}</>
           ) : (
             <><span>¯\_(ツ)_/¯</span> $</>
           )}
         </span>
         .
       </p>
+      <div className="mt-2 text-lg">
+        <p>The account paid for {txCount - txCountUnpaid} of the {txCount} transactions. On average,
+        it paid <span className="whitespace-nowrap">◎ {solAvgFee}</span> per transaction.</p>
+        <p>The very first transaction was sent on {firstTransaction}</p>
+      </div>
       <p
         className={classNames(
           "drop-shadow-lg",

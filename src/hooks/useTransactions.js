@@ -29,11 +29,27 @@ const next = async ({ address, before, result, resolve, reject, setProgress }) =
 }
 
 const aggregateTransactions = (address, transactions) => {
-  let agg = { transactionsCount: transactions.length, feesAvg: 0, feesTotal: 0 }
+  let agg = {
+    firstTransactionTS: Number.MAX_SAFE_INTEGER,
+    failedTransactions: 0,
+    feesAvg: 0,
+    feesTotal: 0,
+    transactionsCount: transactions.length,
+    unpaidTransactionsCount: 0,
+  }
   transactions.map((tx) => {
     if (tx.feePayer === address) {
       agg.feesTotal += tx.fee
+    } else {
+      agg.unpaidTransactionsCount += 1
     }
+
+    // Always null, failed Txs are skipped by Helius parsed transactions API rn
+    if (tx.transactionError !== null) agg.failedTransactions += 1
+
+    agg.firstTransactionTS = tx.timestamp < agg.firstTransactionTS
+      ? tx.timestamp * 1000
+      : agg.firstTransactionTS
   })
   agg.feesAvg = agg.transactionsCount !== 0
     ? agg.feesTotal / agg.transactionsCount
