@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { isSolanaDomain } from '@/utils'
 
 const TIMEOUT = 0
-const TX_CAP = 10000
+const TX_CAP = 20000
 
 const fetchTransactions = (address, before) => ky.get(
   `/api/transactions/${address}`,
