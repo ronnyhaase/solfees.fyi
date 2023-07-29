@@ -49,6 +49,7 @@ const Form = ({ setAddress }) => {
           )}
           onChange={handleInputChange}
           placeholder="wtfXqc5AzvRUA5ob1UgjwTrcPcoD9bSqxzkPfHLAWye"
+          disabled
         />
         <button
           className={classNames(
@@ -59,7 +60,7 @@ const Form = ({ setAddress }) => {
             "px-4",
             "py-2",
           )}
-          disabled={true}
+          disabled
           type="submit"
         >
           Let&apos;s go!
