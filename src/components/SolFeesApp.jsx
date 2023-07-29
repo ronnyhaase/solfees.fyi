@@ -59,7 +59,7 @@ const Form = ({ setAddress }) => {
             "px-4",
             "py-2",
           )}
-          disabled={!isSolanaAddress(value) && !isSolanaDomain(value)}
+          disabled={true}
           type="submit"
         >
           Let&apos;s go!
@@ -192,9 +192,12 @@ const ErrorDisplay = ({ error }) => {
 }
 
 const Info = () => (
-  <div>
-    Check how much a Solana wallet has spent on transaction fees, by entering it&apos;s
-    address. ☝️
+  <div className="text-2xl text-orange-500">
+    <p>
+      ⚠︎ We&apos;re currently observing inconsistencies in our data and therefor temporarily disabled
+      SOLFees.fyi to not show wrong data.
+    </p>
+    <p>Sorry for the inconvenience!<br />-R◎nny</p>
   </div>
 )
 
