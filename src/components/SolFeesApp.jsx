@@ -195,10 +195,13 @@ const ErrorDisplay = ({ error }) => {
 const Info = () => (
   <div className="text-2xl text-orange-500">
     <p>
-      ⚠︎ We&apos;re currently observing inconsistencies in our data and therefor temporarily disabled
-      SOLFees.fyi to not show wrong data.
+      ⚠︎ We&apos;re currently observing inconsistencies in the results, and had to temporarily
+      disable SOLFees.fyi, in order to not display or have people sharing inaccurate data.
     </p>
-    <p>Sorry for the inconvenience!<br />-R◎nny</p>
+    <p className="mt-2">
+      Sorry for the inconvenience!<br />
+      <a href="https://twitter.com/ronnyhaase">-R◎nny</a>
+    </p>
   </div>
 )
 
