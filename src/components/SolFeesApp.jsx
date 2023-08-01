@@ -49,7 +49,6 @@ const Form = ({ setAddress }) => {
           )}
           onChange={handleInputChange}
           placeholder="wtfXqc5AzvRUA5ob1UgjwTrcPcoD9bSqxzkPfHLAWye"
-          disabled
         />
         <button
           className={classNames(
@@ -60,7 +59,7 @@ const Form = ({ setAddress }) => {
             "px-4",
             "py-2",
           )}
-          disabled
+          disabled={!isSolanaAddress(value) && !isSolanaDomain(value)}
           type="submit"
         >
           Let&apos;s go!
@@ -193,15 +192,8 @@ const ErrorDisplay = ({ error }) => {
 }
 
 const Info = () => (
-  <div className="text-2xl text-orange-500">
-    <p>
-      ⚠︎ We&apos;re currently observing inconsistencies in the results, and had to temporarily
-      disable SOLFees.fyi, in order to not display or have people sharing inaccurate data.
-    </p>
-    <p className="mt-2">
-      Sorry for the inconvenience!<br />
-      <a href="https://twitter.com/ronnyhaase">-R◎nny</a>
-    </p>
+  <div>
+    Check how much a Solana wallet has spent on transaction fees, by entering it&apos;s address. ☝️
   </div>
 )
 
