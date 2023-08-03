@@ -332,6 +332,7 @@ const SolFeesApp = () => {
               "md:px-8",
               "rounded-t-lg",
               "shadow-2xl",
+              "text-slate-600",
               "w-full",
             )}
             enter="transition-opacity transition-transform duration-200 ease-in"
