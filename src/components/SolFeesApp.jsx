@@ -94,7 +94,8 @@ const Result = ({ summary, solPrice }) => {
   const txCount = cachedSummary ? cachedSummary.transactionsCount : 0
   const txCountUnpaid = cachedSummary ? cachedSummary.unpaidTransactionsCount : 0
   const usdFees = cachedSummary && solPrice ? (cachedSummary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2) : 0
-  const solAvgFee = cachedSummary ? (cachedSummary.feesAvg * SOL_PER_LAMPORT).toFixed(5) : 0
+  const solAvgFee = cachedSummary ? (cachedSummary.feesAvg * SOL_PER_LAMPORT).toFixed(6) : 0
+  const usdAvgFee = cachedSummary && solPrice ? (cachedSummary.feesAvg * SOL_PER_LAMPORT * solPrice).toFixed(6) : 0
 
   const tweetMessage = generateTweetMessage(usdFees, txCount)
 
@@ -126,7 +127,7 @@ const Result = ({ summary, solPrice }) => {
       </p>
       <div className="mt-2 text-lg">
         <p>The account paid for {txCount - txCountUnpaid} of the {txCount} transactions. On average,
-        it paid <span className="whitespace-nowrap">◎ {solAvgFee}</span> per transaction.</p>
+        it paid <span className="whitespace-nowrap">◎ {solAvgFee} ($ {usdAvgFee})</span> per transaction.</p>
         <p>The very first transaction was sent on {firstTransaction}</p>
       </div>
       <p
