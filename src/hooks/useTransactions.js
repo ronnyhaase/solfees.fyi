@@ -2,9 +2,9 @@ import ky from 'ky'
 import { useEffect, useState } from 'react'
 
 import { isSolanaDomain } from '@/utils'
+import { TX_CAP } from '@/constants'
 
 const TIMEOUT = 0
-const TX_CAP = 20000
 
 const fetchTransactions = (address, before) => ky.get(
   `/api/transactions/${address}`,
