@@ -1,8 +1,8 @@
 import ky from 'ky'
 import { useEffect, useState } from 'react'
 
-import { isSolanaDomain } from '@/utils'
 import { TX_CAP } from '@/constants'
+import { isSolanaDomain } from '@/utils'
 
 const TIMEOUT = 0
 
@@ -44,7 +44,7 @@ const aggregateTransactions = (address, transactions) => {
       agg.unpaidTransactionsCount += 1
     }
 
-    // Always null, failed Txs are skipped by Helius parsed transactions API rn
+    // Always zero, failed Txs are skipped by Helius parsed transactions API rn
     if (tx.transactionError !== null) agg.failedTransactions += 1
 
     agg.firstTransactionTS = tx.timestamp < agg.firstTransactionTS

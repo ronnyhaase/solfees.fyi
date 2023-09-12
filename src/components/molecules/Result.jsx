@@ -1,12 +1,12 @@
-import { SOL_PER_LAMPORT, TX_CAP } from '@/constants'
-import classNames from 'classnames'
-import Image from 'next/image'
+import clx from 'classnames'
 import { useEffect, useState } from 'react'
+
+import { SOL_PER_LAMPORT, TX_CAP } from '@/constants'
 
 const generateTweetMessage = (fees, transactions) =>
   `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
 
-const Result = ({ summary, solPrice }) => {
+const Result = ({ className, summary, solPrice }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
   useEffect(() => {
     setCachedSummary(summary ? summary : cachedSummary)
@@ -34,7 +34,7 @@ const Result = ({ summary, solPrice }) => {
   const tweetMessage = generateTweetMessage(usdFees, txCount)
 
   return (
-    <>
+    <div className={className}>
       <p>
         This account has spent{' '}
         <span className="text-solana-purple">
@@ -65,16 +65,17 @@ const Result = ({ summary, solPrice }) => {
         <p>The very first transaction was sent on {firstTransaction}</p>
       </div>
       <p
-        className={classNames(
+        className={clx(
           "drop-shadow-lg",
           "font-bold",
           "from-solana-purple",
           "bg-clip-text",
-          "bg-gradient-to-br",
+          "bg-gradient-to-tr",
           "my-12",
           "text-6xl",
           "text-center",
           "text-transparent",
+          "tracking-tight",
           "to-solana-green",
         )}
       >
@@ -82,7 +83,8 @@ const Result = ({ summary, solPrice }) => {
       </p>
       <p className="text-center">
         <a
-          className={classNames(
+          className={clx(
+            'block sm:inline-flex',
             "bg-[#0C9DED]",
             "px-8",
             "py-4",
@@ -93,20 +95,7 @@ const Result = ({ summary, solPrice }) => {
           href={`https://twitter.com/share?text=${tweetMessage}`}
         >Tweet it</a>
       </p>
-      <a
-        className="block max-w-xs mx-auto mt-12 text-center text-base text-[#145D3E]"
-        href="https://app.sunrisestake.com"
-      >
-        If you like this tool, thank me by offsetting emissions while you sleep.<br />
-        <Image
-          alt="Sunrise Stake - Offset emissions while you sleep."
-          className="inline max-w-[128px]"
-          height={61}
-          src="/sunrisestake.svg"
-          width={128}
-        />
-      </a>
-    </>
+    </div>
   )
 }
 

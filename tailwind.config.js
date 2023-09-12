@@ -1,3 +1,4 @@
+const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 /** @type {import('tailwindcss').Config} */
@@ -23,6 +24,8 @@ module.exports = {
         },
       },
       colors: {
+        'primary': colors.purple['600'],
+        'secondary': colors.slate['700'],
         'solana-green': '#14F195',
         'solana-purple': '#9945FF',
       },

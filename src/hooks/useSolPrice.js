@@ -9,7 +9,7 @@ function useSolPrice() {
     setIsLoading(true)
     ky.get('https://public-api.birdeye.so/public/price?address=So11111111111111111111111111111111111111112')
       .json()
-      .then(setPrice)
+      .then(res => setPrice(res.data.value))
       .then(() => setIsLoading(false))
   }, [])
 
