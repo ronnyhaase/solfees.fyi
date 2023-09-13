@@ -12,7 +12,7 @@ const Result = ({ className, reset, summary, solPrice }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
   useEffect(() => {
     setCachedSummary(summary ? summary : cachedSummary)
-  }, [summary])
+  }, [cachedSummary, summary])
 
   const firstTransaction = cachedSummary
     ? new Intl.DateTimeFormat(undefined, {

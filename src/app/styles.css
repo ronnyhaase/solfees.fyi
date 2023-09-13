@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+  @apply text-purple-700;
+}
+
+*:focus {
+  @apply outline outline-2 outline-offset-1 outline-solana-purple;
+}
+
+/* Wallet adapter */
+.wallet-adapter-button-trigger {
+  @apply
+    inline-flex
+    items-center
+    justify-center
+    gap-x-4
+    h-auto
+    px-5 py-5
+    rounded-lg
+    shadow-md
+    !bg-secondary
+    leading-none
+    text-white
+    active:enabled:scale-95 active:enabled:shadow-inner
+    disabled:cursor-not-allowed disabled:opacity-90
+  ;
+}

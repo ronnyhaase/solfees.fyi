@@ -1,4 +1,5 @@
 import clx from 'classnames'
+import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import {
   IoCloseCircleOutline,
@@ -9,6 +10,12 @@ import {
 
 import { Button } from '@/components/atoms'
 import { isSolanaAddress, isSolanaDomain } from '@/utils'
+import { useWallet } from '@solana/wallet-adapter-react'
+
+const WalletMultiButton = dynamic(
+  async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+  { ssr: false }
+);
 
 const AddressInput = ({ setValue, value }) => {
   const [isInputFocused, setIsInputFocused] = useState(false)
@@ -30,8 +37,8 @@ const AddressInput = ({ setValue, value }) => {
   return (
     <div
         className={clx(
-          "order-2 sm:col-span-2 flex items-stretch p-1 rounded-lg bg-white shadow-md",
-          { "outline outline-2 outline-solana-purple": isInputFocused }
+          'order-2 sm:col-span-2 flex items-stretch p-1 rounded-lg bg-white shadow-md',
+          { 'outline outline-2 outline-solana-purple': isInputFocused }
         )
         }
       >
@@ -58,6 +65,7 @@ const AddressInput = ({ setValue, value }) => {
 const WalletForm = ({ setAddress }) => {
   const [value, setValue] = useState('')
   const [isValid, setIsValid] = useState(true)
+  const { publicKey, disconnect: disconnectWallet } = useWallet()
 
   useEffect(() => {
     setIsValid(isSolanaAddress(value) || isSolanaDomain(value))
@@ -68,16 +76,23 @@ const WalletForm = ({ setAddress }) => {
     if (isValid) setAddress(value)
   }
 
+  useEffect(() => {
+    if (publicKey) {
+      setAddress(publicKey)
+      disconnectWallet()
+    }
+  }, [disconnectWallet, publicKey, setAddress])
+
   return (
     <form className="max-w-md px-2 grid grid-cols-1 sm:grid-cols-2 gap-2" onSubmit={handleFormSubmit}>
       <AddressInput setValue={setValue} value={value} />
       <div className="order-2 text-center">OR</div>
       <div className="hidden sm:block order-2"></div>
       <div className="order-2">
-        <Button full>
+        <WalletMultiButton>
           <IoWalletOutline size={24} />
           <span>Connect Wallet</span>
-        </Button>
+        </WalletMultiButton>
       </div>
       <div className="order-2">
         <Button color="primary" disabled={!isValid} full type="submit">

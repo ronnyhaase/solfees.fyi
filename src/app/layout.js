@@ -2,7 +2,8 @@ import { Noto_Sans } from 'next/font/google'
 import PlausibleProvider from 'next-plausible'
 import clx from 'classnames'
 
-import './globals.css'
+require('./wallet-adapter.css')
+require('./styles.css')
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],

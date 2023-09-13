@@ -20,6 +20,10 @@
   "dependencies": {
     "@headlessui/react": "^1.7.16",
     "@portal-payments/solana-wallet-names": "^2.1.0",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.34",
+    "@solana/wallet-adapter-wallets": "^0.19.22",
     "@solana/web3.js": "^1.78.4",
     "classnames": "^2.3.2",
     "ky": "^0.33.3",
