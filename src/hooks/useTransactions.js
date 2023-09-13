@@ -58,13 +58,15 @@ const aggregateTransactions = (address, transactions) => {
 }
 
 function useTransactions(address) {
-  const [state, setState] = useState({
+  const initialState = {
     error: null,
     isLoading: false,
     summary: null,
     state: 'intro',
     transactions: null,
-  })
+  }
+  const [state, setState] = useState(initialState)
+  const reset = () => setState(initialState)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -105,7 +107,7 @@ function useTransactions(address) {
     })()
   }, [address])
 
-  return { progress, ...state }
+  return { progress, reset, ...state }
 }
 
 export {

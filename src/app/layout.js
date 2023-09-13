@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       <head>
         <PlausibleProvider domain="solfees.fyi" />
       </head>
-      <body className="min-h-screen text-lg">{children}</body>
+      <body className="min-h-screen overflow-hidden text-lg">{children}</body>
     </html>
   )
 }

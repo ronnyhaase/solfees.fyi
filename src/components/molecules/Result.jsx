@@ -2,11 +2,13 @@ import clx from 'classnames'
 import { useEffect, useState } from 'react'
 
 import { SOL_PER_LAMPORT, TX_CAP } from '@/constants'
+import { Button } from '@/components/atoms'
+import { IoRepeatSharp } from 'react-icons/io5'
 
 const generateTweetMessage = (fees, transactions) =>
   `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
 
-const Result = ({ className, summary, solPrice }) => {
+const Result = ({ className, reset, summary, solPrice }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
   useEffect(() => {
     setCachedSummary(summary ? summary : cachedSummary)
@@ -63,6 +65,12 @@ const Result = ({ className, summary, solPrice }) => {
         <p>The account paid for {txCount - txCountUnpaid} of the {txCount} transactions. On average,
         it paid <span className="whitespace-nowrap">◎ {solAvgFee} ($ {usdAvgFee})</span> per transaction.</p>
         <p>The very first transaction was sent on {firstTransaction}</p>
+      </div>
+      <div className="mt-2 text-center">
+        <Button color="primary" size="sm" onClick={reset}>
+          <IoRepeatSharp size={20} />
+          Check another wallet
+        </Button>
       </div>
       <p
         className={clx(

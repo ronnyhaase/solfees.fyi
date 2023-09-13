@@ -19,9 +19,15 @@ const SolFeesApp = () => {
   const {
     error,
     progress,
+    reset: resetResult,
     summary,
     state,
   } = useTransactions(address)
+
+  const reset = () => {
+    resetResult()
+    setAddress(null)
+  }
 
   const [appReady, setAppReady] = useState(false)
   useLayoutEffect(() => {
@@ -52,12 +58,15 @@ const SolFeesApp = () => {
         <Progress state={state} progress={progress} />
       </FadeInOutTransition>
       <Transition
-        show={state === 'done'}
+        show={state === 'done' && !isElementLeaving}
         beforeLeave={setElementLeaving}
         afterLeave={setElementNotLeaving}
-        enter="transition-opacity transition-transform duration-200 ease-in"
-        enterFrom="opacity-0 translate-y-full"
-        enterTo="opacity-100 translate-y-0"
+        enter="transition-transform duration-200 ease-in"
+        enterFrom="translate-y-full"
+        enterTo="translate-y-0"
+        leave="transition-transform duration-200 ease-out"
+        leaveFrom="translate-y-0"
+        leaveTo="translate-y-full"
         className={clx(
           'grow',
           'flex',
@@ -74,7 +83,7 @@ const SolFeesApp = () => {
         )}
       >
         <div className="grow">
-          <Result summary={summary} solPrice={price} />
+          <Result summary={summary} reset={reset} solPrice={price} />
           <SunriseAd className="mt-12" />
         </div>
         <About className="mt-12" />
