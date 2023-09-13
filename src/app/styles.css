@@ -11,12 +11,17 @@ a {
 }
 
 /* Wallet adapter */
+.wallet-adapter-dropdown {
+  @apply w-full;
+}
+
 .wallet-adapter-button-trigger {
   @apply
     inline-flex
     items-center
     justify-center
     gap-x-4
+    w-full
     h-auto
     px-5 py-5
     rounded-lg

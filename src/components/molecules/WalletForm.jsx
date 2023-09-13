@@ -93,6 +93,7 @@ const WalletForm = ({ setAddress }) => {
           <IoWalletOutline size={24} />
           <span>Connect Wallet</span>
         </WalletMultiButton>
+        <div className="text-center text-sm">No TX signing necessary</div>
       </div>
       <div className="order-2">
         <Button color="primary" disabled={!isValid} full type="submit">
