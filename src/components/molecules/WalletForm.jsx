@@ -78,7 +78,7 @@ const WalletForm = ({ setAddress }) => {
 
   useEffect(() => {
     if (publicKey) {
-      setAddress(publicKey)
+      setAddress(publicKey.toString())
       disconnectWallet()
     }
   }, [disconnectWallet, publicKey, setAddress])
