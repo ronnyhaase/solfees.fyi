@@ -1,10 +1,10 @@
 import ky from 'ky'
 import { useEffect, useState } from 'react'
 
+import { TX_CAP } from '@/constants'
 import { isSolanaDomain } from '@/utils'
 
 const TIMEOUT = 0
-const TX_CAP = 20000
 
 const fetchTransactions = (address, before) => ky.get(
   `/api/transactions/${address}`,
@@ -44,7 +44,7 @@ const aggregateTransactions = (address, transactions) => {
       agg.unpaidTransactionsCount += 1
     }
 
-    // Always null, failed Txs are skipped by Helius parsed transactions API rn
+    // Always zero, failed Txs are skipped by Helius parsed transactions API rn
     if (tx.transactionError !== null) agg.failedTransactions += 1
 
     agg.firstTransactionTS = tx.timestamp < agg.firstTransactionTS
@@ -58,13 +58,15 @@ const aggregateTransactions = (address, transactions) => {
 }
 
 function useTransactions(address) {
-  const [state, setState] = useState({
+  const initialState = {
     error: null,
     isLoading: false,
     summary: null,
     state: 'intro',
     transactions: null,
-  })
+  }
+  const [state, setState] = useState(initialState)
+  const reset = () => setState(initialState)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -105,7 +107,7 @@ function useTransactions(address) {
     })()
   }, [address])
 
-  return { progress, ...state }
+  return { progress, reset, ...state }
 }
 
 export {
