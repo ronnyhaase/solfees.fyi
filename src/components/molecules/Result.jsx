@@ -1,5 +1,6 @@
+import BigNumber from 'bignumber.js'
 import clx from 'classnames'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button } from '@/components/atoms'
@@ -9,42 +10,59 @@ const generateTweetMessage = (fees, transactions) =>
   `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
 
 const Result = ({ className, reset, summary, pricesAndFees }) => {
-  const [cachedSummary, setCachedSummary] = useState(null)
-  useEffect(() => {
-    setCachedSummary(summary ? summary : cachedSummary)
-  }, [cachedSummary, summary])
+  const data = useMemo(() => {
+    let data = {}
+    if (summary) {
+      data = {
+        firstTransaction : new Intl.DateTimeFormat(undefined, {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false,
+          }).format(new Date(summary.firstTransactionTS)),
+        solFees: new BigNumber(summary.feesTotal)
+          .multipliedBy(GAS_DENOMINATOR)
+          .decimalPlaces(5)
+          .toNumber(),
+        txCount: summary.transactionsCount,
+        txCountUnpaid: summary.unpaidTransactionsCount,
+        solAvgFee: new BigNumber(summary.feesAvg)
+          .multipliedBy(GAS_DENOMINATOR)
+          .decimalPlaces(6)
+          .toNumber()
+      }
+    }
+    if (pricesAndFees && summary) {
+      data.usdFees = new BigNumber(summary.feesTotal)
+        .multipliedBy(GAS_DENOMINATOR)
+        .multipliedBy(pricesAndFees.prices.sol)
+        .decimalPlaces(2)
+        .toNumber()
+      data.usdAvgFee = new BigNumber(summary.feesAvg)
+        .multipliedBy(GAS_DENOMINATOR)
+        .multipliedBy(pricesAndFees.prices.sol)
+        .decimalPlaces(6)
+        .toNumber()
+    }
 
-  const firstTransaction = cachedSummary
-    ? new Intl.DateTimeFormat(undefined, {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false,
-      })
-        .format(new Date(cachedSummary.firstTransactionTS))
-    : null
-  const solFees = cachedSummary ? (cachedSummary.feesTotal * GAS_DENOMINATOR).toFixed(5) : 0
-  const txCount = cachedSummary ? cachedSummary.transactionsCount : 0
-  const txCountUnpaid = cachedSummary ? cachedSummary.unpaidTransactionsCount : 0
-  const usdFees = cachedSummary && pricesAndFees.prices.sol ? (cachedSummary.feesTotal * GAS_DENOMINATOR * pricesAndFees.prices.sol).toFixed(2) : 0
-  const solAvgFee = cachedSummary ? (cachedSummary.feesAvg * GAS_DENOMINATOR).toFixed(6) : 0
-  const usdAvgFee = cachedSummary && pricesAndFees.prices.sol ? (cachedSummary.feesAvg * GAS_DENOMINATOR * pricesAndFees.prices.sol).toFixed(6) : 0
+    return data
+  }, [summary, pricesAndFees])
 
-  const tweetMessage = generateTweetMessage(usdFees, txCount)
+  const tweetMessage = generateTweetMessage(data.usdFees, data.txCount)
 
   return (
     <div className={className}>
       <p>
         This account has spent{' '}
         <span className="text-solana-purple">
-          ◎ {solFees}{' '}
+          ◎ {data.solFees}{' '}
         </span>
         in fees for{' '}
-        <span className="text-solana-purple">{txCount} transactions</span>.
-        {txCount >= TX_CAP ? (
+        <span className="text-solana-purple">{data.txCount} transactions</span>.
+        {data.txCount >= TX_CAP ? (
           <span className="block text-blue-500 text-sm">
             ℹ︎ We&apos;re currently stopping at {TX_CAP} transactions, sorry!
           </span>
@@ -53,18 +71,16 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
       <p>
         <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
         <span className="text-solana-purple">
-          {solPrice ? (
-            <>$ {usdFees}</>
-          ) : (
-            <><span>¯\_(ツ)_/¯</span> $</>
-          )}
+            $ {data.usdFees}
         </span>
         .
       </p>
       <div className="mt-2 text-lg">
-        <p>The account paid for {txCount - txCountUnpaid} of the {txCount} transactions. On average,
-        it paid <span className="whitespace-nowrap">◎ {solAvgFee} ($ {usdAvgFee})</span> per transaction.</p>
-        <p>The very first transaction was sent on {firstTransaction}</p>
+        <p>
+          The account paid for {data.txCount - data.txCountUnpaid} of the {data.txCount}
+          &nbsp;transactions. On average, it paid <span className="whitespace-nowrap">◎
+          &nbsp;{data.solAvgFee} ($ {data.usdAvgFee})</span> per transaction.</p>
+        <p>The very first transaction was sent on {data.firstTransaction}</p>
       </div>
       <div className="mt-2 text-center">
         <Button color="primary" size="sm" onClick={reset}>

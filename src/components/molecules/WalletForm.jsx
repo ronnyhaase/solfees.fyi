@@ -102,7 +102,7 @@ const WalletForm = ({ setAddress }) => {
         </Button>
       </div>
       <div className="order-1 sm:order-3 sm:col-span-2 mb-2 sm:mb-0 sm:mt-2 text-2xl text-center">
-        Check how much a Solana wallet has spent on transaction fees, by entering it&apos;s address.
+        Check how much a Solana wallet has spent on transaction fees.
       </div>
     </form>
   )
