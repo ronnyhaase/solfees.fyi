@@ -10,7 +10,7 @@ async function GET(request, { params: { domain } }) {
   }
 
   const connection = new Connection(
-    `https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`
+    `https://rpc.helius.xyz/?api-key=${process.env.HELIUS_KEY}`
   )
   const domainInfo = await fetchDomainInfo(connection, domain)
 

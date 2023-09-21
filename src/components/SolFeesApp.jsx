@@ -12,6 +12,7 @@ import Confetti from 'react-confetti'
 import { useMeasure } from 'react-use'
 
 import {
+  usePricesAndFees,
   useSolPrice,
   useTransactions,
 } from '@/hooks'
@@ -37,7 +38,7 @@ const Providers = ({ children }) => {
 
 const SolFeesApp = () => {
   const [address, setAddress] = useState(null)
-  const { price } = useSolPrice()
+  const { pricesAndFees } = usePricesAndFees()
   const {
     error,
     progress,
@@ -106,7 +107,7 @@ const SolFeesApp = () => {
           )}
         >
           <div className="grow">
-            <Result summary={summary} reset={reset} solPrice={price} />
+            <Result summary={summary} reset={reset} pricesAndFees={pricesAndFees} />
             <SunriseAd className="mt-12" />
           </div>
           <About className="mt-12" />

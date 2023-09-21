@@ -1,21 +1,23 @@
 import ky from 'ky'
 import { useEffect, useState } from 'react'
 
-function useSolPrice() {
-  const [price, setPrice] = useState(null)
+function usePricesAndFees() {
+  const [pricesAndFees, setPricesAndFees] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     setIsLoading(true)
-    ky.get('https://public-api.birdeye.so/public/price?address=So11111111111111111111111111111111111111112')
+    ky.get('api/fees', {
+      prefixUrl: new URL(document.baseURI).origin
+    })
       .json()
-      .then(res => setPrice(res.data.value))
+      .then(body => setPricesAndFees(body))
       .then(() => setIsLoading(false))
   }, [])
 
-  return { price, isLoading }
+  return { pricesAndFees, isLoading }
 }
 
 export {
-  useSolPrice,
+  usePricesAndFees,
 }

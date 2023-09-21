@@ -1,14 +1,14 @@
 import clx from 'classnames'
 import { useEffect, useState } from 'react'
 
-import { SOL_PER_LAMPORT, TX_CAP } from '@/constants'
+import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button } from '@/components/atoms'
 import { IoRepeatSharp } from 'react-icons/io5'
 
 const generateTweetMessage = (fees, transactions) =>
   `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
 
-const Result = ({ className, reset, summary, solPrice }) => {
+const Result = ({ className, reset, summary, pricesAndFees }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
   useEffect(() => {
     setCachedSummary(summary ? summary : cachedSummary)
@@ -26,12 +26,12 @@ const Result = ({ className, reset, summary, solPrice }) => {
       })
         .format(new Date(cachedSummary.firstTransactionTS))
     : null
-  const solFees = cachedSummary ? (cachedSummary.feesTotal * SOL_PER_LAMPORT).toFixed(5) : 0
+  const solFees = cachedSummary ? (cachedSummary.feesTotal * GAS_DENOMINATOR).toFixed(5) : 0
   const txCount = cachedSummary ? cachedSummary.transactionsCount : 0
   const txCountUnpaid = cachedSummary ? cachedSummary.unpaidTransactionsCount : 0
-  const usdFees = cachedSummary && solPrice ? (cachedSummary.feesTotal * SOL_PER_LAMPORT * solPrice).toFixed(2) : 0
-  const solAvgFee = cachedSummary ? (cachedSummary.feesAvg * SOL_PER_LAMPORT).toFixed(6) : 0
-  const usdAvgFee = cachedSummary && solPrice ? (cachedSummary.feesAvg * SOL_PER_LAMPORT * solPrice).toFixed(6) : 0
+  const usdFees = cachedSummary && pricesAndFees.prices.sol ? (cachedSummary.feesTotal * GAS_DENOMINATOR * pricesAndFees.prices.sol).toFixed(2) : 0
+  const solAvgFee = cachedSummary ? (cachedSummary.feesAvg * GAS_DENOMINATOR).toFixed(6) : 0
+  const usdAvgFee = cachedSummary && pricesAndFees.prices.sol ? (cachedSummary.feesAvg * GAS_DENOMINATOR * pricesAndFees.prices.sol).toFixed(6) : 0
 
   const tweetMessage = generateTweetMessage(usdFees, txCount)
 

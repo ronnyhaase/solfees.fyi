@@ -8,7 +8,7 @@ async function GET (request, { params: { address } }) {
   }
 
   const account = await fetch(
-    `https://rpc.helius.xyz/?api-key=${process.env.API_KEY}`,
+    `https://rpc.helius.xyz/?api-key=${process.env.HELIUS_KEY}`,
     {
       method: 'POST',
       headers: {
@@ -36,7 +36,7 @@ async function GET (request, { params: { address } }) {
   const before = request.nextUrl.searchParams.get('before')
   const data = await fetch(
     `https://api.helius.xyz/v0/addresses/${address}/transactions?api-key=${
-      process.env.API_KEY}${before ? `&before=${before}` : ''}`
+      process.env.HELIUS_KEY}${before ? `&before=${before}` : ''}`
   ).then(r => r.json())
 
   return NextResponse.json(data)
