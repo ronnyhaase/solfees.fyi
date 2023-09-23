@@ -1,9 +1,11 @@
 # [SOLfees.fyi](https://www.solfees.fyi/)
+
 Check how much a Solana wallet has spent on transaction fees & compare with other blockchains.
 
 ## Contributing
 
 ### Ideas & Issues
+
 New ideas on how to make SOLfees.fyi better are highly welcome!
 
 If you face any problems, let me know!
@@ -11,20 +13,43 @@ If you face any problems, let me know!
 Don't hesitate to create an issue or ping me on [X / Twitter](https://x.com/ronnyhaase)!
 
 ### Development
-Install dependencies
+
+Following services are used to fetch the data:
+
+- Helius for transaction history
+- QuickNode GraphQL for gas prices
+- Dune for gas usage / Tx
+- Vercel KV to cache gas data
+
+
+I. Install dependencies
 ```
 npm install
 ```
-Create an `.env.local` file and add your Helius and QuickNode API key
+
+II. Create an `.env.local` file in the project route and add the sercrets of the services
 ```
-touch .env.local
-echo HELIUS_KEY=YOUR_HELIUS_KEY >> .env.local
-echo QUICKNODE_KEY=YOU_QUICKNODE_KEY >> .env.local
+DUNE_KEY=12345
+HELIUS_KEY=12345
+KV_URL=redis://...
+KV_REST_API_URL=https://...
+KV_REST_API_TOKEN=12345
+KV_REST_API_READ_ONLY_TOKEN=12345
+QUICKNODE_KEY=12345
 ```
-Run the development server
+
+III. Run the development server
 ```
 npm run dev
 ```
+
+IV. Call the hooks locally to cache initial data
+```
+curl -X POST http://localhost:3000/hooks/update-gas-fees
+curl -X POST http://localhost:3000/hooks/update-gas-usage
+```
+
+---
 
 Copyright © 2023, [Ronny Haase](https://ronnyhaase.com)
 

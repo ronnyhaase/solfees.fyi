@@ -1,6 +1,6 @@
-import { GAS_DENOMINATOR, STANDARDTRANSFER_GASCOST } from "@/constants"
-import BigNumber from "bignumber.js"
-import { NextResponse } from "next/server"
+import { kv } from '@vercel/kv'
+import BigNumber from 'bignumber.js'
+import { NextResponse } from 'next/server'
 
 function fetchPrices() {
   const token = {
@@ -34,44 +34,19 @@ function fetchPrices() {
     }))
 }
 
-function fetchEthFees() {
-  const query = `query GasPrices {
-    ethereum { gasPrices { floor } }
-    polygon { gasPrices { floor } }
-  }`
-  return fetch('https://api.quicknode.com/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-API-Key': process.env.QUICKNODE_KEY,
-    },
-    body: JSON.stringify({ query }),
-  })
-    .then(resp => resp.json())
-    .then(body => ({
-      // Gas price is returned in WEI -> GWEI -> GWEI × standard TX gas
-      ethereum: new BigNumber(body.data.ethereum.gasPrices[0].floor)
-        .multipliedBy(GAS_DENOMINATOR)
-        .multipliedBy(STANDARDTRANSFER_GASCOST)
-        .decimalPlaces(5)
-        .toNumber(),
-      polygon: new BigNumber(body.data.polygon.gasPrices[0].floor)
-        .multipliedBy(GAS_DENOMINATOR)
-        .multipliedBy(STANDARDTRANSFER_GASCOST)
-        .decimalPlaces(5)
-        .toNumber(),
-    }))
-}
-
-/**
- * Returns current prices of ETH, MATIC and SOL and gas cost per standard transaction in GWEI
- */
 async function GET () {
-  const [prices, fees] = await Promise.all([fetchPrices(), fetchEthFees()])
+  const [avgGasFees, avgTxGasUsage, prices] = await Promise.all([
+    kv.get('avg_gas_fees'),
+    kv.get('avg_gas_usage'),
+    fetchPrices(),
+  ])
+
   const data = {
+    avgGasFees,
+    avgTxGasUsage,
     prices,
-    fees,
   }
+
   return NextResponse.json(data)
 }
 

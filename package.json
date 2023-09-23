@@ -25,6 +25,7 @@
     "@solana/wallet-adapter-react-ui": "^0.9.34",
     "@solana/wallet-adapter-wallets": "^0.19.22",
     "@solana/web3.js": "^1.78.4",
+    "@vercel/kv": "^0.2.3",
     "bignumber.js": "^9.1.2",
     "classnames": "^2.3.2",
     "ky": "^0.33.3",
