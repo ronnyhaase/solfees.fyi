@@ -10,8 +10,10 @@ async function POST() {
       .then(body => body.result.rows[0])
       .then(data => kv.set('avg_gas_usage', data))
 
+    console.log('SUCCESS: Update average gas usage')
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('FAILED: Update average gas usage')
     return NextResponse.json({ error: error.message }, { status: 500})
   }
 }

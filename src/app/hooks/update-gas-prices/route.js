@@ -33,8 +33,10 @@ async function POST() {
       }))
       .then(data => kv.set('avg_gas_fees', data))
 
+    console.log('SUCCESS: Update gas prices')
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('FAILED: Update gas prices')
     return NextResponse.json({ error: error.message }, { status: 500})
   }
 }
