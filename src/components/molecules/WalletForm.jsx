@@ -4,13 +4,12 @@ import {
   IoCloseCircleOutline,
   IoFlameOutline,
   IoSearchOutline,
-  IoWalletOutline,
 } from 'react-icons/io5'
 
 import { Button } from '@/components/atoms'
 import { isSolanaAddress, isSolanaDomain } from '@/utils'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletButton } from './WalletButton'
+import { WalletButton } from '@/components/molecules/WalletButton'
 
 const AddressInput = ({ setValue, value }) => {
   const [isInputFocused, setIsInputFocused] = useState(false)

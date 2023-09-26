@@ -2,13 +2,14 @@ import { useWalletMultiButton } from '@solana/wallet-adapter-base-ui'
 import { useWalletModal } from '@solana/wallet-adapter-react-ui'
 import { useCallback } from 'react'
 import { IoWalletOutline } from 'react-icons/io5'
+
 import { Button } from '../atoms'
 
-const WalletButton = ({ children }) => {
-  const { setVisible: setModalVisible } = useWalletModal();
+const WalletButton = ({ }) => {
+  const { setVisible: setModalVisible } = useWalletModal()
   const { buttonState, onConnect } = useWalletMultiButton({
     onSelectWallet() {
-        setModalVisible(true);
+      setModalVisible(true)
     },
 })
 
