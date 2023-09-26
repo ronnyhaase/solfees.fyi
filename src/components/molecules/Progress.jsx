@@ -11,7 +11,7 @@ const Progress = ({ progress = 0, state }) => {
       <LoadingIndicator />
       <div>
         <strong className="block font-bold">
-          Stay tuned, this may takes a little while...
+          Stay tuned, this may take a little while...
         </strong>
         <div className="text-center text-base">
           (~3 sec per 100 transactions)
