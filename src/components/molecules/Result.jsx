@@ -1,12 +1,12 @@
+import { Transition } from '@headlessui/react'
 import BigNumber from 'bignumber.js'
 import clx from 'classnames'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
+import { MdFastRewind } from 'react-icons/md'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap } from '@/components/atoms'
-import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
-import { MdFastRewind } from 'react-icons/md'
-import { Transition } from '@headlessui/react'
 
 const generateTweetMessage = (fees, transactions) =>
   `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0A%23OPOS%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase !`
