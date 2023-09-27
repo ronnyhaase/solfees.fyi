@@ -1,13 +1,58 @@
 import BigNumber from 'bignumber.js'
 import clx from 'classnames'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
-import { Button } from '@/components/atoms'
-import { IoRepeatSharp } from 'react-icons/io5'
+import { Button, NoWrap } from '@/components/atoms'
+import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
+import { MdFastRewind } from 'react-icons/md'
+import { Transition } from '@headlessui/react'
 
 const generateTweetMessage = (fees, transactions) =>
-  `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fyi%3Fxyz by %40ronnyhaase !`
+  `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0AOPOS.%0A%0ACheck yours at https://www.solfees.fy by %40ronnyhaase !`
+
+const COMPARER_CHAINS = ['ethereum', 'polygon']
+
+const Comparer = ({ txCount, pricesAndFees }) => {
+  const [chain, setChain] = useState(COMPARER_CHAINS[0])
+  const data = useMemo(() => {
+    const symbol = pricesAndFees.symbols[chain]
+    const tokenCosts = new BigNumber(txCount)
+      .multipliedBy(pricesAndFees.avgTxGasUsage[chain])
+      .multipliedBy(pricesAndFees.avgGasFees[chain])
+      .multipliedBy(GAS_DENOMINATOR)
+      .decimalPlaces(5)
+      .toNumber()
+    const usdCosts = new BigNumber(tokenCosts)
+      .multipliedBy(pricesAndFees.prices[chain])
+      .decimalPlaces(2)
+      .toNumber()
+
+    return { symbol, tokenCosts, usdCosts }
+  }, [chain, pricesAndFees, txCount])
+
+  const handleChainChange = (ev) => setChain(ev.target.value)
+
+  return (
+    <div className="my-4 text-center">
+      On
+      <select
+        className="w-32 mx-2 border-2 border-primary rounded-lg text-center"
+        value={chain}
+        onChange={handleChainChange}
+      >
+        {COMPARER_CHAINS.map((chain) => (
+          <option key={chain} value={chain}>{chain[0].toUpperCase() + chain.slice(1)}</option>
+        ))}
+        <option disabled>More, soon!</option>
+      </select>
+      you would have paid approximately <NoWrap>{data.symbol} {data.tokenCosts}</NoWrap> or{' '}
+      <NoWrap>$ {data.usdCosts}</NoWrap> for {txCount} transactions at the{' '}
+      <u className="underline underline-offset-4">current</u> gas price, assuming the average gas
+      usage per transaction.
+    </div>
+  )
+}
 
 const Result = ({ className, reset, summary, pricesAndFees }) => {
   const data = useMemo(() => {
@@ -38,12 +83,12 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
     if (pricesAndFees && summary) {
       data.usdFees = new BigNumber(summary.feesTotal)
         .multipliedBy(GAS_DENOMINATOR)
-        .multipliedBy(pricesAndFees.prices.sol)
+        .multipliedBy(pricesAndFees.prices.solana)
         .decimalPlaces(2)
         .toNumber()
       data.usdAvgFee = new BigNumber(summary.feesAvg)
         .multipliedBy(GAS_DENOMINATOR)
-        .multipliedBy(pricesAndFees.prices.sol)
+        .multipliedBy(pricesAndFees.prices.solana)
         .decimalPlaces(6)
         .toNumber()
     }
@@ -51,42 +96,58 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
     return data
   }, [summary, pricesAndFees])
 
+  const [showComparer, setShowComparer] = useState(false)
+
+  const handleCompareClick = () => setShowComparer(true)
+
   const tweetMessage = generateTweetMessage(data.usdFees, data.txCount)
 
   return (
     <div className={className}>
-      <p>
+      {data.txCount >= TX_CAP ? (
+        <p className="flex justify-center items-centermb-2  text-blue-500">
+          <IoInformationCircle className="inline" size={32} />
+          We&apos;re currently stopping at {TX_CAP} transactions, sorry!
+        </p>
+      ) : null}
+      <p className="my-2 md:text-2xl text-center">
         This account has spent{' '}
-        <span className="text-solana-purple">
+        <NoWrap className="text-solana-purple">
           ◎ {data.solFees}{' '}
-        </span>
+        </NoWrap>
         in fees for{' '}
         <span className="text-solana-purple">{data.txCount} transactions</span>.
-        {data.txCount >= TX_CAP ? (
-          <span className="block text-blue-500 text-sm">
-            ℹ︎ We&apos;re currently stopping at {TX_CAP} transactions, sorry!
-          </span>
-        ) : null}
       </p>
-      <p>
+      <p className="mb-2 md:text-2xl text-center">
         <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
-        <span className="text-solana-purple">
+        <NoWrap className="text-solana-purple">
             $ {data.usdFees}
-        </span>
+        </NoWrap>
         .
       </p>
-      <div className="mt-2 text-lg">
-        <p>
+      <div className="mt-2">
+        <p className="text-center">
           The account paid for {data.txCount - data.txCountUnpaid} of the {data.txCount}
-          &nbsp;transactions. On average, it paid <span className="whitespace-nowrap">◎
-          &nbsp;{data.solAvgFee} ($ {data.usdAvgFee})</span> per transaction.</p>
-        <p>The very first transaction was sent on {data.firstTransaction}</p>
+          &nbsp;transactions. On average, it paid <NoWrap>◎ {data.solAvgFee}</NoWrap>{' '}
+          <NoWrap>($ {data.usdAvgFee})</NoWrap> per transaction.</p>
+        <p className="text-center">
+          The very first transaction was sent on {data.firstTransaction}
+        </p>
       </div>
-      <div className="mt-2 text-center">
+      <Transition show={showComparer}>
+        <Comparer txCount={data.txCount - data.txCountUnpaid} pricesAndFees={pricesAndFees} />
+      </Transition>
+      <div className="mt-2 flex gap-1 justify-center">
         <Button color="primary" size="sm" onClick={reset}>
-          <IoRepeatSharp size={20} />
-          Check another wallet
+          <MdFastRewind size={20} />
+          Check Another
         </Button>
+        <Transition show={!showComparer}>
+          <Button size="sm" onClick={handleCompareClick}>
+            <IoGitCompare size={20} />
+            Compare
+          </Button>
+        </Transition>
       </div>
       <p
         className={clx(
@@ -95,7 +156,7 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
           "from-solana-purple",
           "bg-clip-text",
           "bg-gradient-to-tr",
-          "my-12",
+          "my-10",
           "text-6xl",
           "text-center",
           "text-transparent",
