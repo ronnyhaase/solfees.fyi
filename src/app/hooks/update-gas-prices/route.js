@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 import { GAS_DENOMINATOR } from '@/constants'
 
-async function POST() {
+async function GET() {
   try {
     const query = `query GasPrices {
       ethereum { gasPrices { floor } }
@@ -42,5 +42,5 @@ async function POST() {
 }
 
 export {
-  POST,
+  GET,
 }

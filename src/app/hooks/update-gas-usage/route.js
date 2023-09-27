@@ -1,7 +1,7 @@
 import { kv } from '@vercel/kv'
 import { NextResponse } from 'next/server'
 
-async function POST() {
+async function GET() {
   try {
     await fetch(`https://api.dune.com/api/v1/query/3045220/results?api_key=${
       process.env.DUNE_KEY
@@ -19,5 +19,5 @@ async function POST() {
 }
 
 export {
-  POST,
+  GET,
 }
