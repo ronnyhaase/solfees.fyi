@@ -158,17 +158,17 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
       </div>
       <p
         className={clx(
-          "drop-shadow-lg",
-          "font-bold",
-          "from-solana-purple",
-          "bg-clip-text",
-          "bg-gradient-to-tr",
-          "my-10",
-          "text-6xl",
-          "text-center",
-          "text-transparent",
-          "tracking-tight",
-          "to-solana-green",
+          'my-10',
+          'drop-shadow-lg',
+          'bg-clip-text',
+          'bg-gradient-to-tr',
+          'from-solana-purple',
+          'to-solana-green',
+          'font-bold',
+          'text-6xl',
+          'text-center',
+          'text-transparent',
+          'tracking-tight',
         )}
       >
         OPOS
