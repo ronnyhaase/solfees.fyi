@@ -99,7 +99,7 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
   const [showComparer, setShowComparer] = useState(false)
   const handleCompareClick = () => {
     setShowComparer(true)
-    window.scrollBy({ behavior: 'smooth', top: 175 })
+    window.scrollBy({ behavior: 'smooth', top: 200 })
   }
 
   const tweetMessage = generateTweetMessage(data.usdFees, data.txCount)
