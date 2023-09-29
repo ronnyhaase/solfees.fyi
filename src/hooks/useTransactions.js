@@ -11,6 +11,7 @@ const fetchTransactions = (address, before) => ky.get(
   {
     searchParams: before ? { before } : '',
     throwHttpErrors: false,
+    timeout: 30000,
   }
 ).json()
 
