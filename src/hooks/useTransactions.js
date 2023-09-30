@@ -23,7 +23,7 @@ const next = async ({ address, before, result, resolve, reject, setProgress }) =
     result = (result || []).concat(partial)
     setProgress(result.length)
     if (result.length >= TX_CAP) resolve(result)
-    else setTimeout(() => next({ address, before, result, resolve, setProgress }), TIMEOUT)
+    else setTimeout(() => next({ address, before, result, resolve, reject, setProgress }), TIMEOUT)
   } else {
     resolve(result)
   }
