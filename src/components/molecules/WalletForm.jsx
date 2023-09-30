@@ -26,7 +26,7 @@ const AddressInput = ({ setValue, value }) => {
     inputRef.current.focus()
     setValue(await navigator.clipboard?.readText())
   }
-  const handleInputWrapperClick = (ev) => inputRef.current.focus()
+  const handleInputWrapperClick = () => inputRef.current.focus()
 
   return (
     <div

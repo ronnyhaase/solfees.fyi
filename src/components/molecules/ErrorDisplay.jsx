@@ -10,14 +10,14 @@ const ErrorDisplay = ({ error }) => {
   }, [error])
 
   return error && !closed ? (
-    <div className="bg-red-400 mb-4 p-4 rounded-lg text-white drop-shadow-lg">
-      <div className="flex items-stretch">
+    <div className="max-w-md mb-4 p-4 rounded-lg drop-shadow-lg bg-red-400 text-white">
+      <div className="flex items-stretch text-2xl">
         <span className="grow">Oops...</span>
         <Button unstyled onClick={() => setClosed(true)}>
           <IoClose />
         </Button>
       </div>
-      <p className='text-2xl'>
+      <p className="break-words">
         {error.message}
       </p>
     </div>
