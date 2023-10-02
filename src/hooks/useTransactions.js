@@ -15,15 +15,39 @@ const fetchTransactions = (address, before) => ky.get(
   }
 ).json()
 
-const next = async ({ address, before, result, resolve, reject, setProgress }) => {
+const withNewTransactions = (target, includedSignatures, newTransactions) => {
+  return (target || []).concat(
+    newTransactions.filter((tx) => {
+      if (!includedSignatures.has(tx.signature)) {
+        includedSignatures.add(tx.signature)
+        return true
+      } else {
+        return false
+      }
+    })
+  )
+}
+
+const E_TRY_AGAIN_BEFORE = /Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
+
+const next = async ({ address, before, result, resolve, reject, setProgress, includedSignatures }) => {
+  if (!includedSignatures) includedSignatures = new Set()
+
   const partial = await fetchTransactions(address, before)
-  if (partial.error) reject(new Error(partial.error))
-  if (partial.length) {
+  if (partial.error) {
+    const tryAgainMatch = partial.error.match(E_TRY_AGAIN_BEFORE)
+    if (tryAgainMatch && tryAgainMatch[1]) {
+      before = tryAgainMatch[1]
+      setTimeout(() => next({ address, before, result, resolve, reject, setProgress, includedSignatures }), TIMEOUT)
+    } else {
+      reject(new Error(partial.error))
+    }
+  } else if (partial.length) {
     before = partial[partial.length - 1].signature
-    result = (result || []).concat(partial)
+    result = withNewTransactions(result, includedSignatures, partial)
     setProgress(result.length)
     if (result.length >= TX_CAP) resolve(result)
-    else setTimeout(() => next({ address, before, result, resolve, reject, setProgress }), TIMEOUT)
+    else setTimeout(() => next({ address, before, result, resolve, reject, setProgress, includedSignatures }), TIMEOUT)
   } else {
     resolve(result)
   }
