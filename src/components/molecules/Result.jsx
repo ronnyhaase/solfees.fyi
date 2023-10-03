@@ -6,7 +6,7 @@ import { Button } from '@/components/atoms'
 import { IoRepeatSharp } from 'react-icons/io5'
 
 const generateTweetMessage = (fees, transactions) =>
-  `I spent only $${fees} in fees for all of my ${transactions} Solana transactions, at the current SOL price!%0A%0A%23OPOS%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
+  `I spent only $${fees} in fees for all of my ${transactions} Solana transactions, at the current SOL price!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
 
 const Result = ({ className, reset, summary, solPrice }) => {
   const [cachedSummary, setCachedSummary] = useState(null)
