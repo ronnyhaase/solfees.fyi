@@ -82,6 +82,7 @@ const SolFeesApp = () => {
         </FadeInOutTransition>
         <Transition
           show={state === 'done' && !isElementLeaving}
+          afterEnter={() => window.scrollTo(0, 0)}
           beforeLeave={setElementLeaving}
           afterLeave={setElementNotLeaving}
           enter="transition-transform duration-200 ease-in"
