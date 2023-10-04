@@ -6,7 +6,7 @@ require('./styles.css')
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['300', '400', '700'],
   variable: '--font-notosans',
   display: 'swap'
 })

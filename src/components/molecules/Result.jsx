@@ -106,13 +106,15 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
 
   return (
     <div className={className}>
-      {data.txCount >= TX_CAP ? (
-        <p className="flex justify-center items-centermb-2  text-blue-500">
-          <IoInformationCircle className="inline" size={32} />
-          We&apos;re currently stopping at {TX_CAP} transactions, sorry!
+      {data.txCount >= 0 ? (
+        <p className="flex justify-center items-center mb-2 leading-tight text-blue-500 text-base">
+          <IoInformationCircle className="inline mr-2" size={32} />
+          <span>
+            We&apos;re currently stopping at {TX_CAP} transactions, sorry!
+          </span>
         </p>
       ) : null}
-      <p className="my-2 md:text-2xl text-center">
+      <p className="my-2 text-xl md:text-2xl text-center">
         This account has spent{' '}
         <NoWrap className="text-solana-purple">
           ◎ {data.solFees}{' '}
@@ -120,7 +122,7 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
         in fees for{' '}
         <span className="text-solana-purple">{data.txCount} transactions</span>.
       </p>
-      <p className="mb-2 md:text-2xl text-center">
+      <p className="mb-4 text-xl md:text-2xl text-center">
         <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
         <NoWrap className="text-solana-purple">
             $ {data.usdFees}
@@ -128,11 +130,11 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
         .
       </p>
       <div className="mt-2">
-        <p className="text-center">
+        <p className="mb-2">
           The account paid for {data.txCount - data.txCountUnpaid} of the {data.txCount}
           &nbsp;transactions. On average, it paid <NoWrap>◎ {data.solAvgFee}</NoWrap>{' '}
           <NoWrap>($ {data.usdAvgFee})</NoWrap> per transaction.</p>
-        <p className="text-center">
+        <p className="mb-4">
           The very first transaction was sent on {data.firstTransaction}
         </p>
       </div>
@@ -144,7 +146,7 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
       >
         <Comparer txCount={data.txCount - data.txCountUnpaid} pricesAndFees={pricesAndFees} />
       </Transition>
-      <div className="mt-2 flex gap-1 justify-center">
+      <div className="flex gap-1 justify-center">
         <Button color="primary" size="sm" onClick={reset}>
           <MdFastRewind size={20} />
           Check Another
@@ -152,26 +154,21 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
         <Transition show={!showComparer}>
           <Button size="sm" onClick={handleCompareClick}>
             <IoGitCompare size={20} />
-            Compare
+            Compare Chains
           </Button>
         </Transition>
       </div>
       <p
         className={clx(
-          'my-10',
-          'drop-shadow-lg',
-          'bg-clip-text',
-          'bg-gradient-to-tr',
-          'from-solana-purple',
-          'to-solana-green',
-          'font-bold',
-          'text-6xl',
+          'my-6 md:my-10',
+          'font-light',
+          'text-solana-purple',
+          'text-2xl md:text-4xl',
           'text-center',
-          'text-transparent',
           'tracking-tight',
         )}
       >
-        OPOS
+        #OnlyPossibleOnSolana
       </p>
       <p className="text-center">
         <a
