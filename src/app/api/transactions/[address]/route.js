@@ -42,6 +42,9 @@ async function GET (request, { params: { address } }) {
   return NextResponse.json(data)
 }
 
+const maxDuration = 30
+
 export {
   GET,
+  maxDuration,
 }

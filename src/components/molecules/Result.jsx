@@ -9,7 +9,7 @@ import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap } from '@/components/atoms'
 
 const generateTweetMessage = (fees, transactions) =>
-  `I spent only $${fees} in fees for all of my ${transactions} Solana transaction, at the current SOL price!%0A%0A%23OPOS%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase !`
+  `I spent only $${fees} in fees for all of my ${transactions} Solana transactions, at the current SOL price!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
 
 const COMPARER_CHAINS = ['ethereum', 'polygon']
 
