@@ -6,7 +6,7 @@ import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
 import { MdFastRewind } from 'react-icons/md'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
-import { Button, NoWrap } from '@/components/atoms'
+import { Button, NoWrap, U } from '@/components/atoms'
 
 const generateTweetMessage = (fees, transactions) =>
   `I spent only $${fees} in fees for all of my ${transactions} Solana transactions, at the current SOL price!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
@@ -48,8 +48,8 @@ const Comparer = ({ txCount, pricesAndFees }) => {
       </select>
       you would have paid approximately <NoWrap>{data.symbol} {data.tokenCosts}</NoWrap> or{' '}
       <NoWrap>$ {data.usdCosts}</NoWrap> for {txCount} transactions at the{' '}
-      <u className="underline underline-offset-4">current</u> gas price, assuming the average gas
-      usage per transaction.
+      <U>current gas price</U>, assuming the <U>average gas
+      usage</U> per transaction.
     </div>
   )
 }
@@ -123,7 +123,7 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
         <span className="text-solana-purple">{data.txCount} transactions</span>.
       </p>
       <p className="mb-4 text-xl md:text-2xl text-center">
-        <u className="underline underline-offset-4">Right now</u>, that&apos;s{' '}
+        <U>Right now</U>, that&apos;s{' '}
         <NoWrap className="text-solana-purple">
             $ {data.usdFees}
         </NoWrap>
