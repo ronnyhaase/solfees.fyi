@@ -39,13 +39,16 @@ const AddressInput = ({ setValue, value }) => {
         <IoSearchOutline size={24} />
       </span>
       <input
+        ref={inputRef}
+        value={value}
         className="grow min-w-0 px-2 bg-transparent !outline-none"
+        placeholder="Solana Address or Domain"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
         onBlur={handleInputBlur}
         onChange={handleInputChange}
         onFocus={handleInputFocus}
-        placeholder="Solana Address or Domain"
-        ref={inputRef}
-        value={value}
       />
       <Button unstyled className="mr-1 px-2 rounded-lg" onClick={handleClearClick}>
         <IoCloseCircleOutline size={24} />

@@ -13,7 +13,6 @@ import { useMeasure } from 'react-use'
 
 import {
   usePricesAndFees,
-  useSolPrice,
   useTransactions,
 } from '@/hooks'
 import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules';
