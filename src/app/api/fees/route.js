@@ -17,6 +17,7 @@ function fetchPrices() {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'X-API-Key': process.env.BIRDEYE_KEY,
       'X-Chain': 'solana',
     },
   })

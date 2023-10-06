@@ -17,6 +17,7 @@ Don't hesitate to create an issue or ping me on [X / Twitter](https://x.com/ronn
 Following services are used to fetch the data:
 
 - Helius for transaction history
+- Birdeye for token prices
 - QuickNode GraphQL for gas prices
 - Dune for gas usage / Tx
 - Vercel KV to cache gas data
@@ -29,6 +30,7 @@ npm install
 
 II. Create an `.env.local` file in the project route and add the sercrets of the services
 ```
+BIRDEYE_KEY=12345
 DUNE_KEY=12345
 HELIUS_KEY=12345
 KV_URL=redis://...

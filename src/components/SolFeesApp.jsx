@@ -96,7 +96,7 @@ const SolFeesApp = () => {
             'flex',
             'flex-col',
             'w-full',
-            'max-w-5xl',
+            'sm:max-w-xl md:max-w-2xl lg:max-w-4xl',
             'mx-auto',
             'mt-2 sm:mt-4 md:mt-8',
             'pt-2 sm:pt-4 md:pt-8',
