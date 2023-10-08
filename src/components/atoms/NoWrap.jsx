@@ -1,6 +1,6 @@
-const clx = require("classnames");
+import clx from 'classnames'
 
-const NoWrap = ({ as: Tag = "span", className, children }) => (
+const NoWrap = ({ as: Tag = 'span', className, children }) => (
   <Tag className={clx('whitespace-nowrap', className)}>{children}</Tag>
 )
 

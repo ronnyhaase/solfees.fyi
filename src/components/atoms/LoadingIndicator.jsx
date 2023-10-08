@@ -1,7 +1,7 @@
 import clx from 'classnames'
 
 const LoadingIndicator = () => {
-  const sharedCircleClasses = ["animate-zoom h-10 opacity-60 rounded-[50%] w-10"]
+  const sharedCircleClasses = ['animate-zoom h-10 opacity-60 rounded-[50%] w-10']
 
   return (
     <div className="h-10 w-10">

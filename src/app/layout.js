@@ -1,6 +1,6 @@
-import { Noto_Sans } from 'next/font/google'
-import PlausibleProvider from 'next-plausible'
 import clx from 'classnames'
+import PlausibleProvider from 'next-plausible'
+import { Noto_Sans } from 'next/font/google'
 
 require('./styles.css')
 

@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
 import { Transition } from '@headlessui/react'
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
-import clx from 'classnames';
+import clx from 'classnames'
 import { useLayoutEffect, useMemo, useState } from 'react'
 import Confetti from 'react-confetti'
 import { useMeasure } from 'react-use'
 
+import { FadeInOutTransition } from '@/components/atoms';
+import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules';
 import {
   usePricesAndFees,
   useTransactions,
 } from '@/hooks'
-import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules';
-import { FadeInOutTransition } from '@/components/atoms';
 
 const Providers = ({ children }) => {
   const walletEndpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Mainnet), [])

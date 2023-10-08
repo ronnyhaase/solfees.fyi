@@ -174,12 +174,12 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
         <a
           className={clx(
             'block sm:inline-flex',
-            "bg-[#0C9DED]",
-            "px-8",
-            "py-4",
-            "rounded-full",
-            "text-lg",
-            "text-white",
+            'bg-[#0C9DED]',
+            'px-8',
+            'py-4',
+            'rounded-full',
+            'text-lg',
+            'text-white',
           )}
           href={`https://twitter.com/share?text=${tweetMessage}`}
         >

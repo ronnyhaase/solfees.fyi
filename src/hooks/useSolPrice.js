@@ -8,7 +8,7 @@ function usePricesAndFees() {
   useEffect(() => {
     setIsLoading(true)
     ky.get('api/fees', {
-      prefixUrl: new URL(document.baseURI).origin
+      prefixUrl: new URL(document.baseURI).origin,
     })
       .json()
       .then(body => setPricesAndFees(body))

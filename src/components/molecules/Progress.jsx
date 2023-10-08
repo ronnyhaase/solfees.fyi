@@ -1,7 +1,6 @@
 import { LoadingIndicator } from '@/components/atoms'
 
 const Progress = ({ progress = 0, state }) => {
-  const sharedCircleClasses = ["animate-zoom h-10 opacity-60 rounded-[50%] w-10"]
   const message = state === 'resolving'
     ? 'Resolving domain.'
     : `So far ${progress} transactions, and counting.`

@@ -108,7 +108,7 @@ function useTransactions(address) {
             isLoading: false,
             summary: null,
             state: 'error',
-            transactions: null
+            transactions: null,
           })
           return
         }

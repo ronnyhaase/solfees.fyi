@@ -1,4 +1,4 @@
-import { SolFeesApp } from "@/components/SolFeesApp";
+import { SolFeesApp } from '@/components/SolFeesApp'
 
 export const metadata = {
   metadataBase: new URL('https://www.solfees.fyi'),

@@ -1,3 +1,4 @@
+import { useWallet } from '@solana/wallet-adapter-react'
 import clx from 'classnames'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -7,9 +8,8 @@ import {
 } from 'react-icons/io5'
 
 import { Button } from '@/components/atoms'
-import { isSolanaAddress, isSolanaDomain } from '@/utils'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/molecules/WalletButton'
+import { isSolanaAddress, isSolanaDomain } from '@/utils'
 
 const AddressInput = ({ setValue, value }) => {
   const [isInputFocused, setIsInputFocused] = useState(false)
@@ -26,7 +26,7 @@ const AddressInput = ({ setValue, value }) => {
     inputRef.current.focus()
     setValue(await navigator.clipboard?.readText())
   }
-  const handleInputWrapperClick = (ev) => inputRef.current.focus()
+  const handleInputWrapperClick = () => inputRef.current.focus()
 
   return (
     <div

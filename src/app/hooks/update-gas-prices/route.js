@@ -37,7 +37,7 @@ async function GET() {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('FAILED: Update gas prices')
-    return NextResponse.json({ error: error.message }, { status: 500})
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 

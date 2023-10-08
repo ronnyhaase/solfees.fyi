@@ -50,7 +50,7 @@ async function GET() {
       ethereum: 'Ξ',
       polygon: 'MATIC',
       solana: '◎',
-    }
+    },
   }
 
   return NextResponse.json(data)
