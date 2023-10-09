@@ -108,7 +108,7 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
 
   return (
     <div className={className}>
-      {data.txCount >= 0 ? (
+      {data.txCount >= TX_CAP ? (
         <p className="flex justify-center items-center mb-2 leading-tight text-blue-500 text-base">
           <IoInformationCircle className="inline mr-2" size={32} />
           <span>
