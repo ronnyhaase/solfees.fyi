@@ -39,12 +39,19 @@ const SolFeesApp = () => {
   const [address, setAddress] = useState(null)
   const { pricesAndFees } = usePricesAndFees()
   const {
+    addWallet: addAnotherWallet,
     error,
     progress,
     reset: resetResult,
     summary,
     state,
+    wallets,
   } = useTransactions(address)
+
+  const addWallet = () => {
+    addAnotherWallet()
+    setAddress(null)
+  }
 
   const reset = () => {
     resetResult()
@@ -71,7 +78,7 @@ const SolFeesApp = () => {
           afterLeave={setElementNotLeaving}
         >
           <ErrorDisplay error={error} />
-          <WalletForm setAddress={setAddress} />
+          <WalletForm reset={reset} setAddress={setAddress} wallets={wallets.length} />
         </FadeInOutTransition>
         <FadeInOutTransition
           show={(state === 'loading' || state === 'resolving') && !isElementLeaving}
@@ -107,7 +114,13 @@ const SolFeesApp = () => {
           )}
         >
           <div className="grow">
-            <Result summary={summary} reset={reset} pricesAndFees={pricesAndFees} />
+            <Result
+              addWallet={addWallet}
+              pricesAndFees={pricesAndFees}
+              reset={reset}
+              summary={summary}
+              wallets={wallets}
+            />
             <SunriseAd className="mt-12" />
           </div>
           <About className="mt-12" />

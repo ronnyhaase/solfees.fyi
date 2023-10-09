@@ -58,7 +58,7 @@ const AddressInput = ({ setValue, value }) => {
   )
 }
 
-const WalletForm = ({ setAddress }) => {
+const WalletForm = ({ reset, setAddress, wallets }) => {
   const [value, setValue] = useState('')
   const [isValid, setIsValid] = useState(true)
   const { publicKey, disconnect: disconnectWallet } = useWallet()
@@ -95,7 +95,21 @@ const WalletForm = ({ setAddress }) => {
         </Button>
       </div>
       <div className="order-1 sm:order-3 sm:col-span-2 mb-2 sm:mb-0 sm:mt-2 text-2xl text-center">
-        Check how much a Solana wallet has spent on transaction fees.
+        Check how much your Solana wallets have spent on transaction fees.<br />
+        {wallets > 0 ? (
+          <small className="leading-none text-[#475569]">
+            You&apos;re adding another wallet...{' '}
+
+            <Button
+              unstyled
+              className="pb-1 text-primary underline underline-offset-4"
+              onClick={reset}
+            >
+              Start again
+            </Button>
+            {' '}instead
+          </small>
+        ) : null}
       </div>
     </form>
   )

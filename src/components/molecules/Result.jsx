@@ -3,13 +3,15 @@ import BigNumber from 'bignumber.js'
 import clx from 'classnames'
 import { useMemo, useState } from 'react'
 import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
-import { MdFastRewind } from 'react-icons/md'
+import { MdFastRewind, MdPlaylistAdd, MdPlusOne, MdSkipPrevious } from 'react-icons/md'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap, U } from '@/components/atoms'
 
-const generateTweetMessage = (fees, transactions) =>
-  `I spent only $${fees} in fees for all of my ${transactions} Solana transactions, at the current SOL price!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
+const generateTweetMessage = (fees, transactions, wallets) =>
+  `I spent only $${fees} in fees for all of my ${transactions} Solana transactions${
+    wallets > 1 ? ` across ${wallets} wallets` : ''
+  }, at the current SOL price!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
 
 const COMPARER_CHAINS = ['ethereum', 'polygon']
 
@@ -54,7 +56,7 @@ const Comparer = ({ txCount, pricesAndFees }) => {
   )
 }
 
-const Result = ({ className, reset, summary, pricesAndFees }) => {
+const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }) => {
   const data = useMemo(() => {
     let data = {}
     if (summary) {
@@ -102,7 +104,7 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
     window.scrollBy({ behavior: 'smooth', top: 200 })
   }
 
-  const tweetMessage = generateTweetMessage(data.usdFees, data.txCount)
+  const tweetMessage = generateTweetMessage(data.usdFees, data.txCount, wallets.length)
 
   return (
     <div className={className}>
@@ -115,7 +117,14 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
         </p>
       ) : null}
       <p className="my-2 text-xl md:text-2xl text-center">
-        This account has spent{' '}
+        {wallets.length > 1 ? (
+          <>
+            Across your <span className="text-solana-purple">{wallets.length} wallets</span> you
+            have spent{' '}
+          </>
+        ) : (
+          <>Your wallet has spent{' '}</>
+        )}
         <NoWrap className="text-solana-purple">
           ◎ {data.solFees}{' '}
         </NoWrap>
@@ -131,8 +140,8 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
       </p>
       <div className="mt-2">
         <p className="mb-2">
-          The account paid for {data.txCount - data.txCountUnpaid} of the {data.txCount}
-          &nbsp;transactions. On average, it paid <NoWrap>◎ {data.solAvgFee}</NoWrap>{' '}
+          You paid for {data.txCount - data.txCountUnpaid} of the {data.txCount}
+          &nbsp;transactions. On average, you paid <NoWrap>◎ {data.solAvgFee}</NoWrap>{' '}
           <NoWrap>($ {data.usdAvgFee})</NoWrap> per transaction.</p>
         <p className="mb-4">
           The very first transaction was sent on {data.firstTransaction}
@@ -146,18 +155,28 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
       >
         <Comparer txCount={data.txCount - data.txCountUnpaid} pricesAndFees={pricesAndFees} />
       </Transition>
-      <div className="flex gap-1 justify-center">
+      <div className="flex gap-1 justify-center mb-1">
         <Button color="primary" size="sm" onClick={reset}>
-          <MdFastRewind size={20} />
-          Check Another
+          <MdSkipPrevious size={20} />
+          Restart
         </Button>
-        <Transition show={!showComparer}>
+        <Button color="primary" size="sm" onClick={addWallet}>
+          <MdPlaylistAdd size={20} />
+          Add Wallet
+        </Button>
+        <Transition show={!showComparer} className="hidden sm:block">
           <Button size="sm" onClick={handleCompareClick}>
             <IoGitCompare size={20} />
             Compare Chains
           </Button>
         </Transition>
       </div>
+      <Transition show={!showComparer} className="flex sm:hidden justify-center">
+        <Button size="sm" onClick={handleCompareClick}>
+          <IoGitCompare size={20} />
+          Compare Chains
+        </Button>
+      </Transition>
       <p
         className={clx(
           'my-6 md:my-10',
@@ -182,6 +201,8 @@ const Result = ({ className, reset, summary, pricesAndFees }) => {
             'text-white',
           )}
           href={`https://twitter.com/share?text=${tweetMessage}`}
+          target="_blank"
+          referrerPolicy="origin"
         >
           Tweet it
         </a>

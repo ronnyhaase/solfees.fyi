@@ -1,5 +1,5 @@
 import ky from 'ky'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { TX_CAP } from '@/constants'
 import { isSolanaDomain } from '@/utils'
@@ -53,8 +53,8 @@ const next = async ({ address, before, result, resolve, reject, setProgress, inc
   }
 }
 
-const aggregateTransactions = (address, transactions) => {
-  let agg = {
+const aggregateTransactions = (address, transactions, prevAggregation) => {
+  let aggregation = {
     firstTransactionTS: Number.MAX_SAFE_INTEGER,
     failedTransactions: 0,
     feesAvg: 0,
@@ -62,24 +62,38 @@ const aggregateTransactions = (address, transactions) => {
     transactionsCount: transactions.length,
     unpaidTransactionsCount: 0,
   }
+
   transactions.map((tx) => {
     if (tx.feePayer === address) {
-      agg.feesTotal += tx.fee
+      aggregation.feesTotal += tx.fee
     } else {
-      agg.unpaidTransactionsCount += 1
+      aggregation.unpaidTransactionsCount += 1
     }
 
     // Always zero, failed Txs are skipped by Helius parsed transactions API rn
-    if (tx.transactionError !== null) agg.failedTransactions += 1
+    if (tx.transactionError !== null) aggregation.failedTransactions += 1
 
-    agg.firstTransactionTS = tx.timestamp < agg.firstTransactionTS
+    aggregation.firstTransactionTS = tx.timestamp < aggregation.firstTransactionTS
       ? tx.timestamp * 1000
-      : agg.firstTransactionTS
+      : aggregation.firstTransactionTS
   })
-  agg.feesAvg = agg.transactionsCount !== 0
-    ? agg.feesTotal / agg.transactionsCount
+  aggregation.feesAvg = aggregation.transactionsCount !== 0
+    ? aggregation.feesTotal / aggregation.transactionsCount
     : 0
-  return agg
+
+  if (prevAggregation) {
+    aggregation.firstTransactionTS =
+      prevAggregation.firstTransactionTS < aggregation.firstTransactionTS
+        ? prevAggregation.firstTransactionTS
+        : aggregation.firstTransactionTS
+    aggregation.failedTransactions += prevAggregation.failedTransactions
+    aggregation.feesAvg = (aggregation.feesAvg + prevAggregation.feesAvg) / 2
+    aggregation.feesTotal += prevAggregation.feesTotal
+    aggregation.transactionsCount += prevAggregation.transactionsCount
+    aggregation.unpaidTransactionsCount += prevAggregation.unpaidTransactionsCount
+  }
+
+  return aggregation
 }
 
 function useTransactions(address) {
@@ -90,8 +104,23 @@ function useTransactions(address) {
     state: 'intro',
     transactions: null,
   }
+
   const [state, setState] = useState(initialState)
-  const reset = () => setState(initialState)
+  const cachedSummary = useRef(null)
+  const wallets = useRef([])
+  const reset = () => {
+    cachedSummary.current = null
+    wallets.current = []
+    setState(initialState)
+  }
+  const addWallet = () => {
+    cachedSummary.current = state.summary
+    setState({
+      ...initialState,
+      summary: cachedSummary.current
+    })
+  }
+
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -115,24 +144,38 @@ function useTransactions(address) {
         fullAddress = domainInfo.address
       }
 
+      if (wallets.current.includes(fullAddress)) {
+        setState({
+          error: state.error,
+          isLoading: false,
+          summary: state.summary,
+          state: 'done',
+          transactions: state.transactions,
+        })
+        return
+      }
+
       setState({ error: null, isLoading: true, summary: null, state: 'loading', transactions: null })
       setProgress(0)
       // Timeout prevents animations from overlapping
       setTimeout(() => {
         new Promise((resolve, reject) => next({ address: fullAddress, setProgress, resolve, reject }))
-          .then(transactions => setState({
-            error: null,
-            isLoading: false,
-            summary: aggregateTransactions(fullAddress, transactions),
-            state: 'done',
-            transactions,
-          }))
+          .then((transactions) => {
+            wallets.current.push(fullAddress)
+            setState({
+              error: null,
+              isLoading: false,
+              summary: aggregateTransactions(fullAddress, transactions, cachedSummary.current),
+              state: 'done',
+              transactions,
+            })
+          })
           .catch(error => setState({ error, isLoading: false, summary: null, state: 'error', transactions: null }))
       }, 250)
     })()
   }, [address])
 
-  return { progress, reset, ...state }
+  return { addWallet, progress, reset, ...state, wallets: wallets.current }
 }
 
 export {
