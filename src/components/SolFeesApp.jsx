@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
 import { Transition } from '@headlessui/react'
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
-import clx from 'classnames';
+import clx from 'classnames'
 import { useLayoutEffect, useMemo, useState } from 'react'
 import Confetti from 'react-confetti'
 import { useMeasure } from 'react-use'
 
+import { FadeInOutTransition } from '@/components/atoms';
+import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules';
 import {
-  useSolPrice,
+  usePricesAndFees,
   useTransactions,
 } from '@/hooks'
-import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules';
-import { FadeInOutTransition } from '@/components/atoms';
 
 const Providers = ({ children }) => {
   const walletEndpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Mainnet), [])
@@ -37,14 +37,21 @@ const Providers = ({ children }) => {
 
 const SolFeesApp = () => {
   const [address, setAddress] = useState(null)
-  const { price } = useSolPrice()
+  const { pricesAndFees } = usePricesAndFees()
   const {
+    addWallet: addAnotherWallet,
     error,
     progress,
     reset: resetResult,
     summary,
     state,
+    wallets,
   } = useTransactions(address)
+
+  const addWallet = () => {
+    addAnotherWallet()
+    setAddress(null)
+  }
 
   const reset = () => {
     resetResult()
@@ -66,12 +73,12 @@ const SolFeesApp = () => {
     <Providers>
       <main ref={measureRef} className="min-h-screen flex flex-col items-center justify-center px-2">
         <FadeInOutTransition
-          show={((appReady && state === 'intro') || state === 'error') && !isElementLeaving}
+          show={((state === 'intro') || state === 'error') && appReady && !isElementLeaving}
           beforeLeave={setElementLeaving}
           afterLeave={setElementNotLeaving}
         >
           <ErrorDisplay error={error} />
-          <WalletForm setAddress={setAddress} />
+          <WalletForm reset={reset} setAddress={setAddress} wallets={wallets.length} />
         </FadeInOutTransition>
         <FadeInOutTransition
           show={(state === 'loading' || state === 'resolving') && !isElementLeaving}
@@ -82,6 +89,7 @@ const SolFeesApp = () => {
         </FadeInOutTransition>
         <Transition
           show={state === 'done' && !isElementLeaving}
+          afterEnter={() => window.scrollTo(0, 0)}
           beforeLeave={setElementLeaving}
           afterLeave={setElementNotLeaving}
           enter="transition-transform duration-200 ease-in"
@@ -95,7 +103,7 @@ const SolFeesApp = () => {
             'flex',
             'flex-col',
             'w-full',
-            'max-w-2xl',
+            'sm:max-w-xl md:max-w-2xl lg:max-w-4xl',
             'mx-auto',
             'mt-2 sm:mt-4 md:mt-8',
             'pt-2 sm:pt-4 md:pt-8',
@@ -106,7 +114,13 @@ const SolFeesApp = () => {
           )}
         >
           <div className="grow">
-            <Result summary={summary} reset={reset} solPrice={price} />
+            <Result
+              addWallet={addWallet}
+              pricesAndFees={pricesAndFees}
+              reset={reset}
+              summary={summary}
+              wallets={wallets}
+            />
             <SunriseAd className="mt-12" />
           </div>
           <About className="mt-12" />

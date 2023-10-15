@@ -1,13 +1,12 @@
-import { Noto_Sans } from 'next/font/google'
-import PlausibleProvider from 'next-plausible'
 import clx from 'classnames'
+import PlausibleProvider from 'next-plausible'
+import { Noto_Sans } from 'next/font/google'
 
-require('./wallet-adapter.css')
 require('./styles.css')
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['300', '400', '700'],
   variable: '--font-notosans',
   display: 'swap'
 })
@@ -17,13 +16,13 @@ export default function RootLayout({ children }) {
     <html
       className={clx(
         notoSans.variable,
-        "bg-gradient-to-tr",
-        "font-sans",
-        "from-[#f67cb9]",
-        "min-h-full",
-        "overflow-y-scroll",
-        "text-slate-700",
-        "to-[#f0c996]",
+        'bg-gradient-to-tr',
+        'font-sans',
+        'from-[#f67cb9]',
+        'min-h-full',
+        'overflow-y-scroll',
+        'text-secondary',
+        'to-[#f0c996]',
       )}
       lang="en"
     >

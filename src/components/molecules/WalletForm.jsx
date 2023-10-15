@@ -1,3 +1,4 @@
+import { useWallet } from '@solana/wallet-adapter-react'
 import clx from 'classnames'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -7,9 +8,8 @@ import {
 } from 'react-icons/io5'
 
 import { Button } from '@/components/atoms'
-import { isSolanaAddress, isSolanaDomain } from '@/utils'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/molecules/WalletButton'
+import { isSolanaAddress, isSolanaDomain } from '@/utils'
 
 const AddressInput = ({ setValue, value }) => {
   const [isInputFocused, setIsInputFocused] = useState(false)
@@ -39,13 +39,16 @@ const AddressInput = ({ setValue, value }) => {
         <IoSearchOutline size={24} />
       </span>
       <input
+        ref={inputRef}
+        value={value}
         className="grow min-w-0 px-2 bg-transparent !outline-none"
+        placeholder="Solana Address or Domain"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
         onBlur={handleInputBlur}
         onChange={handleInputChange}
         onFocus={handleInputFocus}
-        placeholder="Solana Address or Domain"
-        ref={inputRef}
-        value={value}
       />
       <Button unstyled className="mr-1 px-2 rounded-lg" onClick={handleClearClick}>
         <IoCloseCircleOutline size={24} />
@@ -55,7 +58,7 @@ const AddressInput = ({ setValue, value }) => {
   )
 }
 
-const WalletForm = ({ setAddress }) => {
+const WalletForm = ({ reset, setAddress, wallets }) => {
   const [value, setValue] = useState('')
   const [isValid, setIsValid] = useState(true)
   const { publicKey, disconnect: disconnectWallet } = useWallet()
@@ -92,7 +95,21 @@ const WalletForm = ({ setAddress }) => {
         </Button>
       </div>
       <div className="order-1 sm:order-3 sm:col-span-2 mb-2 sm:mb-0 sm:mt-2 text-2xl text-center">
-        Check how much a Solana wallet has spent on transaction fees, by entering its address.
+        Check how much your Solana wallets have spent on transaction fees.<br />
+        {wallets > 0 ? (
+          <small className="leading-none text-[#475569]">
+            You&apos;re adding another wallet...{' '}
+
+            <Button
+              unstyled
+              className="pb-1 text-primary underline underline-offset-4"
+              onClick={reset}
+            >
+              Start again
+            </Button>
+            {' '}instead
+          </small>
+        ) : null}
       </div>
     </form>
   )

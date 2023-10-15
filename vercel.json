@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/hooks/update-gas-prices",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/hooks/update-gas-usage",
+      "schedule": "0 1 * * 1"
+    }
+  ]
+}

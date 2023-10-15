@@ -10,6 +10,8 @@ a {
   @apply outline outline-2 outline-offset-1 outline-solana-purple;
 }
 
+@import url('./wallet-adapter.css');
+
 /* Wallet adapter */
 .wallet-adapter-dropdown {
   @apply w-full;
