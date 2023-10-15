@@ -113,10 +113,10 @@ function useTransactions(address) {
     setState(initialState)
   }
   const addWallet = () => {
-    cachedSummary.current = state.summary
+    cachedSummary.current = { ...state.summary }
     setState({
       ...initialState,
-      summary: cachedSummary.current
+      summary: { ...cachedSummary.current },
     })
   }
 
@@ -164,7 +164,7 @@ function useTransactions(address) {
         setState((prev) => ({
           error: prev.error,
           isLoading: false,
-          summary: prev.summary,
+          summary: cachedSummary.current,
           state: 'done',
           transactions: prev.transactions,
         }))
