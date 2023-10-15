@@ -36,11 +36,16 @@ function fetchPrices() {
 }
 
 async function GET() {
-  const [avgGasFees, avgTxGasUsage, prices] = await Promise.all([
-    kv.get('avg_gas_fees'),
-    kv.get('avg_gas_usage'),
-    fetchPrices(),
-  ])
+  let avgGasFees, avgTxGasUsage, prices
+  try {
+    [avgGasFees, avgTxGasUsage, prices] = await Promise.all([
+      kv.get('avg_gas_fees'),
+      kv.get('avg_gas_usage'),
+      fetchPrices(),
+    ])
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
   const data = {
     avgGasFees,
@@ -56,6 +61,9 @@ async function GET() {
   return NextResponse.json(data)
 }
 
+const maxDuration = 30
+
 export {
   GET,
+  maxDuration,
 }

@@ -8,10 +8,12 @@ import { MdFastRewind, MdPlaylistAdd, MdPlusOne, MdSkipPrevious } from 'react-ic
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap, U } from '@/components/atoms'
 
-const generateTweetMessage = (fees, transactions, wallets) =>
-  `I spent only $${fees} in fees for all of my ${transactions} Solana transactions${
+const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
+  `I spent only ${
+    feesUsd ? `$${feesUsd} (◎ ${feesSol})` : `◎ ${feesSol}`
+  } in fees for all of my ${transactions} Solana transactions${
     wallets > 1 ? ` across ${wallets} wallets` : ''
-  }, at the current SOL price!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
+  }${feesUsd ? ', at the current SOL price' : ''}!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
 
 const COMPARER_CHAINS = ['ethereum', 'polygon']
 
@@ -104,7 +106,7 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
     window.scrollBy({ behavior: 'smooth', top: 200 })
   }
 
-  const tweetMessage = generateTweetMessage(data.usdFees, data.txCount, wallets.length)
+  const tweetMessage = generateTweetMessage(data.usdFees, data.solFees, data.txCount, wallets.length)
 
   return (
     <div className={className}>
@@ -113,6 +115,14 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
           <IoInformationCircle className="inline mr-2" size={32} />
           <span>
             We&apos;re currently stopping at {TX_CAP} transactions, sorry!
+          </span>
+        </p>
+      ) : null}
+      {pricesAndFees === null ? (
+        <p className="flex justify-center items-center mb-2 leading-tight text-blue-500 text-base">
+          <IoInformationCircle className="inline mr-2" size={32} />
+          <span>
+            Crypto prices and EVM gas data are currently unavailable. &#58;&#40;
           </span>
         </p>
       ) : null}
@@ -131,18 +141,20 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
         in fees for{' '}
         <span className="text-solana-purple">{data.txCount} transactions</span>.
       </p>
-      <p className="mb-4 text-xl md:text-2xl text-center">
-        <U>Right now</U>, that&apos;s{' '}
-        <NoWrap className="text-solana-purple">
+      {data.usdFees ? (
+        <p className="mb-4 text-xl md:text-2xl text-center">
+          <U>Right now</U>, that&apos;s{' '}
+          <NoWrap className="text-solana-purple">
             $ {data.usdFees}
-        </NoWrap>
-        .
-      </p>
+          </NoWrap>
+          .
+        </p>
+      ) : null}
       <div className="mt-2">
         <p className="mb-2">
           You paid for {data.txCount - data.txCountUnpaid} of the {data.txCount}
           &nbsp;transactions. On average, you paid <NoWrap>◎ {data.solAvgFee}</NoWrap>{' '}
-          <NoWrap>($ {data.usdAvgFee})</NoWrap> per transaction.</p>
+          {data.usdAvgFee ? (<NoWrap>($ {data.usdAvgFee})</NoWrap>) : null} per transaction.</p>
         <p className="mb-4">
           The very first transaction was sent on {data.firstTransaction}
         </p>
@@ -165,14 +177,14 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
           Add Wallet
         </Button>
         <Transition show={!showComparer} className="hidden sm:block">
-          <Button size="sm" onClick={handleCompareClick}>
+          <Button size="sm" disabled={pricesAndFees === null} onClick={handleCompareClick}>
             <IoGitCompare size={20} />
             Compare Chains
           </Button>
         </Transition>
       </div>
       <Transition show={!showComparer} className="flex sm:hidden justify-center">
-        <Button size="sm" onClick={handleCompareClick}>
+        <Button size="sm" disabled={pricesAndFees === null} onClick={handleCompareClick}>
           <IoGitCompare size={20} />
           Compare Chains
         </Button>

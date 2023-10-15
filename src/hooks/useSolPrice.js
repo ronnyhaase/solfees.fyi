@@ -9,10 +9,12 @@ function usePricesAndFees() {
     setIsLoading(true)
     ky.get('api/fees', {
       prefixUrl: new URL(document.baseURI).origin,
+      timeout: 30000,
     })
       .json()
       .then(body => setPricesAndFees(body))
       .then(() => setIsLoading(false))
+      .catch(() => setPricesAndFees(null))
   }, [])
 
   return { pricesAndFees, isLoading }

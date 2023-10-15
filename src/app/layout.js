@@ -16,13 +16,13 @@ export default function RootLayout({ children }) {
     <html
       className={clx(
         notoSans.variable,
-        "bg-gradient-to-tr",
-        "font-sans",
-        "from-[#f67cb9]",
-        "min-h-full",
-        "overflow-y-scroll",
-        "text-secondary",
-        "to-[#f0c996]",
+        'bg-gradient-to-tr',
+        'font-sans',
+        'from-[#f67cb9]',
+        'min-h-full',
+        'overflow-y-scroll',
+        'text-secondary',
+        'to-[#f0c996]',
       )}
       lang="en"
     >

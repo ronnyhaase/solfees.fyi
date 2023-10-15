@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import { TX_CAP } from '@/constants'
 import { isSolanaDomain } from '@/utils'
 
-const TIMEOUT = 0
-
 const fetchTransactions = (address, before) => ky.get(
   `/api/transactions/${address}`,
   {
@@ -29,6 +27,7 @@ const withNewTransactions = (target, includedSignatures, newTransactions) => {
 }
 
 const E_TRY_AGAIN_BEFORE = /Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
+const TIMEOUT = 0
 
 const next = async ({ address, before, result, resolve, reject, setProgress, includedSignatures }) => {
   if (!includedSignatures) includedSignatures = new Set()
@@ -130,10 +129,15 @@ function useTransactions(address) {
       let fullAddress = address
       if (isSolanaDomain(address)) {
         setState({ error: null, isLoading: true, summary: null, state: 'resolving', transactions: null })
-        const domainInfo = await ky.get(`/api/domain/${address.toLowerCase()}`, { throwHttpErrors: false }).json()
-        if (domainInfo.error) {
+        let domainInfo
+        try {
+          domainInfo = await ky.get(
+            `/api/domain/${address.toLowerCase()}`,
+            { throwHttpErrors: false, timeout: 30000 },
+          ).json()
+        } catch (error) {
           setState({
-            error: new Error(domainInfo.error),
+            error,
             isLoading: false,
             summary: null,
             state: 'error',
@@ -141,17 +145,29 @@ function useTransactions(address) {
           })
           return
         }
+        if (domainInfo.error) {
+          setTimeout(() => {
+            setState({
+              error: new Error(domainInfo.error),
+              isLoading: false,
+              summary: null,
+              state: 'error',
+              transactions: null,
+            })
+          }, 250)
+          return
+        }
         fullAddress = domainInfo.address
       }
 
       if (wallets.current.includes(fullAddress)) {
-        setState({
-          error: state.error,
+        setState((prev) => ({
+          error: prev.error,
           isLoading: false,
-          summary: state.summary,
+          summary: prev.summary,
           state: 'done',
-          transactions: state.transactions,
-        })
+          transactions: prev.transactions,
+        }))
         return
       }
 

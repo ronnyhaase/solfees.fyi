@@ -73,7 +73,7 @@ const SolFeesApp = () => {
     <Providers>
       <main ref={measureRef} className="min-h-screen flex flex-col items-center justify-center px-2">
         <FadeInOutTransition
-          show={((appReady && state === 'intro') || state === 'error') && !isElementLeaving}
+          show={((state === 'intro') || state === 'error') && appReady && !isElementLeaving}
           beforeLeave={setElementLeaving}
           afterLeave={setElementNotLeaving}
         >
