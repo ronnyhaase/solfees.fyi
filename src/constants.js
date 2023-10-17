@@ -1,6 +1,6 @@
 const GAS_DENOMINATOR = 0.000000001
 
-const TX_CAP = 20000
+const TX_CAP = 50000
 
 export {
   GAS_DENOMINATOR,
