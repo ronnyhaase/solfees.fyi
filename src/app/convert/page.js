@@ -3,10 +3,10 @@ import { ConvertApp } from '@/components/ConvertApp'
 export const metadata = {
   metadataBase: new URL('https://www.solfees.fyi/convert'),
   title: 'solfees.fyi • Converter',
-  description: 'Find out how much you had spent in Solana transactions.',
+  description: 'Find out how much you would have spent in Solana transactions.',
   openGraph: {
     title: 'solfees.fyi • Converter',
-    description: 'Find out how much you had spent in Solana transactions.',
+    description: 'Find out how much you would have spent in Solana transactions.',
     url: '/',
     siteName: 'solfees.fyi',
     images: [{
@@ -18,7 +18,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'solfees.fyi • Converter',
-    description: 'Find out how much you had spent in Solana transactions.',
+    description: 'Find out how much you would have spent in Solana transactions.',
     creator: '@ronnyhaase',
     images: ['https://www.solfees.fyi/convert.jpeg'],
   },
