@@ -10,7 +10,7 @@ export const metadata = {
     url: '/',
     siteName: 'solfees.fyi',
     images: [{
-      url: '/convert.jpeg',
+      url: 'https://www.solfees.fyi/convert.jpeg',
       width: 700,
       height: 350,
     }],
@@ -20,7 +20,7 @@ export const metadata = {
     title: 'solfees.fyi • Converter',
     description: 'Find out how much you had spent in Solana transactions.',
     creator: '@ronnyhaase',
-    images: ['/convert.jpeg'],
+    images: ['https://www.solfees.fyi/convert.jpeg'],
   },
 }
 
