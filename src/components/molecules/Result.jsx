@@ -7,13 +7,14 @@ import { MdFastRewind, MdPlaylistAdd, MdPlusOne, MdSkipPrevious } from 'react-ic
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap, U } from '@/components/atoms'
+import { RiArrowDownLine } from 'react-icons/ri'
 
 const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
   `I spent only ${
     feesUsd ? `$${feesUsd} (◎ ${feesSol})` : `◎ ${feesSol}`
   } in fees for all of my ${transactions} Solana transactions${
     wallets > 1 ? ` across ${wallets} wallets` : ''
-  }${feesUsd ? ', at the current SOL price' : ''}!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40ronnyhaase`
+  }${feesUsd ? ' at the current SOL price' : ''}!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40solfees_fyi`
 
 const COMPARER_CHAINS = ['ethereum', 'polygon']
 
@@ -218,6 +219,10 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
         >
           Tweet it
         </a>
+        <div className="text-center">
+          <RiArrowDownLine className="inline text-primary" size={24} />
+        </div>
+        <a href="/convert" className="mt-2 text-center">Find out how much you had spent in Solana transactions.</a>
       </p>
     </div>
   )
