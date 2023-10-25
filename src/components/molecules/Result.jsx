@@ -222,7 +222,7 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
         <div className="text-center">
           <RiArrowDownLine className="inline text-primary" size={24} />
         </div>
-        <a href="/convert" className="mt-2 text-center">Find out how much you had spent in Solana transactions.</a>
+        <a href="/convert" className="mt-2 text-center">Find out how much you would have spent in Solana transactions.</a>
       </p>
     </div>
   )
