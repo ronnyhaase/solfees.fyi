@@ -1,6 +1,6 @@
 # [SOLfees.fyi](https://www.solfees.fyi/)
 
-Check how much a Solana wallet has spent on transaction fees & compare with other blockchains.
+Check how much you\'ve spent on Solana transaction fees across all your wallets & compare with other blockchains.
 
 ## Contributing
 

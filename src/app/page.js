@@ -3,10 +3,10 @@ import { SolFeesApp } from '@/components/SolFeesApp'
 export const metadata = {
   metadataBase: new URL('https://www.solfees.fyi'),
   title: 'solfees.fyi',
-  description: 'Check how much a Solana wallet has spent on fees',
+  description: 'Check how much you\'ve spent on Solana transaction fees across all your wallets.',
   openGraph: {
     title: 'solfees.fyi',
-    description: 'Check how much a Solana wallet has spent on fees',
+    description: 'Check how much you\'ve spent on Solana transaction fees across all your wallets.',
     url: '/',
     siteName: 'solfees.fyi',
     images: [{
@@ -18,7 +18,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'solfees.fyi',
-    description: 'Check how much a Solana wallet has spent on fees',
+    description: 'Check how much you\'ve spent on Solana transaction fees across all your wallets.',
     creator: '@ronnyhaase',
     images: ['/solfeesfyi.jpeg'],
   },
