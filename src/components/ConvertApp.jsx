@@ -35,7 +35,7 @@ function ConvertApp() {
   }, [usdValue])
   const [reason, setReason] = useState('')
 
-  const generateTweet = () => `I spent a total of ${txValue} Solana transactions${reason ? ` for ${reason}.` : '.'}%0A%0A%23OnlyPossibleOnSolana%0A%0AFind out how much you would have spent at https://www.solfees.fyi/convert`
+  const generateTweet = () => `I spent a total of ${txValue} Solana transactions${reason ? ` for ${reason}.` : '.'}%0A%0A%23OnlyPossibleOnSolana%0A%0AFind out how much you would have spent at https://www.solfees.fyi/convert by %40solfees_fyi`
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">
