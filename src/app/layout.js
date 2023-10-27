@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
       lang="en"
     >
       <head>
-        <PlausibleProvider domain="solfees.fyi" />
+        <PlausibleProvider domain="solfees.fyi" trackOutboundLinks />
       </head>
       <body className="min-h-screen overflow-hidden text-lg">{children}</body>
     </html>
