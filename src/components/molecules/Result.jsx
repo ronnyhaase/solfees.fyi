@@ -1,6 +1,7 @@
 import { Transition } from '@headlessui/react'
 import BigNumber from 'bignumber.js'
 import clx from 'classnames'
+import { usePlausible } from 'next-plausible'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
@@ -8,6 +9,7 @@ import { MdPlaylistAdd, MdSkipPrevious } from 'react-icons/md'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap, U } from '@/components/atoms'
+import { isFunction } from '@/utils'
 import { RiArrowDownLine } from 'react-icons/ri'
 
 const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
@@ -19,7 +21,7 @@ const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
 
 const COMPARER_CHAINS = ['ethereum', 'polygon']
 
-const Comparer = ({ txCount, pricesAndFees }) => {
+const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
   const [chain, setChain] = useState(COMPARER_CHAINS[0])
   const data = useMemo(() => {
     const symbol = pricesAndFees.symbols[chain]
@@ -37,7 +39,10 @@ const Comparer = ({ txCount, pricesAndFees }) => {
     return { symbol, tokenCosts, usdCosts }
   }, [chain, pricesAndFees, txCount])
 
-  const handleChainChange = (ev) => setChain(ev.target.value)
+  const handleChainChange = (ev) => {
+    if (isFunction(onChainChange)) onChainChange(ev)
+    setChain(ev.target.value)
+  }
 
   return (
     <div className="my-4 px-2 py-4 rounded-lg bg-slate-100 text-center">
@@ -61,6 +66,7 @@ const Comparer = ({ txCount, pricesAndFees }) => {
 }
 
 const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }) => {
+  const plausible = usePlausible()
   const data = useMemo(() => {
     let data = {}
     if (summary) {
@@ -104,8 +110,27 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
 
   const [showComparer, setShowComparer] = useState(false)
   const handleCompareClick = () => {
+    plausible('Compare')
     setShowComparer(true)
     window.scrollBy({ behavior: 'smooth', top: 200 })
+  }
+
+  const handleCompareChainChange = (ev) => {
+    plausible(
+      'Compare change',
+      { props: { 'Chain': ev.target.value[0].toUpperCase() + ev.target.value.slice(1) } },
+    )
+  }
+  const handleAddWalletClick = () => {
+    plausible('Add wallet')
+    addWallet()
+  }
+  const handleResetClick = () => {
+    plausible('Reset')
+    reset()
+  }
+  const handleTweetClick = () => {
+    plausible('Share click', { props: { 'Target': 'X / Twitter'}})
   }
 
   const tweetMessage = generateTweetMessage(data.usdFees, data.solFees, data.txCount, wallets.length)
@@ -167,14 +192,18 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
         enterTo="opacity-100"
         show={showComparer}
       >
-        <Comparer txCount={data.txCount - data.txCountUnpaid} pricesAndFees={pricesAndFees} />
+        <Comparer
+          onChainChange={handleCompareChainChange}
+          pricesAndFees={pricesAndFees}
+          txCount={data.txCount - data.txCountUnpaid}
+        />
       </Transition>
       <div className="flex gap-1 justify-center mb-1">
-        <Button color="primary" size="sm" onClick={reset}>
+        <Button color="primary" size="sm" onClick={handleResetClick}>
           <MdSkipPrevious size={20} />
           Restart
         </Button>
-        <Button color="primary" size="sm" onClick={addWallet}>
+        <Button color="primary" size="sm" onClick={handleAddWalletClick}>
           <MdPlaylistAdd size={20} />
           Add Wallet
         </Button>
@@ -217,6 +246,7 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
           href={`https://twitter.com/share?text=${tweetMessage}`}
           target="_blank"
           referrerPolicy="origin"
+          onClick={handleTweetClick}
         >
           Tweet it
         </a>

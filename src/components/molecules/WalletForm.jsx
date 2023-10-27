@@ -1,5 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react'
 import clx from 'classnames'
+import { usePlausible } from 'next-plausible'
 import { useEffect, useRef, useState } from 'react'
 import {
   IoCloseCircleOutline,
@@ -9,20 +10,27 @@ import {
 
 import { Button } from '@/components/atoms'
 import { WalletButton } from '@/components/molecules/WalletButton'
-import { isSolanaAddress, isSolanaDomain } from '@/utils'
+import { isFunction, isSolanaAddress, isSolanaDomain } from '@/utils'
 
-const AddressInput = ({ setValue, value }) => {
+const AddressInput = ({ setValue, value, onClearClick, onPasteNative, onPasteClick }) => {
   const [isInputFocused, setIsInputFocused] = useState(false)
 
   const inputRef = useRef(null)
-  const handleClearClick = (ev) => setValue('')
+  const handleClearClick = (ev) => {
+    setValue('')
+    if (isFunction(onClearClick)) onClearClick(ev)
+  }
   const handleInputBlur = () => setIsInputFocused(false)
   const handleInputChange = (ev) => {
     const val = ev.target.value.trim()
     setValue(val)
   }
   const handleInputFocus = () => setIsInputFocused(true)
-  const handleInputPasteClick = async () => {
+  const handleInputPaste = (ev) => {
+    if (isFunction(onPasteNative)) onPasteNative(ev)
+  }
+  const handleInputPasteClick = async (ev) => {
+    if (isFunction(onPasteClick)) onPasteClick(ev)
     inputRef.current.focus()
     setValue(await navigator.clipboard?.readText())
   }
@@ -49,6 +57,7 @@ const AddressInput = ({ setValue, value }) => {
         onBlur={handleInputBlur}
         onChange={handleInputChange}
         onFocus={handleInputFocus}
+        onPaste={handleInputPaste}
       />
       <Button unstyled className="mr-1 px-2 rounded-lg" onClick={handleClearClick}>
         <IoCloseCircleOutline size={24} />
@@ -59,6 +68,7 @@ const AddressInput = ({ setValue, value }) => {
 }
 
 const WalletForm = ({ reset, setAddress, wallets }) => {
+  const plausible = usePlausible()
   const [value, setValue] = useState('')
   const [isValid, setIsValid] = useState(true)
   const { publicKey, disconnect: disconnectWallet } = useWallet()
@@ -69,19 +79,29 @@ const WalletForm = ({ reset, setAddress, wallets }) => {
 
   const handleFormSubmit = async (ev) => {
     ev.preventDefault()
-    if (isValid) setAddress(value)
+    if (isValid) {
+      plausible('Submit', { props: { 'Type': isSolanaDomain(value) ? 'Domain' : 'Address' }})
+      setAddress(value)
+    }
   }
 
   useEffect(() => {
     if (publicKey) {
+      plausible('Submit', { props: { 'Type': 'Wallet Connect' }})
       setAddress(publicKey.toString())
       disconnectWallet()
     }
-  }, [disconnectWallet, publicKey, setAddress])
+  }, [disconnectWallet, plausible, publicKey, setAddress])
 
   return (
     <form className="max-w-md px-2 grid grid-cols-1 sm:grid-cols-2 gap-2" onSubmit={handleFormSubmit}>
-      <AddressInput setValue={setValue} value={value} />
+      <AddressInput
+        onClearClick={() => plausible('Clear click')}
+        onPasteClick={() => plausible('Paste click')}
+        onPasteNative={() => plausible('Paste native')}
+        setValue={setValue}
+        value={value}
+      />
       <div className="order-2 text-center">OR</div>
       <div className="hidden sm:block order-2"></div>
       <div className="order-2">
