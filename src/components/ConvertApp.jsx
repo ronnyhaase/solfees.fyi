@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { FaXTwitter } from 'react-icons/fa6'
 import { RiArrowDownLine, RiArrowUpDownLine } from 'react-icons/ri'
@@ -77,7 +78,9 @@ function ConvertApp() {
           Post it
         </a>
         <RiArrowDownLine className="text-primary" size={24} />
-        <a href="/" className="mt-2 text-center">Check how much you&apos;ve spent on Solana transaction fees across all your wallets.</a>
+        <Link href="/" className="mt-2 text-center">
+          Check how much you&apos;ve spent on Solana transaction fees across all your wallets.
+        </Link>
       </FadeInOutTransition>
     </main>
   )

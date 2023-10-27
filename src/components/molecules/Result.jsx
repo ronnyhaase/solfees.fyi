@@ -1,9 +1,10 @@
 import { Transition } from '@headlessui/react'
 import BigNumber from 'bignumber.js'
 import clx from 'classnames'
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { IoGitCompare, IoInformationCircle } from 'react-icons/io5'
-import { MdFastRewind, MdPlaylistAdd, MdPlusOne, MdSkipPrevious } from 'react-icons/md'
+import { MdPlaylistAdd, MdSkipPrevious } from 'react-icons/md'
 
 import { GAS_DENOMINATOR, TX_CAP } from '@/constants'
 import { Button, NoWrap, U } from '@/components/atoms'
@@ -202,7 +203,7 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
       >
         #OnlyPossibleOnSolana
       </p>
-      <p className="text-center">
+      <div className="text-center">
         <a
           className={clx(
             'block sm:inline-flex',
@@ -222,8 +223,10 @@ const Result = ({ addWallet, className, pricesAndFees, reset, summary, wallets }
         <div className="text-center">
           <RiArrowDownLine className="inline text-primary" size={24} />
         </div>
-        <a href="/convert" className="mt-2 text-center">Find out how much you would have spent in Solana transactions.</a>
-      </p>
+        <Link href="/convert" className="mt-2 text-center">
+          Find out how much you would have spent in Solana transactions.
+        </Link>
+      </div>
     </div>
   )
 }
