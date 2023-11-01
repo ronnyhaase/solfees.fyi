@@ -11,12 +11,13 @@ import { useLayoutEffect, useMemo, useState } from 'react'
 import Confetti from 'react-confetti'
 import { useMeasure } from 'react-use'
 
-import { FadeInOutTransition } from '@/components/atoms';
-import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules';
+import { FadeInOutTransition } from '@/components/atoms'
+import { About, ErrorDisplay, Progress, Result, SunriseAd, WalletForm } from '@/components/molecules'
 import {
   usePricesAndFees,
   useTransactions,
 } from '@/hooks'
+import { usePlausible } from 'next-plausible'
 
 const Providers = ({ children }) => {
   const walletEndpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Mainnet), [])
@@ -58,9 +59,12 @@ const SolFeesApp = () => {
     setAddress(null)
   }
 
+  const plausible = usePlausible()
+
   const [appReady, setAppReady] = useState(false)
   useLayoutEffect(() => {
     setAppReady(true)
+    plausible('Enter')
   }, [])
 
   const [measureRef, { width: confettiWidth, height: confettiHeight }] = useMeasure()
