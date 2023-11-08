@@ -17,7 +17,6 @@ import {
   usePricesAndFees,
   useTransactions,
 } from '@/hooks'
-import { usePlausible } from 'next-plausible'
 
 const Providers = ({ children }) => {
   const walletEndpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Mainnet), [])
@@ -59,12 +58,9 @@ const SolFeesApp = () => {
     setAddress(null)
   }
 
-  const plausible = usePlausible()
-
   const [appReady, setAppReady] = useState(false)
   useLayoutEffect(() => {
     setAppReady(true)
-    plausible('Enter')
   }, [])
 
   const [measureRef, { width: confettiWidth, height: confettiHeight }] = useMeasure()
