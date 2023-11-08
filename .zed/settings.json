@@ -1,0 +1,26 @@
+{
+	"ensure_final_newline_on_save": true,
+	"preferred_line_length": 80,
+	"remove_trailing_whitespace_on_save": true,
+	"soft_wrap": "none",
+	"tab_size": 2,
+	"hard_tabs": true,
+	"language_overrides": {
+		"JSON": {
+			"hard_tabs": false
+		},
+		"JavaScript": {
+			"format_on_save": {
+				"external": {
+					"command": "prettier",
+					"arguments": ["--stdin-filepath", "{buffer_path}"]
+				}
+			}
+		},
+		"TypeScript": {},
+		"Markdown": {
+			"ensure_final_newline_on_save": false,
+			"remove_trailing_whitespace_on_save": false
+		}
+	}
+}

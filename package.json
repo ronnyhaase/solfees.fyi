@@ -4,10 +4,11 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev",
+    "lint": "next lint",
+    "prettify": "prettier -w 'src/**/*.{js,jsx}' next.config.js postcss.config.js tailwind.config.js",
+    "start": "next start"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
@@ -15,11 +16,14 @@
     "encoding": "^0.1.13",
     "eslint": "^8.51.0",
     "eslint-config-next": "^13.5.4",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "lokijs": "^1.5.12",
     "meow": "^12.1.1",
     "node-fetch": "^3.3.2",
     "pino-pretty": "^10.2.3",
     "postcss": "^8.4.31",
+    "prettier": "^3.0.3",
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {
