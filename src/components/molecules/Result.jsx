@@ -2,7 +2,6 @@ import { Transition } from "@headlessui/react"
 import BigNumber from "bignumber.js"
 import clx from "classnames"
 import { usePlausible } from "next-plausible"
-import Link from "next/link"
 import { useMemo, useState } from "react"
 import { IoGitCompare, IoInformationCircle } from "react-icons/io5"
 import { MdPlaylistAdd, MdSkipPrevious } from "react-icons/md"
@@ -10,7 +9,6 @@ import { MdPlaylistAdd, MdSkipPrevious } from "react-icons/md"
 import { Button, NoWrap, U } from "@/components/atoms"
 import { GAS_DENOMINATOR, TX_CAP } from "@/constants"
 import { isFunction } from "@/utils"
-import { RiArrowDownLine } from "react-icons/ri"
 
 const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
 	`I spent only ${
@@ -280,12 +278,6 @@ const Result = ({
 				>
 					Tweet it
 				</a>
-				<div className="text-center">
-					<RiArrowDownLine className="inline text-primary" size={24} />
-				</div>
-				<Link href="/convert" className="mt-2 text-center">
-					Find out how much you would have spent in Solana transactions.
-				</Link>
 			</div>
 		</div>
 	)
