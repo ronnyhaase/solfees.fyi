@@ -1,4 +1,4 @@
-import { ConvertApp } from "@/components/ConvertApp"
+import { ConvertApp } from "@/components/pages"
 
 export const metadata = {
 	metadataBase: new URL("https://www.solfees.fyi/convert"),

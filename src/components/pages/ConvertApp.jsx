@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useState } from "react"
 import { FaXTwitter } from "react-icons/fa6"
 import { RiArrowDownLine, RiArrowUpDownLine } from "react-icons/ri"
 
-import { FadeInOutTransition } from "./atoms"
+import { FadeInOutTransition } from "@/components/atoms"
 import clx from "classnames"
 import BigNumber from "bignumber.js"
 

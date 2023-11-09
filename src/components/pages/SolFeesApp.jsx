@@ -19,10 +19,9 @@ import {
 	About,
 	ErrorDisplay,
 	Progress,
-	Result,
 	SunriseAd,
-	WalletForm,
 } from "@/components/molecules"
+import { Result, WalletForm } from "@/components/templates"
 import { usePricesAndFees, useTransactions } from "@/hooks"
 
 const Providers = ({ children }) => {
