@@ -6,6 +6,7 @@ import { GAS_DENOMINATOR } from "@/constants"
 import { isFunction } from "@/utils"
 
 const COMPARER_CHAINS = ["ethereum", "polygon"]
+const VALIDATOR_MONTHLY_COSTS = 337
 
 const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 	const [chain, setChain] = useState(COMPARER_CHAINS[0])
@@ -21,8 +22,15 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 			.multipliedBy(pricesAndFees.prices[chain])
 			.decimalPlaces(2)
 			.toNumber()
+		const validatorRuntime =
+			usdCosts > VALIDATOR_MONTHLY_COSTS
+				? new BigNumber(usdCosts)
+						.dividedBy(VALIDATOR_MONTHLY_COSTS)
+						.integerValue()
+						.toNumber()
+				: null
 
-		return { symbol, tokenCosts, usdCosts }
+		return { symbol, tokenCosts, usdCosts, validatorRuntime }
 	}, [chain, pricesAndFees, txCount])
 
 	const handleChainChange = (ev) => {
@@ -52,6 +60,13 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 			or <NoWrap>$ {data.usdCosts}</NoWrap> for {txCount} transactions at the{" "}
 			<U>current gas price</U>, assuming the <U>average gas usage</U> per
 			transaction.
+			{data.validatorRuntime ? (
+				<strong>
+					<br />
+					You could run a Solana validator for ~{data.validatorRuntime} months
+					from these fees!
+				</strong>
+			) : null}
 		</div>
 	)
 }
