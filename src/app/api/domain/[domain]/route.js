@@ -30,5 +30,6 @@ async function GET(request, { params: { domain } }) {
 }
 
 const maxDuration = 30
+const revalidate = 900 // 15 minutes
 
-export { GET, maxDuration }
+export { GET, maxDuration, revalidate }
