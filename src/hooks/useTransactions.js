@@ -4,6 +4,14 @@ import { useEffect, useRef, useState } from "react"
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
 
+const fetchDomainInfo = (domain) =>
+	ky
+		.get(`/api/domain/${domain.toLowerCase()}`, {
+			throwHttpErrors: false,
+			timeout: 30000,
+		})
+		.json()
+
 const fetchTransactions = (address, before) =>
 	ky
 		.get(`/api/transactions/${address}`, {
@@ -13,76 +21,46 @@ const fetchTransactions = (address, before) =>
 		})
 		.json()
 
-const withNewTransactions = (target, includedSignatures, newTransactions) => {
-	return (target || []).concat(
-		newTransactions.filter((tx) => {
-			if (!includedSignatures.has(tx.signature)) {
-				includedSignatures.add(tx.signature)
-				return true
-			} else {
-				return false
-			}
-		}),
-	)
-}
-
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
-const TIMEOUT = 0
 
-const next = async ({
-	address,
-	before,
-	result,
-	resolve,
-	reject,
-	setProgress,
-	includedSignatures,
-}) => {
-	if (!includedSignatures) includedSignatures = new Set()
+const fetchAllTransactions = async ({ address, setProgress }) => {
+	let includedSignatures = new Set()
+	let before = null
+	let result = []
 
-	const partial = await fetchTransactions(address, before)
-	if (partial.error) {
-		const tryAgainMatch = partial.error.match(E_TRY_AGAIN_BEFORE)
-		if (tryAgainMatch && tryAgainMatch[1]) {
-			before = tryAgainMatch[1]
-			setTimeout(
-				() =>
-					next({
-						address,
-						before,
-						result,
-						resolve,
-						reject,
-						setProgress,
-						includedSignatures,
-					}),
-				TIMEOUT,
-			)
-		} else {
-			reject(new Error(partial.error))
+	while (true) {
+		const partial = await fetchTransactions(address, before)
+
+		if (partial.error) {
+			/* In very rare cases Helius might fails with a certain before parameter
+				and provides an alternative to continue from. This can lead to
+				duplicates */
+			const tryAgainMatch = partial.error.match(E_TRY_AGAIN_BEFORE)
+			if (tryAgainMatch && tryAgainMatch[1]) {
+				before = tryAgainMatch[1]
+				continue // Retry with new 'before'
+			} else {
+				// Fail on unknown error
+				throw new Error(partial.error)
+			}
 		}
-	} else if (partial.length) {
+
+		// No more transactions, return
+		if (!partial.length) return result
+
 		before = partial[partial.length - 1].signature
-		result = withNewTransactions(result, includedSignatures, partial)
+		// Add new, non-duplicate transactions to result
+		partial.forEach((newTx) => {
+			if (!includedSignatures.has(newTx.signature)) {
+				includedSignatures.add(newTx.signature)
+				result.push(newTx)
+			}
+		})
 		setProgress(result.length)
-		if (result.length >= TX_CAP) resolve(result)
-		else
-			setTimeout(
-				() =>
-					next({
-						address,
-						before,
-						result,
-						resolve,
-						reject,
-						setProgress,
-						includedSignatures,
-					}),
-				TIMEOUT,
-			)
-	} else {
-		resolve(result)
+
+		// Stop and return if the cap is reached
+		if (result.length >= TX_CAP) return result
 	}
 }
 
@@ -140,10 +118,40 @@ function useTransactions(address) {
 		state: "intro",
 		transactions: null,
 	}
-
 	const [state, setState] = useState(initialState)
+	const setStateError = (error) =>
+		// Timeout prevents animations from overlapping
+		setTimeout(
+			() =>
+				setState({
+					error,
+					isLoading: false,
+					summary: null,
+					state: "error",
+					transactions: null,
+				}),
+			250,
+		)
+	const setStateLoading = () =>
+		setState({
+			error: null,
+			isLoading: true,
+			summary: null,
+			state: "loading",
+			transactions: null,
+		})
+	const setStateResolving = () =>
+		setState({
+			error: null,
+			isLoading: true,
+			summary: null,
+			state: "resolving",
+			transactions: null,
+		})
+
 	const cachedSummary = useRef(null)
 	const wallets = useRef([])
+	const [progress, setProgress] = useState(0)
 	const reset = () => {
 		cachedSummary.current = null
 		wallets.current = []
@@ -157,54 +165,28 @@ function useTransactions(address) {
 		})
 	}
 
-	const [progress, setProgress] = useState(0)
-
 	useEffect(() => {
 		;(async () => {
 			if (address === null) return
 
 			let fullAddress = address
 			if (isSolanaDomain(address)) {
-				setState({
-					error: null,
-					isLoading: true,
-					summary: null,
-					state: "resolving",
-					transactions: null,
-				})
+				setStateResolving()
 				let domainInfo
 				try {
-					domainInfo = await ky
-						.get(`/api/domain/${address.toLowerCase()}`, {
-							throwHttpErrors: false,
-							timeout: 30000,
-						})
-						.json()
+					domainInfo = await fetchDomainInfo(address)
 				} catch (error) {
-					setState({
-						error,
-						isLoading: false,
-						summary: null,
-						state: "error",
-						transactions: null,
-					})
+					setStateError(error)
 					return
 				}
 				if (domainInfo.error) {
-					setTimeout(() => {
-						setState({
-							error: new Error(domainInfo.error),
-							isLoading: false,
-							summary: null,
-							state: "error",
-							transactions: null,
-						})
-					}, 250)
+					setStateError(new Error(domainInfo.error))
 					return
 				}
 				fullAddress = domainInfo.address
 			}
 
+			// If wallet transactions are already fetched, "return" them
 			if (wallets.current.includes(fullAddress)) {
 				setState((prev) => ({
 					error: prev.error,
@@ -216,42 +198,33 @@ function useTransactions(address) {
 				return
 			}
 
-			setState({
-				error: null,
-				isLoading: true,
-				summary: null,
-				state: "loading",
-				transactions: null,
-			})
+			setStateLoading()
 			setProgress(0)
 			// Timeout prevents animations from overlapping
-			setTimeout(() => {
-				new Promise((resolve, reject) =>
-					next({ address: fullAddress, setProgress, resolve, reject }),
-				)
-					.then((transactions) => {
-						wallets.current.push(fullAddress)
-						setState({
-							error: null,
-							isLoading: false,
-							summary: aggregateTransactions(
-								fullAddress,
-								transactions,
-								cachedSummary.current,
-							),
-							state: "done",
-							transactions,
-						})
+			setTimeout(async () => {
+				let transactions = null
+
+				try {
+					transactions = await fetchAllTransactions({
+						address: fullAddress,
+						setProgress,
 					})
-					.catch((error) =>
-						setState({
-							error,
-							isLoading: false,
-							summary: null,
-							state: "error",
-							transactions: null,
-						}),
-					)
+				} catch (error) {
+					setStateError(error)
+				}
+
+				wallets.current.push(fullAddress)
+				setState({
+					error: null,
+					isLoading: false,
+					summary: aggregateTransactions(
+						fullAddress,
+						transactions,
+						cachedSummary.current,
+					),
+					state: "done",
+					transactions,
+				})
 			}, 250)
 		})()
 	}, [address])
@@ -259,4 +232,4 @@ function useTransactions(address) {
 	return { addWallet, progress, reset, ...state, wallets: wallets.current }
 }
 
-export { TX_CAP, useTransactions }
+export { useTransactions }
