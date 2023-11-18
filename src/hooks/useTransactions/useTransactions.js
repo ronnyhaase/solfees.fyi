@@ -3,10 +3,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
-import {
-	categorizyTransaction,
-	mergeCategorizations,
-} from "./useTransactions/categorization"
+import { categorizyTransaction, mergeCategorizations } from "./categorization"
 
 const fetchDomainInfo = (domain) =>
 	ky
