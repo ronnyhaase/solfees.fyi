@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from "react"
 
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
+import {
+	categorizyTransaction,
+	mergeCategorizations,
+} from "./useTransactions/categorization"
 
 const fetchDomainInfo = (domain) =>
 	ky
@@ -64,7 +68,7 @@ const fetchAllTransactions = async ({ address, setProgress }) => {
 	}
 }
 
-const aggregateTransactions = (address, transactions, prevAggregation) => {
+const aggregateTransactions = (address, transactions, prevResult) => {
 	let aggregation = {
 		firstTransactionTS: Number.MAX_SAFE_INTEGER,
 		failedTransactions: 0,
@@ -73,6 +77,7 @@ const aggregateTransactions = (address, transactions, prevAggregation) => {
 		transactionsCount: transactions.length,
 		unpaidTransactionsCount: 0,
 	}
+	let categorizations = {}
 
 	transactions.map((tx) => {
 		if (tx.feePayer === address) {
@@ -88,26 +93,40 @@ const aggregateTransactions = (address, transactions, prevAggregation) => {
 			tx.timestamp < aggregation.firstTransactionTS
 				? tx.timestamp * 1000
 				: aggregation.firstTransactionTS
+
+		const category = categorizyTransaction(tx.type, tx.source)
+		if (categorizations[category]) {
+			categorizations[category].count += 1
+			categorizations[category].fees += tx.fee
+		} else {
+			categorizations[category] = { count: 1, fees: tx.fee }
+		}
 	})
 	aggregation.feesAvg =
 		aggregation.transactionsCount !== 0
 			? aggregation.feesTotal / aggregation.transactionsCount
 			: 0
 
-	if (prevAggregation) {
+	if (prevResult) {
 		aggregation.firstTransactionTS =
-			prevAggregation.firstTransactionTS < aggregation.firstTransactionTS
-				? prevAggregation.firstTransactionTS
+			prevResult.aggregation.firstTransactionTS < aggregation.firstTransactionTS
+				? prevResult.aggregation.firstTransactionTS
 				: aggregation.firstTransactionTS
-		aggregation.failedTransactions += prevAggregation.failedTransactions
-		aggregation.feesAvg = (aggregation.feesAvg + prevAggregation.feesAvg) / 2
-		aggregation.feesTotal += prevAggregation.feesTotal
-		aggregation.transactionsCount += prevAggregation.transactionsCount
+		aggregation.failedTransactions += prevResult.aggregation.failedTransactions
+		aggregation.feesAvg =
+			(aggregation.feesAvg + prevResult.aggregation.feesAvg) / 2
+		aggregation.feesTotal += prevResult.aggregation.feesTotal
+		aggregation.transactionsCount += prevResult.aggregation.transactionsCount
 		aggregation.unpaidTransactionsCount +=
-			prevAggregation.unpaidTransactionsCount
+			prevResult.aggregation.unpaidTransactionsCount
+
+		categorizations = mergeCategorizations(
+			categorizations,
+			prevResult.categorizations,
+		)
 	}
 
-	return aggregation
+	return { aggregation, categorizations }
 }
 
 function useTransactions(address) {
