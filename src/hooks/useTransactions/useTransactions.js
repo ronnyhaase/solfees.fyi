@@ -1,26 +1,9 @@
-import ky from "ky"
 import { useEffect, useRef, useState } from "react"
 
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
 import { categorizyTransaction, mergeCategorizations } from "./categorization"
-
-const fetchDomainInfo = (domain) =>
-	ky
-		.get(`/api/domain/${domain.toLowerCase()}`, {
-			throwHttpErrors: false,
-			timeout: 30000,
-		})
-		.json()
-
-const fetchTransactions = (address, before) =>
-	ky
-		.get(`/api/transactions/${address}`, {
-			searchParams: before ? { before } : "",
-			throwHttpErrors: false,
-			timeout: 30000,
-		})
-		.json()
+import { fetchDomainInfo, fetchTransactions } from "./api"
 
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./

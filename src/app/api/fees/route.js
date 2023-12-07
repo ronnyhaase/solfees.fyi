@@ -2,7 +2,7 @@ import { kv } from "@vercel/kv"
 import BigNumber from "bignumber.js"
 import { NextResponse } from "next/server"
 
-function fetchPrices() {
+async function fetchPrices() {
 	const token = {
 		ether: "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
 		matic: "Gz7VkD4MacbEB6yC5XD3HcumEiYx2EtDYYrfikGsvopG",
