@@ -40,26 +40,26 @@ const Result = ({
 					minute: "numeric",
 					second: "numeric",
 					hour12: false,
-				}).format(new Date(summary.firstTransactionTS)),
-				solFees: new BigNumber(summary.feesTotal)
+				}).format(new Date(summary.aggregation.firstTransactionTS)),
+				solFees: new BigNumber(summary.aggregation.feesTotal)
 					.multipliedBy(GAS_DENOMINATOR)
 					.decimalPlaces(5)
 					.toNumber(),
-				txCount: summary.transactionsCount,
-				txCountUnpaid: summary.unpaidTransactionsCount,
-				solAvgFee: new BigNumber(summary.feesAvg)
+				txCount: summary.aggregation.transactionsCount,
+				txCountUnpaid: summary.aggregation.unpaidTransactionsCount,
+				solAvgFee: new BigNumber(summary.aggregation.feesAvg)
 					.multipliedBy(GAS_DENOMINATOR)
 					.decimalPlaces(6)
 					.toNumber(),
 			}
 		}
 		if (pricesAndFees && summary) {
-			data.usdFees = new BigNumber(summary.feesTotal)
+			data.usdFees = new BigNumber(summary.aggregation.feesTotal)
 				.multipliedBy(GAS_DENOMINATOR)
 				.multipliedBy(pricesAndFees.prices.solana)
 				.decimalPlaces(2)
 				.toNumber()
-			data.usdAvgFee = new BigNumber(summary.feesAvg)
+			data.usdAvgFee = new BigNumber(summary.aggregation.feesAvg)
 				.multipliedBy(GAS_DENOMINATOR)
 				.multipliedBy(pricesAndFees.prices.solana)
 				.decimalPlaces(6)
