@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 
 async function fetchPrices() {
 	const token = {
+		bonk: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
 		ether: "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
 		matic: "Gz7VkD4MacbEB6yC5XD3HcumEiYx2EtDYYrfikGsvopG",
 		sol: "So11111111111111111111111111111111111111112",
@@ -11,7 +12,7 @@ async function fetchPrices() {
 
 	const url =
 		"https://public-api.birdeye.so/public/multi_price?list_address=" +
-		`${token.ether},${token.matic},${token.sol}`
+		`${token.bonk},${token.ether},${token.matic},${token.sol}`
 
 	return fetch(url, {
 		method: "GET",
@@ -24,6 +25,9 @@ async function fetchPrices() {
 	})
 		.then((res) => res.json())
 		.then((body) => ({
+			bonk: new BigNumber(body.data[token.bonk].value)
+				.decimalPlaces(9)
+				.toNumber(),
 			ethereum: new BigNumber(body.data[token.ether].value)
 				.decimalPlaces(5)
 				.toNumber(),

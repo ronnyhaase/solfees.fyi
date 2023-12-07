@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import { useMemo, useState } from "react"
+import Image from "next/image"
 
 import { NoWrap, U } from "@/components/atoms"
 import { GAS_DENOMINATOR } from "@/constants"
@@ -29,8 +30,12 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 						.integerValue()
 						.toNumber()
 				: null
+		const bonk = new BigNumber(usdCosts)
+			.dividedBy(pricesAndFees.prices.bonk)
+			.integerValue()
+			.toNumber()
 
-		return { symbol, tokenCosts, usdCosts, validatorRuntime }
+		return { bonk, symbol, tokenCosts, usdCosts, validatorRuntime }
 	}, [chain, pricesAndFees, txCount])
 
 	const handleChainChange = (ev) => {
@@ -60,13 +65,32 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 			or <NoWrap>$ {data.usdCosts}</NoWrap> for {txCount} transactions at the{" "}
 			<U>current gas price</U>, assuming the <U>average gas usage</U> per
 			transaction.
-			{data.validatorRuntime ? (
-				<strong>
-					<br />
-					You could run a Solana validator for ~{data.validatorRuntime} months
-					from these fees!
-				</strong>
-			) : null}
+			<strong>
+				{data.validatorRuntime ? (
+					<>
+						<br />
+						You could run a Solana validator for ~{data.validatorRuntime} months
+						from these fees,
+						<br /> or buy{" "}
+						{new Intl.NumberFormat(
+							navigator.language || navigator.userLanguage,
+						).format(data.bonk)}{" "}
+						BONK!
+					</>
+				) : (
+					<>
+						<br />
+						You could buy{" "}
+						{new Intl.NumberFormat(
+							navigator.language || navigator.userLanguage,
+						).format(data.bonk)}{" "}
+						BONK from these fees!
+					</>
+				)}
+				<center>
+					<Image alt="BONK!" height={32} src="/bonk.png" width={32} />
+				</center>
+			</strong>
 		</div>
 	)
 }
