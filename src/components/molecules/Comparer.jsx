@@ -2,10 +2,9 @@ import BigNumber from "bignumber.js"
 import { useMemo, useState } from "react"
 import Image from "next/image"
 
-import { NoWrap, U } from "@/components/atoms"
+import { NoWrap, NumberDisplay, U } from "@/components/atoms"
 import { GAS_DENOMINATOR } from "@/constants"
 import { isFunction } from "@/utils"
-import { Number } from "../atoms/Number"
 
 const COMPARER_CHAINS = ["ethereum", "polygon"]
 const VALIDATOR_MONTHLY_COSTS = 337
@@ -61,11 +60,11 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 			</select>
 			you would have paid approximately{" "}
 			<NoWrap>
-				{data.symbol} <Number val={data.tokenCosts} />
+				{data.symbol} <NumberDisplay val={data.tokenCosts} />
 			</NoWrap>{" "}
 			or{" "}
 			<NoWrap>
-				$ <Number val={data.usdCosts} />
+				$ <NumberDisplay val={data.usdCosts} />
 			</NoWrap>{" "}
 			for {txCount} transactions at the <U>current gas price</U>, assuming the{" "}
 			<U>average gas usage</U> per transaction.
@@ -75,12 +74,13 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 						<br />
 						You could run a Solana validator for ~{data.validatorRuntime} months
 						from these fees,
-						<br /> or buy <Number val={data.bonk} /> BONK!
+						<br /> or buy <NumberDisplay val={data.bonk} /> BONK!
 					</>
 				) : (
 					<>
 						<br />
-						You could buy <Number val={data.bonk} /> BONK from these fees!
+						You could buy <NumberDisplay val={data.bonk} /> BONK from these
+						fees!
 					</>
 				)}
 				<center>

@@ -10,4 +10,4 @@ const NumberDisplay = ({ as: Tag = "span", className, val }) => {
 	return <Tag className={className}>{displayValue}</Tag>
 }
 
-export { NumberDisplay as Number }
+export { NumberDisplay }

@@ -6,7 +6,13 @@ import { useMemo, useState } from "react"
 import { IoGitCompare, IoInformationCircle } from "react-icons/io5"
 import { MdPlaylistAdd, MdSkipPrevious } from "react-icons/md"
 
-import { Button, NoWrap, Number, U } from "@/components/atoms"
+import {
+	Button,
+	DateDisplay,
+	NoWrap,
+	NumberDisplay,
+	U,
+} from "@/components/atoms"
 import { GAS_DENOMINATOR, TX_CAP } from "@/constants"
 import { Comparer } from "@/components/molecules"
 
@@ -32,17 +38,7 @@ const Result = ({
 		let data = {}
 		if (summary) {
 			data = {
-				firstTransaction: new Intl.DateTimeFormat(
-					navigator.language || navigator.userLanguage,
-					{
-						year: "numeric",
-						month: "numeric",
-						day: "numeric",
-						hour: "numeric",
-						minute: "numeric",
-						second: "numeric",
-					},
-				).format(new Date(summary.aggregation.firstTransactionTS)),
+				firstTransaction: new Date(summary.aggregation.firstTransactionTS),
 				solFees: new BigNumber(summary.aggregation.feesTotal)
 					.multipliedBy(GAS_DENOMINATOR)
 					.decimalPlaces(5)
@@ -133,7 +129,7 @@ const Result = ({
 					<>Your wallet has spent </>
 				)}
 				<NoWrap className="text-solana-purple">
-					◎ <Number val={data.solFees} />{" "}
+					◎ <NumberDisplay val={data.solFees} />{" "}
 				</NoWrap>
 				in fees for{" "}
 				<span className="text-solana-purple">{data.txCount} transactions</span>.
@@ -142,27 +138,28 @@ const Result = ({
 				<p className="mb-4 text-xl md:text-2xl text-center">
 					<U>Right now</U>, that&apos;s{" "}
 					<NoWrap className="text-solana-purple">
-						$ <Number val={data.usdFees} />
+						$ <NumberDisplay val={data.usdFees} />
 					</NoWrap>
 					.
 				</p>
 			) : null}
 			<div className="mt-2">
 				<p className="mb-2">
-					You paid for <Number val={data.txCount - data.txCountUnpaid} /> of the{" "}
-					{data.txCount} transactions. On average, you paid{" "}
+					You paid for <NumberDisplay val={data.txCount - data.txCountUnpaid} />{" "}
+					of the {data.txCount} transactions. On average, you paid{" "}
 					<NoWrap>
-						◎ <Number val={data.solAvgFee} />
+						◎ <NumberDisplay val={data.solAvgFee} />
 					</NoWrap>{" "}
 					{data.usdAvgFee ? (
 						<NoWrap>
-							($ <Number val={data.usdAvgFee} />)
+							($ <NumberDisplay val={data.usdAvgFee} />)
 						</NoWrap>
 					) : null}{" "}
 					per transaction.
 				</p>
 				<p className="mb-4">
-					The very first transaction was sent on {data.firstTransaction}
+					The very first transaction was sent on{" "}
+					<DateDisplay val={data.firstTransaction} />
 				</p>
 			</div>
 			<Transition
