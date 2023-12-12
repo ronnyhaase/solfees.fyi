@@ -140,7 +140,19 @@ const SolFeesApp = () => {
 							summary={summary}
 							wallets={wallets}
 						/>
+					</div>
+					<div>
 						<SunriseAd className="mt-12" />
+						<div className="text-center">
+							<div className="py-4">- or -</div>
+							<a
+								href="https://app.hel.io/pay/6573bd77cdaabdd8ac9ac795"
+								target="_blank"
+								className="inline-flex px-8 py-4 rounded-full bg-[#fc8e03] text-lg text-white"
+							>
+								Tip me some BONK
+							</a>
+						</div>
 					</div>
 					<About className="mt-12" />
 				</Transition>
