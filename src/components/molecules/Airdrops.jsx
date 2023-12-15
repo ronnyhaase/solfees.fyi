@@ -52,7 +52,7 @@ function Airdrops({ data }) {
 						Solana Airdrop Checker
 					</a>
 					<br />
-					Check wallets in bulk, get notifications and EVM support.
+					Check wallets in bulk, get notifications, all with EVM support.
 				</p>
 				<p className="text-xs">All data without warranty</p>
 			</div>

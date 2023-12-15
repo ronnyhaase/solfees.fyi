@@ -38,6 +38,7 @@ const fetchAllTransactions = async ({ address, setProgress }) => {
 		if (!partial.length) return result
 
 		before = partial[partial.length - 1].signature
+
 		// Add new, non-duplicate transactions to result
 		partial.forEach((newTx) => {
 			if (!includedSignatures.has(newTx.signature)) {
@@ -189,12 +190,19 @@ function useTransactions(address) {
 				fullAddress = domainInfo.address
 			}
 
+			let airdropEligibility = null
+			try {
+				airdropEligibility = await fetchAirdropEligibility(fullAddress)
+			} catch (error) {
+				airdropEligibility = null
+			}
+
 			// If wallet transactions are already fetched, "return" them
 			if (wallets.current.includes(fullAddress)) {
 				setState((prev) => ({
 					error: prev.error,
 					isLoading: false,
-					summary: cachedSummary.current,
+					summary: { ...cachedSummary.current, airdropEligibility },
 					state: "done",
 					transactions: prev.transactions,
 				}))
@@ -206,7 +214,6 @@ function useTransactions(address) {
 			// Timeout prevents animations from overlapping
 			setTimeout(async () => {
 				let transactions = null
-				let airdropEligibility = null
 
 				try {
 					transactions = await fetchAllTransactions({
@@ -215,12 +222,6 @@ function useTransactions(address) {
 					})
 				} catch (error) {
 					setStateError(error)
-				}
-
-				try {
-					airdropEligibility = await fetchAirdropEligibility(fullAddress)
-				} catch (error) {
-					airdropEligibility = null
 				}
 
 				wallets.current.push(fullAddress)
