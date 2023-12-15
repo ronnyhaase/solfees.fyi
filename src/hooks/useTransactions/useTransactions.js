@@ -3,7 +3,11 @@ import { useEffect, useRef, useState } from "react"
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
 import { categorizyTransaction, mergeCategorizations } from "./categorization"
-import { fetchDomainInfo, fetchTransactions } from "./api"
+import {
+	fetchAirdropEligibility,
+	fetchDomainInfo,
+	fetchTransactions,
+} from "./api"
 
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
@@ -202,6 +206,7 @@ function useTransactions(address) {
 			// Timeout prevents animations from overlapping
 			setTimeout(async () => {
 				let transactions = null
+				let airdropEligibility = null
 
 				try {
 					transactions = await fetchAllTransactions({
@@ -212,15 +217,24 @@ function useTransactions(address) {
 					setStateError(error)
 				}
 
+				try {
+					airdropEligibility = await fetchAirdropEligibility(fullAddress)
+				} catch (error) {
+					airdropEligibility = null
+				}
+
 				wallets.current.push(fullAddress)
 				setState({
 					error: null,
 					isLoading: false,
-					summary: aggregateTransactions(
-						fullAddress,
-						transactions,
-						cachedSummary.current,
-					),
+					summary: {
+						airdropEligibility,
+						...aggregateTransactions(
+							fullAddress,
+							transactions,
+							cachedSummary.current,
+						),
+					},
 					state: "done",
 					transactions,
 				})
