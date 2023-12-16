@@ -1,7 +1,6 @@
 import { NumberDisplay, U } from "@/components/atoms"
 
 function Airdrops({ data }) {
-	console.log(data)
 	if (!data) return null
 
 	const count = data.eligibility.reduce(
