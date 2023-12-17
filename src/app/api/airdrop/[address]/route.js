@@ -32,7 +32,7 @@ async function GET(_, { params: { address } }) {
 		: NextResponse.json(
 				{ error: "Unknown error with airdrop API" },
 				{ status: 502 },
-		  )
+			)
 }
 
 const maxDuration = 30
