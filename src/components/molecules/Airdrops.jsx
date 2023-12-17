@@ -16,6 +16,13 @@ function Airdrops({ data }) {
 		)
 	}
 
+	const renderEligible = (airdrop) => {
+		if (airdrop.eligible && airdrop.amount) return "✅"
+		else if (!airdrop.eligible && !airdrop.error) return "❌"
+		// This combination happens when SAC API limit was hit
+		else if (!airdrop.eligible && !airdrop.amount && airdrop.error) return "N/A"
+	}
+
 	return (
 		<div className="mb-4">
 			<h2 className="mb-2 text-center text-orange-500">
@@ -33,8 +40,8 @@ function Airdrops({ data }) {
 					{data.eligibility.map((airdrop) => (
 						<tr key={airdrop.protocol}>
 							<td>{airdrop.protocolLabel}</td>
-							<td className="_text-center">{airdrop.eligible ? "✅" : "❌"}</td>
-							<td className="_text-right">
+							<td>{renderEligible(airdrop)}</td>
+							<td>
 								${airdrop.ticker} <NumberDisplay val={airdrop.amount} />
 							</td>
 						</tr>
