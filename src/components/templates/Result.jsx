@@ -14,7 +14,7 @@ import {
 	U,
 } from "@/components/atoms"
 import { GAS_DENOMINATOR, TX_CAP } from "@/constants"
-import { Comparer } from "@/components/molecules"
+import { Airdrops, Comparer } from "@/components/molecules"
 
 const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
 	`I spent only ${
@@ -38,6 +38,7 @@ const Result = ({
 		let data = {}
 		if (summary) {
 			data = {
+				airdropEligibility: summary.airdropEligibility,
 				firstTransaction: new Date(summary.aggregation.firstTransactionTS),
 				solFees: new BigNumber(summary.aggregation.feesTotal)
 					.multipliedBy(GAS_DENOMINATOR)
@@ -162,6 +163,7 @@ const Result = ({
 					<DateDisplay val={data.firstTransaction} />
 				</p>
 			</div>
+			<Airdrops data={data.airdropEligibility} />
 			<Transition
 				enter="duration-200 ease-in transition-opacity"
 				enterFrom="opacity-0"

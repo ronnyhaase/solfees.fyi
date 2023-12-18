@@ -6,7 +6,7 @@ import { isSolanaDomain } from "@/utils"
 
 async function GET(request, { params: { domain } }) {
 	if (!isSolanaDomain(domain)) {
-		return NextResponse.json({ error: "Invalid domain." }, { status: 400 })
+		return NextResponse.json({ error: "Invalid domain" }, { status: 400 })
 	}
 
 	const connection = new Connection(
@@ -17,13 +17,13 @@ async function GET(request, { params: { domain } }) {
 		domainInfo = await fetchDomainInfo(connection, domain)
 	} catch (error) {
 		return NextResponse.json(
-			{ error: "Unknown error with domain service." },
-			{ status: 504 },
+			{ error: "Unknown error with domain service" },
+			{ status: 502 },
 		)
 	}
 
 	if (!domainInfo.walletAddress) {
-		return NextResponse.json({ error: "Domain not found." }, { status: 404 })
+		return NextResponse.json({ error: "Domain not found" }, { status: 404 })
 	}
 
 	return NextResponse.json({ address: domainInfo.walletAddress })
