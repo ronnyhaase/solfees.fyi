@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 
 import { isSolanaAddress } from "@/utils"
 import {
-	type AirdropEligibilityEntry,
+	type AirdropEligibility,
 	type AirdropEligibilityResponse,
 } from "@/types"
 
@@ -14,7 +14,7 @@ async function GET(
 		return NextResponse.json({ error: "Invalid address" }, { status: 400 })
 	}
 
-	let data: AirdropEligibilityEntry | null
+	let data: AirdropEligibility | null
 	try {
 		data = await fetch(
 			`https://external.api.solworks.dev/v1/reports?addresses=${address}`,

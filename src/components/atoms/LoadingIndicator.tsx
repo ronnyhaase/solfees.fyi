@@ -1,7 +1,7 @@
 import clx from "classnames"
 
-const LoadingIndicator = () => {
-	const sharedCircleClasses = [
+const LoadingIndicator: React.FC = () => {
+	const sharedCircleClasses: clx.ArgumentArray = [
 		"animate-zoom h-10 opacity-60 rounded-[50%] w-10",
 	]
 

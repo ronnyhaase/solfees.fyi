@@ -1,15 +1,25 @@
 import clx from "classnames"
+import { type ReactNode } from "react"
 
-const Button = ({
+interface ButtonProps {
+	children: ReactNode
+	className?: string
+	color?: "primary" | "secondary"
+	full?: boolean
+	size?: "sm" | "md"
+	unstyled?: boolean
+}
+
+const Button: React.FC<ButtonProps> = ({
 	className,
 	children,
-	color,
-	full,
+	color = "secondary",
+	full = false,
 	size = "md",
-	unstyled,
+	unstyled = false,
 	...rest
 }) => {
-	const classNames = unstyled
+	const classNames: clx.ArgumentArray = unstyled
 		? []
 		: [
 				"inline-flex",

@@ -1,6 +1,10 @@
 import { Transition } from "@headlessui/react"
+import { type ReactNode } from "react"
 
-const FadeInOutTransition = ({ children, ...rest }) => (
+const FadeInOutTransition: React.FC<{ children: ReactNode }> = ({
+	children,
+	...rest
+}) => (
 	<Transition
 		enter="duration-200 ease-in transition-opacity"
 		enterFrom="opacity-0"
