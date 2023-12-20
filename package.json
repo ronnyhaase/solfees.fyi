@@ -11,6 +11,7 @@
 		"start": "next start"
 	},
 	"devDependencies": {
+		"@types/react": "18.2.45",
 		"autoprefixer": "^10.4.16",
 		"bigint-buffer": "^1.1.5",
 		"encoding": "^0.1.13",
