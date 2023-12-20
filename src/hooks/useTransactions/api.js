@@ -1,5 +1,13 @@
 import ky from "ky"
 
+const fetchAirdropEligibility = (address) =>
+	ky
+		.get(`/api/airdrop/${address}`, {
+			throwHttpErrors: false,
+			timeout: 30000,
+		})
+		.json()
+
 const fetchDomainInfo = (domain) =>
 	ky
 		.get(`/api/domain/${domain.toLowerCase()}`, {
@@ -17,4 +25,4 @@ const fetchTransactions = (address, before) =>
 		})
 		.json()
 
-export { fetchDomainInfo, fetchTransactions }
+export { fetchAirdropEligibility, fetchDomainInfo, fetchTransactions }

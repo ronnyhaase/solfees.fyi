@@ -2,24 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-a {
-  @apply text-purple-700;
-}
-
 *:focus {
-  @apply outline outline-2 outline-offset-1 outline-solana-purple;
+	@apply outline outline-2 outline-offset-1 outline-solana-purple;
 }
 
-@import url('./wallet-adapter.css');
+a {
+	@apply text-purple-700;
+}
+
+th,
+td {
+	@apply pr-4 text-left;
+}
+
+@import url("./wallet-adapter.css");
 
 /* Wallet adapter */
 .wallet-adapter-dropdown {
-  @apply w-full;
+	@apply w-full;
 }
 
 .wallet-adapter-button-trigger {
-  @apply
-    inline-flex
+	@apply inline-flex
     items-center
     justify-center
     gap-x-4
@@ -32,6 +36,5 @@ a {
     leading-none
     text-white
     active:enabled:scale-95 active:enabled:shadow-inner
-    disabled:cursor-not-allowed disabled:opacity-90
-  ;
+    disabled:cursor-not-allowed disabled:opacity-90;
 }

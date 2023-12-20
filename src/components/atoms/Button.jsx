@@ -24,7 +24,7 @@ const Button = ({
 				"disabled:cursor-not-allowed disabled:opacity-90",
 				{ "gap-x-2 px-4 py-3 text-base": size === "sm" },
 				{ "gap-x-4 px-5 py-5": size === "md" },
-		  ]
+			]
 	classNames.push({ "w-full": full })
 
 	return (

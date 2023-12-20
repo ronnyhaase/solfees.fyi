@@ -3,7 +3,11 @@ import { useEffect, useRef, useState } from "react"
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
 import { categorizyTransaction, mergeCategorizations } from "./categorization"
-import { fetchDomainInfo, fetchTransactions } from "./api"
+import {
+	fetchAirdropEligibility,
+	fetchDomainInfo,
+	fetchTransactions,
+} from "./api"
 
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
@@ -34,6 +38,7 @@ const fetchAllTransactions = async ({ address, setProgress }) => {
 		if (!partial.length) return result
 
 		before = partial[partial.length - 1].signature
+
 		// Add new, non-duplicate transactions to result
 		partial.forEach((newTx) => {
 			if (!includedSignatures.has(newTx.signature)) {
@@ -185,12 +190,19 @@ function useTransactions(address) {
 				fullAddress = domainInfo.address
 			}
 
+			let airdropEligibility = null
+			try {
+				airdropEligibility = await fetchAirdropEligibility(fullAddress)
+			} catch (error) {
+				airdropEligibility = null
+			}
+
 			// If wallet transactions are already fetched, "return" them
 			if (wallets.current.includes(fullAddress)) {
 				setState((prev) => ({
 					error: prev.error,
 					isLoading: false,
-					summary: cachedSummary.current,
+					summary: { ...cachedSummary.current, airdropEligibility },
 					state: "done",
 					transactions: prev.transactions,
 				}))
@@ -216,11 +228,14 @@ function useTransactions(address) {
 				setState({
 					error: null,
 					isLoading: false,
-					summary: aggregateTransactions(
-						fullAddress,
-						transactions,
-						cachedSummary.current,
-					),
+					summary: {
+						airdropEligibility,
+						...aggregateTransactions(
+							fullAddress,
+							transactions,
+							cachedSummary.current,
+						),
+					},
 					state: "done",
 					transactions,
 				})

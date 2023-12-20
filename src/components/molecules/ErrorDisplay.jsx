@@ -17,7 +17,7 @@ const ErrorDisplay = ({ error }) => {
 					<IoClose />
 				</Button>
 			</div>
-			<p className="break-words">{error.message}</p>
+			<p className="break-words">{error.message}.</p>
 		</div>
 	) : null
 }
