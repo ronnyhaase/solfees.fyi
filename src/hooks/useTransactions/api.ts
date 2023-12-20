@@ -1,6 +1,10 @@
 import ky from "ky"
 
-const fetchAirdropEligibility = (address) =>
+import { type AirdropEligibility } from "@/types"
+
+const fetchAirdropEligibility = (
+	address: string,
+): Promise<AirdropEligibility> =>
 	ky
 		.get(`/api/airdrop/${address}`, {
 			throwHttpErrors: false,

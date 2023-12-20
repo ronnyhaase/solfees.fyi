@@ -8,17 +8,24 @@ import {
 	fetchDomainInfo,
 	fetchTransactions,
 } from "./api"
+import { AirdropEligibility } from "@/types"
 
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
 
-const fetchAllTransactions = async ({ address, setProgress }) => {
+const fetchAllTransactions = async ({
+	address,
+	setProgress,
+}: {
+	address: string
+	setProgress: Function
+}) => {
 	let includedSignatures = new Set()
 	let before = null
 	let result = []
 
 	while (true) {
-		const partial = await fetchTransactions(address, before)
+		const partial: any = await fetchTransactions(address, before)
 
 		if (partial.error) {
 			/* In very rare cases Helius might fails with a certain before parameter
@@ -40,7 +47,7 @@ const fetchAllTransactions = async ({ address, setProgress }) => {
 		before = partial[partial.length - 1].signature
 
 		// Add new, non-duplicate transactions to result
-		partial.forEach((newTx) => {
+		partial.forEach((newTx: any) => {
 			if (!includedSignatures.has(newTx.signature)) {
 				includedSignatures.add(newTx.signature)
 				result.push(newTx)
@@ -53,7 +60,11 @@ const fetchAllTransactions = async ({ address, setProgress }) => {
 	}
 }
 
-const aggregateTransactions = (address, transactions, prevResult) => {
+const aggregateTransactions = (
+	address: string,
+	transactions: Array<any>,
+	prevResult: any,
+) => {
 	let aggregation = {
 		firstTransactionTS: Number.MAX_SAFE_INTEGER,
 		failedTransactions: 0,
@@ -114,7 +125,7 @@ const aggregateTransactions = (address, transactions, prevResult) => {
 	return { aggregation, categorizations }
 }
 
-function useTransactions(address) {
+function useTransactions(address: string | null) {
 	const initialState = {
 		error: null,
 		isLoading: false,
@@ -123,7 +134,7 @@ function useTransactions(address) {
 		transactions: null,
 	}
 	const [state, setState] = useState(initialState)
-	const setStateError = (error) =>
+	const setStateError = (error: any) =>
 		// Timeout prevents animations from overlapping
 		setTimeout(
 			() =>
@@ -176,7 +187,7 @@ function useTransactions(address) {
 			let fullAddress = address
 			if (isSolanaDomain(address)) {
 				setStateResolving()
-				let domainInfo
+				let domainInfo: any
 				try {
 					domainInfo = await fetchDomainInfo(address)
 				} catch (error) {
@@ -190,7 +201,7 @@ function useTransactions(address) {
 				fullAddress = domainInfo.address
 			}
 
-			let airdropEligibility = null
+			let airdropEligibility: AirdropEligibility = null
 			try {
 				airdropEligibility = await fetchAirdropEligibility(fullAddress)
 			} catch (error) {

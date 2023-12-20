@@ -1,10 +1,11 @@
 import { NumberDisplay, U } from "@/components/atoms"
+import { type AirdropEligibility, type AirdropEligibilityItem } from "@/types"
 
-function Airdrops({ data }) {
+function Airdrops({ data }: { data: AirdropEligibility }) {
 	if (!data) return null
 
 	const count = data.eligibility.reduce(
-		(acc, cur) => (acc + cur.eligible ? 1 : 0),
+		(acc, cur) => acc + (cur.eligible ? 1 : 0),
 		0,
 	)
 
@@ -16,10 +17,10 @@ function Airdrops({ data }) {
 		)
 	}
 
-	const renderEligible = (airdrop) => {
+	const renderEligible = (airdrop: AirdropEligibilityItem) => {
 		if (airdrop.eligible && airdrop.amount) return "✅"
 		else if (!airdrop.eligible && !airdrop.error) return "❌"
-		// This combination happens when SAC API limit was hit
+		// This combination occurs when SAC API limit was hit
 		else if (!airdrop.eligible && !airdrop.amount && airdrop.error) return "N/A"
 	}
 
@@ -37,7 +38,7 @@ function Airdrops({ data }) {
 					</tr>
 				</thead>
 				<tbody>
-					{data.eligibility.map((airdrop) => (
+					{data.eligibility.map((airdrop: AirdropEligibilityItem) => (
 						<tr key={airdrop.protocol}>
 							<td>{airdrop.protocolLabel}</td>
 							<td>{renderEligible(airdrop)}</td>

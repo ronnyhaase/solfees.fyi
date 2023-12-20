@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server"
 
 import { isSolanaAddress } from "@/utils"
+import {
+	type AirdropEligibilityEntry,
+	type AirdropEligibilityResponse,
+} from "@/types"
 
-async function GET(_, { params: { address } }) {
+async function GET(
+	_: unknown,
+	{ params: { address } }: { params: { address: string } },
+) {
 	if (!isSolanaAddress(address)) {
 		return NextResponse.json({ error: "Invalid address" }, { status: 400 })
 	}
 
-	let data
+	let data: AirdropEligibilityEntry | null
 	try {
 		data = await fetch(
 			`https://external.api.solworks.dev/v1/reports?addresses=${address}`,
@@ -19,7 +26,9 @@ async function GET(_, { params: { address } }) {
 			},
 		)
 			.then((r) => r.json())
-			.then((body) => (Array.isArray(body.data) ? body.data[0] : null))
+			.then((body: AirdropEligibilityResponse) =>
+				Array.isArray(body.data) ? body.data[0] : null,
+			)
 	} catch (error) {
 		return NextResponse.json(
 			{ error: "Unknown error with airdrop API" },
