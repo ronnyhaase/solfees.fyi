@@ -1,6 +1,7 @@
+import { Categorization } from "@/types"
 import { oneOf } from "@/utils"
 
-const CATEGORIES = {
+const CATEGORIES: Record<string, string> = {
 	BURN: "Burns",
 	DEPLOYMENT: "Program Deployments",
 	NFT_FI: "NFT Borrow / Lend",
@@ -15,7 +16,7 @@ const CATEGORIES = {
 	OTHER: "Others",
 }
 
-const CATEGORIZATIONS = {
+const CATEGORIZATIONS: Record<string, [string[], string[]]> = {
 	// [type, source] - at least one of each, where empty means true
 	BURN: [["BURN", "BURN_NFT"], []],
 	DEPLOYMENT: [
@@ -47,7 +48,7 @@ const CATEGORIZATIONS = {
 	TRANSFER: [["TRANSFER"], []],
 }
 
-const categorizyTransaction = (type, source) => {
+const categorizyTransaction = (type: string, source: string) => {
 	return (
 		Object.keys(CATEGORIZATIONS).find(
 			(key) =>
@@ -57,8 +58,8 @@ const categorizyTransaction = (type, source) => {
 	)
 }
 
-function mergeCategorizations(...args) {
-	const result = {}
+function mergeCategorizations(...args: Array<Categorization>): Categorization {
+	const result: Categorization = {}
 
 	args.map((categorization) => {
 		Object.keys(categorization).forEach((category) => {

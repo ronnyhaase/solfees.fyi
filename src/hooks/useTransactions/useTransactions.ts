@@ -8,7 +8,22 @@ import {
 	fetchDomainInfo,
 	fetchTransactions,
 } from "./api"
-import { AirdropEligibility } from "@/types"
+import {
+	type AirdropEligibility,
+	type HeliusParsedTransactionResponse,
+	type HeliusParsedTransaction,
+	type WalletResult,
+	TransactionAggregation,
+	Categorization,
+} from "@/types"
+
+type FetchingStatus = {
+	error: Error | string | null
+	isLoading: boolean
+	summary: WalletResult | null
+	state: "intro" | "error" | "loading" | "resolving" | "done"
+	transactions: Array<HeliusParsedTransaction> | null
+}
 
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
@@ -21,17 +36,21 @@ const fetchAllTransactions = async ({
 	setProgress: Function
 }) => {
 	let includedSignatures = new Set()
-	let before = null
-	let result = []
+	let before: string | null = null
+	let result: Array<HeliusParsedTransaction> = []
 
 	while (true) {
-		const partial: any = await fetchTransactions(address, before)
+		const partial: HeliusParsedTransactionResponse = await fetchTransactions(
+			address,
+			before,
+		)
 
-		if (partial.error) {
+		if ("error" in partial) {
 			/* In very rare cases Helius might fails with a certain before parameter
 				and provides an alternative to continue from. This can lead to
 				duplicates */
-			const tryAgainMatch = partial.error.match(E_TRY_AGAIN_BEFORE)
+			const tryAgainMatch: RegExpMatchArray | null =
+				partial.error.match(E_TRY_AGAIN_BEFORE)
 			if (tryAgainMatch && tryAgainMatch[1]) {
 				before = tryAgainMatch[1]
 				continue // Retry with new 'before'
@@ -47,7 +66,7 @@ const fetchAllTransactions = async ({
 		before = partial[partial.length - 1].signature
 
 		// Add new, non-duplicate transactions to result
-		partial.forEach((newTx: any) => {
+		partial.forEach((newTx: HeliusParsedTransaction) => {
 			if (!includedSignatures.has(newTx.signature)) {
 				includedSignatures.add(newTx.signature)
 				result.push(newTx)
@@ -62,10 +81,10 @@ const fetchAllTransactions = async ({
 
 const aggregateTransactions = (
 	address: string,
-	transactions: Array<any>,
-	prevResult: any,
+	transactions: Array<HeliusParsedTransaction>,
+	prevResult: WalletResult | null = null,
 ) => {
-	let aggregation = {
+	let aggregation: TransactionAggregation = {
 		firstTransactionTS: Number.MAX_SAFE_INTEGER,
 		failedTransactions: 0,
 		feesAvg: 0,
@@ -73,7 +92,7 @@ const aggregateTransactions = (
 		transactionsCount: transactions.length,
 		unpaidTransactionsCount: 0,
 	}
-	let categorizations = {}
+	let categorizations: Categorization = {}
 
 	transactions.map((tx) => {
 		if (tx.feePayer === address) {
@@ -90,7 +109,7 @@ const aggregateTransactions = (
 				? tx.timestamp * 1000
 				: aggregation.firstTransactionTS
 
-		const category = categorizyTransaction(tx.type, tx.source)
+		const category: string = categorizyTransaction(tx.type, tx.source)
 		if (categorizations[category]) {
 			categorizations[category].count += 1
 			categorizations[category].fees += tx.fee
@@ -103,7 +122,7 @@ const aggregateTransactions = (
 			? aggregation.feesTotal / aggregation.transactionsCount
 			: 0
 
-	if (prevResult) {
+	if (prevResult && prevResult.aggregation) {
 		aggregation.firstTransactionTS =
 			prevResult.aggregation.firstTransactionTS < aggregation.firstTransactionTS
 				? prevResult.aggregation.firstTransactionTS
@@ -118,7 +137,7 @@ const aggregateTransactions = (
 
 		categorizations = mergeCategorizations(
 			categorizations,
-			prevResult.categorizations,
+			prevResult.categorizations || {},
 		)
 	}
 
@@ -126,19 +145,19 @@ const aggregateTransactions = (
 }
 
 function useTransactions(address: string | null) {
-	const initialState = {
+	const initialState: FetchingStatus = {
 		error: null,
 		isLoading: false,
 		summary: null,
 		state: "intro",
 		transactions: null,
 	}
-	const [state, setState] = useState(initialState)
-	const setStateError = (error: any) =>
+	const [status, setStatus] = useState<FetchingStatus>(initialState)
+	const setStateError = (error: Error | string) =>
 		// Timeout prevents animations from overlapping
 		setTimeout(
 			() =>
-				setState({
+				setStatus({
 					error,
 					isLoading: false,
 					summary: null,
@@ -148,7 +167,7 @@ function useTransactions(address: string | null) {
 			250,
 		)
 	const setStateLoading = () =>
-		setState({
+		setStatus({
 			error: null,
 			isLoading: true,
 			summary: null,
@@ -156,7 +175,7 @@ function useTransactions(address: string | null) {
 			transactions: null,
 		})
 	const setStateResolving = () =>
-		setState({
+		setStatus({
 			error: null,
 			isLoading: true,
 			summary: null,
@@ -164,19 +183,21 @@ function useTransactions(address: string | null) {
 			transactions: null,
 		})
 
-	const cachedSummary = useRef(null)
-	const wallets = useRef([])
+	const cachedSummary = useRef<WalletResult | null>(null)
+	const wallets = useRef<Array<string>>([])
 	const [progress, setProgress] = useState(0)
 	const reset = () => {
 		cachedSummary.current = null
 		wallets.current = []
-		setState(initialState)
+		setStatus(initialState)
 	}
 	const addWallet = () => {
-		cachedSummary.current = { ...state.summary }
-		setState({
+		cachedSummary.current = Object.assign({}, status.summary)
+		setStatus({
 			...initialState,
-			summary: { ...cachedSummary.current },
+			summary: {
+				...cachedSummary.current,
+			},
 		})
 	}
 
@@ -191,7 +212,7 @@ function useTransactions(address: string | null) {
 				try {
 					domainInfo = await fetchDomainInfo(address)
 				} catch (error) {
-					setStateError(error)
+					setStateError(error as Error)
 					return
 				}
 				if (domainInfo.error) {
@@ -201,19 +222,24 @@ function useTransactions(address: string | null) {
 				fullAddress = domainInfo.address
 			}
 
-			let airdropEligibility: AirdropEligibility = null
+			let airdropEligibility: AirdropEligibility | null = null
 			try {
 				airdropEligibility = await fetchAirdropEligibility(fullAddress)
 			} catch (error) {
 				airdropEligibility = null
 			}
 
-			// If wallet transactions are already fetched, "return" them
+			// If wallet transactions were already fetched, "return" them
 			if (wallets.current.includes(fullAddress)) {
-				setState((prev) => ({
+				setStatus((prev) => ({
 					error: prev.error,
 					isLoading: false,
-					summary: { ...cachedSummary.current, airdropEligibility },
+					summary: {
+						...cachedSummary.current,
+						aggregation: prev.summary?.aggregation || null,
+						airdropEligibility,
+						categorizations: prev.summary?.categorizations || null,
+					},
 					state: "done",
 					transactions: prev.transactions,
 				}))
@@ -224,7 +250,7 @@ function useTransactions(address: string | null) {
 			setProgress(0)
 			// Timeout prevents animations from overlapping
 			setTimeout(async () => {
-				let transactions = null
+				let transactions: HeliusParsedTransaction[] = []
 
 				try {
 					transactions = await fetchAllTransactions({
@@ -232,11 +258,11 @@ function useTransactions(address: string | null) {
 						setProgress,
 					})
 				} catch (error) {
-					setStateError(error)
+					setStateError(error as Error)
 				}
 
 				wallets.current.push(fullAddress)
-				setState({
+				setStatus({
 					error: null,
 					isLoading: false,
 					summary: {
@@ -254,7 +280,7 @@ function useTransactions(address: string | null) {
 		})()
 	}, [address])
 
-	return { addWallet, progress, reset, ...state, wallets: wallets.current }
+	return { addWallet, progress, reset, ...status, wallets: wallets.current }
 }
 
 export { useTransactions }

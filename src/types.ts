@@ -1,4 +1,4 @@
-interface AirdropEligibilityItem {
+type AirdropEligibilityItem = {
 	protocol: string
 	protocolLabel: string
 	token: string
@@ -10,19 +10,63 @@ interface AirdropEligibilityItem {
 	error?: string | null
 }
 
-interface AirdropEligibility {
+type AirdropEligibility = {
 	address: string
 	error: string | null
 	eligibility: Array<AirdropEligibilityItem>
 }
 
-interface AirdropEligibilityResponse {
+type AirdropEligibilityResponse = {
 	data: Array<AirdropEligibility>
 	error: string | null
+}
+
+type HeliusParsedTransaction = {
+	fee: number
+	feePayer: string
+	signature: string
+	source: string
+	timestamp: number
+	transactionError: string | null
+	type: string
+}
+
+type HeliusParsedTransactionResponse =
+	| Array<HeliusParsedTransaction>
+	| { error: string }
+
+type TransactionAggregation = {
+	firstTransactionTS: number
+	failedTransactions: number
+	feesAvg: number
+	feesTotal: number
+	transactionsCount: number
+	unpaidTransactionsCount: number
+}
+
+type Categorization = { [key: string]: { count: number; fees: number } }
+
+type WalletResult = {
+	aggregation: TransactionAggregation | null
+	airdropEligibility: AirdropEligibility | null
+	categorizations: Categorization | null
+}
+
+type PricesAndFees = {
+	avgGasFees: Record<string, number>
+	avgTxGasUsage: Record<string, number>
+	prices: Record<string, number>
+	symbols: Record<string, string>
 }
 
 export {
 	type AirdropEligibility,
 	type AirdropEligibilityItem,
 	type AirdropEligibilityResponse,
+	type Categorization,
+	type HeliusParsedTransaction,
+	type HeliusParsedTransactionResponse,
+	type PricesAndFees,
+	type TransactionAggregation,
+	type WalletResult,
 }
