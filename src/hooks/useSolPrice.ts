@@ -1,8 +1,10 @@
 import ky from "ky"
 import { useEffect, useState } from "react"
 
+import { type PricesAndFees } from "@/types"
+
 function usePricesAndFees() {
-	const [pricesAndFees, setPricesAndFees] = useState(null)
+	const [pricesAndFees, setPricesAndFees] = useState<PricesAndFees | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
@@ -12,7 +14,7 @@ function usePricesAndFees() {
 			timeout: 30000,
 		})
 			.json()
-			.then((body) => setPricesAndFees(body))
+			.then((body) => setPricesAndFees(body as PricesAndFees))
 			.then(() => setIsLoading(false))
 			.catch(() => setPricesAndFees(null))
 	}, [])
