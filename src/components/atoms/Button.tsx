@@ -1,7 +1,9 @@
 import clx from "classnames"
 import { type ReactNode } from "react"
 
-interface ButtonProps {
+type HTMLButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+
+type ButtonProps = HTMLButtonProps & {
 	children: ReactNode
 	className?: string
 	color?: "primary" | "secondary"

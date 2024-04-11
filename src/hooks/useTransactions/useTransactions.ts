@@ -12,18 +12,11 @@ import {
 	type AirdropEligibility,
 	type HeliusParsedTransactionResponse,
 	type HeliusParsedTransaction,
+	type TransactionFetchingStatus,
 	type WalletResult,
-	TransactionAggregation,
-	Categorization,
+	type TransactionAggregation,
+	type Categorization,
 } from "@/types"
-
-type FetchingStatus = {
-	error: Error | string | null
-	isLoading: boolean
-	summary: WalletResult | null
-	state: "intro" | "error" | "loading" | "resolving" | "done"
-	transactions: Array<HeliusParsedTransaction> | null
-}
 
 const E_TRY_AGAIN_BEFORE =
 	/Failed to find events within the search period\. To continue search, query the API again with the `before` parameter set to (.*)\./
@@ -145,14 +138,14 @@ const aggregateTransactions = (
 }
 
 function useTransactions(address: string | null) {
-	const initialState: FetchingStatus = {
+	const initialState: TransactionFetchingStatus = {
 		error: null,
 		isLoading: false,
 		summary: null,
 		state: "intro",
 		transactions: null,
 	}
-	const [status, setStatus] = useState<FetchingStatus>(initialState)
+	const [status, setStatus] = useState<TransactionFetchingStatus>(initialState)
 	const setStateError = (error: Error | string) =>
 		// Timeout prevents animations from overlapping
 		setTimeout(

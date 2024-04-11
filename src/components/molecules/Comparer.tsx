@@ -1,15 +1,24 @@
 import BigNumber from "bignumber.js"
-import { useMemo, useState } from "react"
+import { type ChangeEvent, useMemo, useState } from "react"
 import Image from "next/image"
 
 import { NoWrap, NumberDisplay, U } from "@/components/atoms"
 import { GAS_DENOMINATOR } from "@/constants"
+import { type PricesAndFees } from "@/types"
 import { isFunction } from "@/utils"
 
 const COMPARER_CHAINS = ["ethereum", "polygon"]
 const VALIDATOR_MONTHLY_COSTS = 337
 
-const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
+const Comparer = ({
+	txCount,
+	pricesAndFees,
+	onChainChange,
+}: {
+	txCount: number
+	pricesAndFees: PricesAndFees
+	onChainChange: (ev: ChangeEvent<HTMLSelectElement>) => void
+}) => {
 	const [chain, setChain] = useState(COMPARER_CHAINS[0])
 	const data = useMemo(() => {
 		const symbol = pricesAndFees.symbols[chain]
@@ -38,7 +47,7 @@ const Comparer = ({ txCount, pricesAndFees, onChainChange }) => {
 		return { bonk, symbol, tokenCosts, usdCosts, validatorRuntime }
 	}, [chain, pricesAndFees, txCount])
 
-	const handleChainChange = (ev) => {
+	const handleChainChange = (ev: ChangeEvent<HTMLSelectElement>) => {
 		if (isFunction(onChainChange)) onChainChange(ev)
 		setChain(ev.target.value)
 	}

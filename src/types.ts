@@ -52,6 +52,21 @@ type WalletResult = {
 	categorizations: Categorization | null
 }
 
+type TransactionFetchingStatusState =
+	| "intro"
+	| "error"
+	| "loading"
+	| "resolving"
+	| "done"
+
+type TransactionFetchingStatus = {
+	error: Error | string | null
+	isLoading: boolean
+	summary: WalletResult | null
+	state: TransactionFetchingStatusState
+	transactions: Array<HeliusParsedTransaction> | null
+}
+
 type PricesAndFees = {
 	avgGasFees: Record<string, number>
 	avgTxGasUsage: Record<string, number>
@@ -68,5 +83,7 @@ export {
 	type HeliusParsedTransactionResponse,
 	type PricesAndFees,
 	type TransactionAggregation,
+	type TransactionFetchingStatus,
+	type TransactionFetchingStatusState,
 	type WalletResult,
 }

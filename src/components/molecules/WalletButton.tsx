@@ -22,7 +22,6 @@ const WalletButton = ({}) => {
 				if (onConnect) onConnect()
 				break
 			case "connected":
-				setMenuOpen(true)
 				break
 		}
 	}, [buttonState, onConnect, setModalVisible])

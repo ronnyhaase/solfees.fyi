@@ -1,7 +1,7 @@
 import clx from "classnames"
 import Image from "next/image"
 
-const SunriseAd = ({ className }) => (
+const SunriseAd = ({ className }: { className: string }) => (
 	<a
 		className={clx(
 			className,

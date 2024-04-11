@@ -1,7 +1,7 @@
 import clx from "classnames"
 import Image from "next/image"
 
-const About = ({ className }) => (
+const About: React.FC<{ className?: string }> = ({ className }) => (
 	<div className={clx(className, "text-sm")}>
 		<p className="mb-2 flex flex-col text-center">
 			<span>This useless tool was built by your favorite Solana fren,</span>

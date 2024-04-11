@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5"
 
 import { Button } from "@/components/atoms"
 
-const ErrorDisplay = ({ error }) => {
+const ErrorDisplay = ({ error }: { error: Error }) => {
 	const [closed, setClosed] = useState(false)
 	useEffect(() => {
 		setClosed(false)
