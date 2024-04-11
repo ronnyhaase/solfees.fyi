@@ -1,6 +1,4 @@
 "use client"
-var window =
-	typeof window === "undefined" ? { innerWidth: 0, innerHeight: 0 } : window
 
 import { Transition } from "@headlessui/react"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
@@ -71,15 +69,15 @@ const SolFeesApp = () => {
 		setAppReady(true)
 	}, [])
 
-	const [measureRef, { width: confettiWidth, height: confettiHeight }] =
+	const [measureRef, { width: screenWidth, height: screenHeight }] =
 		useMeasure()
 
 	const [isElementLeaving, setIsElementLeaving] = useState(false)
 	const setElementLeaving = () => setIsElementLeaving(true)
 	const setElementNotLeaving = () => setIsElementLeaving(false)
 
-	let spotlight1Size = window.innerWidth / 2
-	let spotlight2Size = window.innerWidth / 3
+	let spotlight1Size = screenWidth / 2
+	let spotlight2Size = screenWidth / 3
 	spotlight1Size = spotlight1Size > 400 ? 400 : spotlight1Size
 	spotlight2Size = spotlight2Size > 200 ? 200 : spotlight2Size
 
@@ -183,11 +181,11 @@ const SolFeesApp = () => {
 				{state === "done" ? (
 					<Confetti
 						gravity={0.5}
-						height={confettiHeight}
+						height={screenHeight}
 						numberOfPieces={200}
 						recycle={false}
 						run={state === "done"}
-						width={confettiWidth}
+						width={screenWidth}
 					/>
 				) : null}
 			</main>

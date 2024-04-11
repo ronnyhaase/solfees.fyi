@@ -1,6 +1,4 @@
 "use client"
-var window =
-	typeof window === "undefined" ? { innerWidth: 0, innerHeight: 0 } : window
 
 import { useEffect, useRef, useState } from "react"
 
