@@ -15,7 +15,7 @@ import { useLayoutEffect, useMemo, useState } from "react"
 import Confetti from "react-confetti"
 import { useMeasure } from "react-use"
 
-import { FadeInOutTransition } from "@/components/atoms"
+import { FadeInOutTransition, Spotlight } from "@/components/atoms"
 import {
 	About,
 	ErrorDisplay,
@@ -76,6 +76,11 @@ const SolFeesApp = () => {
 	const setElementLeaving = () => setIsElementLeaving(true)
 	const setElementNotLeaving = () => setIsElementLeaving(false)
 
+	let spotlight1Size = window.innerWidth / 2
+	let spotlight2Size = window.innerWidth / 3
+	spotlight1Size = spotlight1Size > 400 ? 400 : spotlight1Size
+	spotlight2Size = spotlight2Size > 200 ? 200 : spotlight2Size
+
 	return (
 		<Providers>
 			<main
@@ -106,6 +111,8 @@ const SolFeesApp = () => {
 					afterLeave={setElementNotLeaving}
 				>
 					<Progress state={state} progress={progress} />
+					<Spotlight opacity={0.1} size={spotlight1Size} />
+					<Spotlight opacity={0.2} size={spotlight2Size} />
 				</FadeInOutTransition>
 				<Transition
 					show={state === "done" && !isElementLeaving}
