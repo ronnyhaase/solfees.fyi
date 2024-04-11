@@ -190,6 +190,9 @@ function useTransactions(address) {
 				fullAddress = domainInfo.address
 			}
 
+			setStateLoading()
+			setProgress(0)
+
 			let airdropEligibility = null
 			try {
 				airdropEligibility = await fetchAirdropEligibility(fullAddress)
@@ -209,8 +212,6 @@ function useTransactions(address) {
 				return
 			}
 
-			setStateLoading()
-			setProgress(0)
 			// Timeout prevents animations from overlapping
 			setTimeout(async () => {
 				let transactions = null
