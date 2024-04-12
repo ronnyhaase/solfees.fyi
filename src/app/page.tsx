@@ -1,6 +1,6 @@
 import { SolFeesApp } from "@/components/pages"
 
-export const metadata = {
+const metadata = {
 	metadataBase: new URL("https://www.solfees.fyi"),
 	title: "solfees.fyi",
 	description:
@@ -29,10 +29,12 @@ export const metadata = {
 	},
 }
 
-export default function Home() {
+function HomePage() {
 	return (
 		<>
 			<SolFeesApp />
 		</>
 	)
 }
+
+export { HomePage as default, metadata }

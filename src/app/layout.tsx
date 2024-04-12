@@ -1,6 +1,7 @@
 import clx from "classnames"
 import PlausibleProvider from "next-plausible"
 import { Noto_Sans } from "next/font/google"
+import { type ReactNode } from "react"
 
 require("./styles.css")
 
@@ -11,7 +12,7 @@ const notoSans = Noto_Sans({
 	display: "swap",
 })
 
-export default function RootLayout({ children }) {
+const RootLayout = ({ children }: { children: ReactNode }) => {
 	return (
 		<html
 			className={clx(
@@ -33,3 +34,5 @@ export default function RootLayout({ children }) {
 		</html>
 	)
 }
+
+export default RootLayout
