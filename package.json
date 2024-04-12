@@ -6,8 +6,8 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "rimraf .next && next dev",
-		"lint": "next lint",
-		"prettify": "prettier -w 'src/**/*.{js,jsx}' next.config.js postcss.config.js tailwind.config.js",
+		"lint": "tsc --noEmit",
+		"prettify": "prettier -w 'scripts/**/*.mjs' 'src/**/*.{js,jsx,mjs,ts,tsx}' next.config.js postcss.config.js tailwind.config.js",
 		"start": "next start"
 	},
 	"devDependencies": {
