@@ -52,6 +52,16 @@ type WalletResult = {
 	categorizations: Categorization | null
 }
 
+type WalletsSummary = Partial<WalletResult> & {
+	firstTransaction: Date
+	solFees: number
+	solAvgFee: number
+	usdFees: number
+	usdAvgFee: number
+	txCount: number
+	txCountUnpaid: number
+}
+
 type TransactionFetchingStatusState =
 	| "intro"
 	| "error"
@@ -86,4 +96,5 @@ export {
 	type TransactionFetchingStatus,
 	type TransactionFetchingStatusState,
 	type WalletResult,
+	type WalletsSummary,
 }

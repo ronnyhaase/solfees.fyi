@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react"
 import BigNumber from "bignumber.js"
 import clx from "classnames"
 import { usePlausible } from "next-plausible"
-import { useMemo, useState } from "react"
+import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react"
 import { IoGitCompare, IoInformationCircle } from "react-icons/io5"
 import { MdPlaylistAdd, MdSkipPrevious } from "react-icons/md"
 
@@ -15,8 +15,19 @@ import {
 } from "@/components/atoms"
 import { GAS_DENOMINATOR, TX_CAP } from "@/constants"
 import { Airdrops, Comparer } from "@/components/molecules"
+import {
+	type AirdropEligibility,
+	type WalletsSummary,
+	type PricesAndFees,
+	type WalletResult,
+} from "@/types"
 
-const generateTweetMessage = (feesUsd, feesSol, transactions, wallets) =>
+const generateTweetMessage = (
+	feesUsd: number,
+	feesSol: number,
+	transactions: number,
+	wallets: number,
+) =>
 	`I spent only ${
 		feesUsd ? `$${feesUsd} (◎ ${feesSol})` : `◎ ${feesSol}`
 	} in fees for all of my ${transactions} Solana transactions${
@@ -32,11 +43,18 @@ const Result = ({
 	reset,
 	summary,
 	wallets,
+}: {
+	addWallet: () => void
+	className?: string
+	pricesAndFees: PricesAndFees
+	reset: () => void
+	summary: WalletResult
+	wallets: string[]
 }) => {
 	const plausible = usePlausible()
 	const data = useMemo(() => {
-		let data = {}
-		if (summary) {
+		let data: Partial<WalletsSummary> = {}
+		if (summary && summary.aggregation) {
 			data = {
 				airdropEligibility: summary.airdropEligibility,
 				firstTransaction: new Date(summary.aggregation.firstTransactionTS),
@@ -52,7 +70,7 @@ const Result = ({
 					.toNumber(),
 			}
 		}
-		if (pricesAndFees && summary) {
+		if (pricesAndFees && summary && summary.aggregation) {
 			data.usdFees = new BigNumber(summary.aggregation.feesTotal)
 				.multipliedBy(GAS_DENOMINATOR)
 				.multipliedBy(pricesAndFees.prices.solana)
@@ -75,7 +93,7 @@ const Result = ({
 		window.scrollBy({ behavior: "smooth", top: 200 })
 	}
 
-	const handleCompareChainChange = (ev) => {
+	const handleCompareChainChange = (ev: ChangeEvent<HTMLSelectElement>) => {
 		plausible("Compare change", {
 			props: {
 				Chain: ev.target.value[0].toUpperCase() + ev.target.value.slice(1),
@@ -95,15 +113,15 @@ const Result = ({
 	}
 
 	const tweetMessage = generateTweetMessage(
-		data.usdFees,
-		data.solFees,
-		data.txCount,
+		data.usdFees as number,
+		data.solFees as number,
+		data.txCount as number,
 		wallets.length,
 	)
 
 	return (
 		<div className={className}>
-			{data.txCount >= TX_CAP ? (
+			{(data.txCount as number) >= TX_CAP ? (
 				<p className="flex justify-center items-center mb-2 leading-tight text-blue-500 text-base">
 					<IoInformationCircle className="inline mr-2" size={32} />
 					<span>
@@ -130,7 +148,7 @@ const Result = ({
 					<>Your wallet has spent </>
 				)}
 				<NoWrap className="text-solana-purple">
-					◎ <NumberDisplay val={data.solFees} />{" "}
+					◎ <NumberDisplay val={data.solFees as number} />{" "}
 				</NoWrap>
 				in fees for{" "}
 				<span className="text-solana-purple">{data.txCount} transactions</span>.
@@ -146,10 +164,13 @@ const Result = ({
 			) : null}
 			<div className="mt-2">
 				<p className="mb-2">
-					You paid for <NumberDisplay val={data.txCount - data.txCountUnpaid} />{" "}
+					You paid for{" "}
+					<NumberDisplay
+						val={(data.txCount as number) - (data.txCountUnpaid as number)}
+					/>{" "}
 					of the {data.txCount} transactions. On average, you paid{" "}
 					<NoWrap>
-						◎ <NumberDisplay val={data.solAvgFee} />
+						◎ <NumberDisplay val={data.solAvgFee as number} />
 					</NoWrap>{" "}
 					{data.usdAvgFee ? (
 						<NoWrap>
@@ -160,10 +181,10 @@ const Result = ({
 				</p>
 				<p className="mb-4">
 					The very first transaction was sent on{" "}
-					<DateDisplay val={data.firstTransaction} />
+					<DateDisplay val={data.firstTransaction as Date} />
 				</p>
 			</div>
-			<Airdrops data={data.airdropEligibility} />
+			<Airdrops data={data.airdropEligibility as AirdropEligibility} />
 			<Transition
 				enter="duration-200 ease-in transition-opacity"
 				enterFrom="opacity-0"
@@ -173,7 +194,7 @@ const Result = ({
 				<Comparer
 					onChainChange={handleCompareChainChange}
 					pricesAndFees={pricesAndFees}
-					txCount={data.txCount - data.txCountUnpaid}
+					txCount={(data.txCount as number) - (data.txCountUnpaid as number)}
 				/>
 			</Transition>
 			<div className="flex gap-1 justify-center mb-1">

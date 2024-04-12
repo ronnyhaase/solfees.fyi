@@ -10,7 +10,7 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { clusterApiUrl } from "@solana/web3.js"
 import clx from "classnames"
-import { useLayoutEffect, useMemo, useState } from "react"
+import { type ReactNode, useLayoutEffect, useMemo, useState } from "react"
 import Confetti from "react-confetti"
 import { useMeasure } from "react-use"
 
@@ -23,8 +23,9 @@ import {
 } from "@/components/molecules"
 import { Result, WalletForm } from "@/components/templates"
 import { usePricesAndFees, useTransactions } from "@/hooks"
+import { type PricesAndFees, type WalletResult } from "@/types"
 
-const Providers = ({ children }) => {
+const Providers = ({ children }: { children: ReactNode }) => {
 	const walletEndpoint = useMemo(
 		() => clusterApiUrl(WalletAdapterNetwork.Mainnet),
 		[],
@@ -41,7 +42,7 @@ const Providers = ({ children }) => {
 }
 
 const SolFeesApp = () => {
-	const [address, setAddress] = useState(null)
+	const [address, setAddress] = useState<string | null>(null)
 	const { pricesAndFees } = usePricesAndFees()
 	const {
 		addWallet: addAnotherWallet,
@@ -69,7 +70,7 @@ const SolFeesApp = () => {
 	}, [])
 
 	const [measureRef, { width: confettiWidth, height: confettiHeight }] =
-		useMeasure()
+		useMeasure<HTMLElement>()
 
 	const [isElementLeaving, setIsElementLeaving] = useState(false)
 	const setElementLeaving = () => setIsElementLeaving(true)
@@ -135,9 +136,9 @@ const SolFeesApp = () => {
 					<div className="grow">
 						<Result
 							addWallet={addWallet}
-							pricesAndFees={pricesAndFees}
+							pricesAndFees={pricesAndFees as PricesAndFees}
 							reset={reset}
-							summary={summary}
+							summary={summary as WalletResult}
 							wallets={wallets}
 						/>
 					</div>

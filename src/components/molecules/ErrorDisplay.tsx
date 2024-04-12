@@ -3,7 +3,11 @@ import { IoClose } from "react-icons/io5"
 
 import { Button } from "@/components/atoms"
 
-const ErrorDisplay = ({ error }: { error: Error }) => {
+const ErrorDisplay = ({
+	error,
+}: {
+	error: Error | string | null | undefined
+}) => {
 	const [closed, setClosed] = useState(false)
 	useEffect(() => {
 		setClosed(false)
@@ -17,7 +21,9 @@ const ErrorDisplay = ({ error }: { error: Error }) => {
 					<IoClose />
 				</Button>
 			</div>
-			<p className="break-words">{error.message}.</p>
+			<p className="break-words">
+				{error instanceof Error ? (error as Error).message : error}.
+			</p>
 		</div>
 	) : null
 }

@@ -1,7 +1,16 @@
 import { useWallet } from "@solana/wallet-adapter-react"
 import clx from "classnames"
 import { usePlausible } from "next-plausible"
-import { useEffect, useRef, useState } from "react"
+import {
+	type ChangeEvent,
+	type ClipboardEvent,
+	type ClipboardEventHandler,
+	type FormEvent,
+	type SyntheticEvent,
+	useEffect,
+	useRef,
+	useState,
+} from "react"
 import {
 	IoCloseCircleOutline,
 	IoFlameOutline,
@@ -12,35 +21,43 @@ import { Button } from "@/components/atoms"
 import { WalletButton } from "@/components/molecules/WalletButton"
 import { isFunction, isSolanaAddress, isSolanaDomain } from "@/utils"
 
+type AddressInputProps = {
+	setValue: (value: string) => void
+	value: string
+	onClearClick: (ev: SyntheticEvent) => void
+	onPasteNative: ClipboardEventHandler
+	onPasteClick: (ev: SyntheticEvent) => void
+}
+
 const AddressInput = ({
 	setValue,
 	value,
 	onClearClick,
 	onPasteNative,
 	onPasteClick,
-}) => {
+}: AddressInputProps) => {
 	const [isInputFocused, setIsInputFocused] = useState(false)
 
-	const inputRef = useRef(null)
-	const handleClearClick = (ev) => {
+	const inputRef = useRef<HTMLInputElement>(null)
+	const handleClearClick = (ev: SyntheticEvent) => {
 		setValue("")
 		if (isFunction(onClearClick)) onClearClick(ev)
 	}
 	const handleInputBlur = () => setIsInputFocused(false)
-	const handleInputChange = (ev) => {
+	const handleInputChange = (ev: ChangeEvent<HTMLInputElement>) => {
 		const val = ev.target.value.trim()
 		setValue(val)
 	}
 	const handleInputFocus = () => setIsInputFocused(true)
-	const handleInputPaste = (ev) => {
+	const handleInputPaste = (ev: ClipboardEvent<HTMLInputElement>) => {
 		if (isFunction(onPasteNative)) onPasteNative(ev)
 	}
-	const handleInputPasteClick = async (ev) => {
+	const handleInputPasteClick = async (ev: SyntheticEvent) => {
 		if (isFunction(onPasteClick)) onPasteClick(ev)
-		inputRef.current.focus()
+		inputRef.current?.focus()
 		setValue(await navigator.clipboard?.readText())
 	}
-	const handleInputWrapperClick = () => inputRef.current.focus()
+	const handleInputWrapperClick = () => inputRef.current?.focus()
 
 	return (
 		<div
@@ -80,7 +97,13 @@ const AddressInput = ({
 	)
 }
 
-const WalletForm = ({ reset, setAddress, wallets }) => {
+type WalletFormProps = {
+	reset: () => void
+	setAddress: (address: string) => void
+	wallets: number
+}
+
+const WalletForm = ({ reset, setAddress, wallets }: WalletFormProps) => {
 	const plausible = usePlausible()
 	const [value, setValue] = useState("")
 	const [isValid, setIsValid] = useState(true)
@@ -90,7 +113,7 @@ const WalletForm = ({ reset, setAddress, wallets }) => {
 		setIsValid(isSolanaAddress(value) || isSolanaDomain(value))
 	}, [value])
 
-	const handleFormSubmit = async (ev) => {
+	const handleFormSubmit = async (ev: FormEvent<HTMLFormElement>) => {
 		ev.preventDefault()
 		if (isValid) {
 			plausible("Submit", {
