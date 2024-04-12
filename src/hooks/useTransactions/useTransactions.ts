@@ -215,6 +215,9 @@ function useTransactions(address: string | null) {
 				fullAddress = domainInfo.address
 			}
 
+			setStateLoading()
+			setProgress(0)
+
 			let airdropEligibility: AirdropEligibility | null = null
 			try {
 				airdropEligibility = await fetchAirdropEligibility(fullAddress)
@@ -239,8 +242,6 @@ function useTransactions(address: string | null) {
 				return
 			}
 
-			setStateLoading()
-			setProgress(0)
 			// Timeout prevents animations from overlapping
 			setTimeout(async () => {
 				let transactions: HeliusParsedTransaction[] = []

@@ -10,11 +10,12 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { clusterApiUrl } from "@solana/web3.js"
 import clx from "classnames"
+import Image from "next/image"
 import { type ReactNode, useLayoutEffect, useMemo, useState } from "react"
 import Confetti from "react-confetti"
 import { useMeasure } from "react-use"
 
-import { FadeInOutTransition } from "@/components/atoms"
+import { FadeInOutTransition, Spotlight } from "@/components/atoms"
 import {
 	About,
 	ErrorDisplay,
@@ -69,12 +70,17 @@ const SolFeesApp = () => {
 		setAppReady(true)
 	}, [])
 
-	const [measureRef, { width: confettiWidth, height: confettiHeight }] =
+	const [measureRef, { width: screenWidth, height: screenHeight }] =
 		useMeasure<HTMLElement>()
 
 	const [isElementLeaving, setIsElementLeaving] = useState(false)
 	const setElementLeaving = () => setIsElementLeaving(true)
 	const setElementNotLeaving = () => setIsElementLeaving(false)
+
+	let spotlight1Size = screenWidth / 2
+	let spotlight2Size = screenWidth / 3
+	spotlight1Size = spotlight1Size > 400 ? 400 : spotlight1Size
+	spotlight2Size = spotlight2Size > 200 ? 200 : spotlight2Size
 
 	return (
 		<Providers>
@@ -106,6 +112,8 @@ const SolFeesApp = () => {
 					afterLeave={setElementNotLeaving}
 				>
 					<Progress state={state} progress={progress} />
+					<Spotlight opacity={0.1} size={spotlight1Size} />
+					<Spotlight opacity={0.2} size={spotlight2Size} />
 				</FadeInOutTransition>
 				<Transition
 					show={state === "done" && !isElementLeaving}
@@ -146,12 +154,26 @@ const SolFeesApp = () => {
 						<SunriseAd className="mt-12" />
 						<div className="text-center">
 							<div className="py-4">- or -</div>
-							<a
+							{/* <a
 								href="https://app.hel.io/pay/6573bd77cdaabdd8ac9ac795"
 								target="_blank"
 								className="inline-flex px-8 py-4 rounded-full bg-[#fc8e03] text-lg text-white"
 							>
 								Tip me some BONK
+							</a> */}
+							<a
+								href="https://www.cubik.so/p/solfees-fyi"
+								target="_blank"
+								className="inline-flex items-center px-8 py-4 rounded-full bg-black leading-none text-lg text-white"
+							>
+								<Image
+									alt="Cubik logo"
+									src="/cubik.png"
+									width={24}
+									height={24}
+									className="mr-2"
+								/>
+								Donate on Cubik
 							</a>
 						</div>
 					</div>
@@ -160,11 +182,11 @@ const SolFeesApp = () => {
 				{state === "done" ? (
 					<Confetti
 						gravity={0.5}
-						height={confettiHeight}
+						height={screenHeight}
 						numberOfPieces={200}
 						recycle={false}
 						run={state === "done"}
-						width={confettiWidth}
+						width={screenWidth}
 					/>
 				) : null}
 			</main>

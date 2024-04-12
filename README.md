@@ -1,6 +1,7 @@
 # [SOLfees.fyi](https://www.solfees.fyi/)
 
 Check how much you\'ve spent on Solana transaction fees across all your wallets & compare with other blockchains.
+![2-wide](https://github.com/ronnyhaase/solfees.fyi/assets/714368/cbeeb847-2988-469c-8079-e2e2ac4f4fd8)
 
 ## Contributing
 
@@ -53,7 +54,7 @@ curl -X POST http://localhost:3000/hooks/update-gas-usage
 
 ---
 
-Copyright © 2023, [Ronny Haase](https://ronnyhaase.com)
+Copyright © 2023 - 2024, [Ronny Haase](https://ronnyhaase.com)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

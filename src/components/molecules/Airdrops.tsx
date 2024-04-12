@@ -53,13 +53,11 @@ function Airdrops({ data }: { data: AirdropEligibility }) {
 				<p className="text-base">
 					Provided by SolWorks{" "}
 					<a
-						href="https://solana-airdrop-checker.solworks.dev/"
+						href="https://airdropped.link/r/rudely-sheep-whimpered-19"
 						target="_blank"
 					>
-						Solana Airdrop Checker
+						Airdrop Checker
 					</a>
-					<br />
-					Check wallets in bulk, get notifications, all with EVM support.
 				</p>
 				<p className="text-xs">All data without warranty</p>
 			</div>
