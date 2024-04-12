@@ -14,7 +14,7 @@ async function GET() {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-API-Key": process.env.QUICKNODE_KEY,
+				"X-API-Key": process.env.QUICKNODE_KEY || "",
 			},
 			body: JSON.stringify({ query }),
 		})
@@ -37,7 +37,10 @@ async function GET() {
 		return NextResponse.json({ success: true })
 	} catch (error) {
 		console.error("FAILED: Update gas prices")
-		return NextResponse.json({ error: error.message }, { status: 500 })
+		return NextResponse.json(
+			{ error: (error as Error).message },
+			{ status: 500 },
+		)
 	}
 }
 

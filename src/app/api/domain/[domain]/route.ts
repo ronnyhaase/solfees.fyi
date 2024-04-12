@@ -4,7 +4,10 @@ import { NextResponse } from "next/server"
 
 import { isSolanaDomain } from "@/utils"
 
-async function GET(request, { params: { domain } }) {
+async function GET(
+	_: unknown,
+	{ params: { domain } }: { params: { domain: string } },
+) {
 	if (!isSolanaDomain(domain)) {
 		return NextResponse.json({ error: "Invalid domain" }, { status: 400 })
 	}

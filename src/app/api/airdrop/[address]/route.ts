@@ -21,7 +21,7 @@ async function GET(
 			{
 				method: "GET",
 				headers: {
-					"X-API-Key": process.env.AIRDROPCHECKER_KEY,
+					"X-API-Key": process.env.AIRDROPCHECKER_KEY || "",
 				},
 			},
 		)
