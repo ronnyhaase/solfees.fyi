@@ -4,7 +4,7 @@
 			"@/*": ["./src/*"]
 		},
 		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true,
+		"allowJs": false,
 		"noImplicitAny": true,
 		"skipLibCheck": true,
 		"strict": true,
