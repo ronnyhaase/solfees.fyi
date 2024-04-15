@@ -11,7 +11,7 @@ async function fetchPrices() {
 	}
 
 	const url =
-		"https://public-api.birdeye.so/public/multi_price?list_address=" +
+		"https://public-api.birdeye.so/defi/multi_price?list_address=" +
 		`${token.bonk},${token.ether},${token.matic},${token.sol}`
 
 	return fetch(url, {
