@@ -5,7 +5,7 @@ import { IoWalletOutline } from "react-icons/io5"
 
 import { Button } from "../atoms"
 
-const WalletButton = ({}) => {
+const WalletButton: React.FC = ({}) => {
 	const { setVisible: setModalVisible } = useWalletModal()
 	const { buttonState, onConnect } = useWalletMultiButton({
 		onSelectWallet() {

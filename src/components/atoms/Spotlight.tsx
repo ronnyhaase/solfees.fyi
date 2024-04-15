@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 
-const Spotlight = ({ opacity = 0.2, size = 200 }) => {
+const Spotlight: React.FC<{ opacity: number; size: number }> = ({
+	opacity = 0.2,
+	size = 200,
+}) => {
 	const INTERVAL = 1500
 	const SPEED = 0.2
 

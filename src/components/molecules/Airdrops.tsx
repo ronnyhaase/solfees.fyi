@@ -1,7 +1,7 @@
 import { NumberDisplay, U } from "@/components/atoms"
 import { type AirdropEligibility, type AirdropEligibilityItem } from "@/types"
 
-function Airdrops({ data }: { data: AirdropEligibility }) {
+const Airdrops: React.FC<{ data: AirdropEligibility }> = ({ data }) => {
 	if (!data) return null
 
 	const count = data.eligibility.reduce(

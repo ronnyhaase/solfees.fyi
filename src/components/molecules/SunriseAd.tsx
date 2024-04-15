@@ -1,7 +1,7 @@
 import clx from "classnames"
 import Image from "next/image"
 
-const SunriseAd = ({ className }: { className: string }) => (
+const SunriseAd: React.FC<{ className: string }> = ({ className }) => (
 	<a
 		className={clx(
 			className,

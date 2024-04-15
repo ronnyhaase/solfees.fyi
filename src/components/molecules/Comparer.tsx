@@ -10,15 +10,11 @@ import { isFunction } from "@/utils"
 const COMPARER_CHAINS = ["ethereum", "polygon"]
 const VALIDATOR_MONTHLY_COSTS = 337
 
-const Comparer = ({
-	txCount,
-	pricesAndFees,
-	onChainChange,
-}: {
+const Comparer: React.FC<{
 	txCount: number
 	pricesAndFees: PricesAndFees
 	onChainChange: (ev: ChangeEvent<HTMLSelectElement>) => void
-}) => {
+}> = ({ txCount, pricesAndFees, onChainChange }) => {
 	const [chain, setChain] = useState(COMPARER_CHAINS[0])
 	const data = useMemo(() => {
 		const symbol = pricesAndFees.symbols[chain]

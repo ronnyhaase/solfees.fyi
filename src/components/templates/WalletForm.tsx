@@ -29,13 +29,13 @@ type AddressInputProps = {
 	onPasteClick: (ev: SyntheticEvent) => void
 }
 
-const AddressInput = ({
+const AddressInput: React.FC<AddressInputProps> = ({
 	setValue,
 	value,
 	onClearClick,
 	onPasteNative,
 	onPasteClick,
-}: AddressInputProps) => {
+}) => {
 	const [isInputFocused, setIsInputFocused] = useState(false)
 
 	const inputRef = useRef<HTMLInputElement>(null)
@@ -103,7 +103,11 @@ type WalletFormProps = {
 	wallets: number
 }
 
-const WalletForm = ({ reset, setAddress, wallets }: WalletFormProps) => {
+const WalletForm: React.FC<WalletFormProps> = ({
+	reset,
+	setAddress,
+	wallets,
+}) => {
 	const plausible = usePlausible()
 	const [value, setValue] = useState("")
 	const [isValid, setIsValid] = useState(true)

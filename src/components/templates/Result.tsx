@@ -36,20 +36,22 @@ const generateTweetMessage = (
 		feesUsd ? " at the current SOL price" : ""
 	}!%0A%0A%23OnlyPossibleOnSolana%0A%0ACheck yours at https://www.solfees.fyi by %40solfees_fyi`
 
-const Result = ({
-	addWallet,
-	className,
-	pricesAndFees,
-	reset,
-	summary,
-	wallets,
-}: {
+type ResultProps = {
 	addWallet: () => void
 	className?: string
 	pricesAndFees: PricesAndFees
 	reset: () => void
 	summary: WalletResult
 	wallets: string[]
+}
+
+const Result: React.FC<ResultProps> = ({
+	addWallet,
+	className,
+	pricesAndFees,
+	reset,
+	summary,
+	wallets,
 }) => {
 	const plausible = usePlausible()
 	const data = useMemo(() => {

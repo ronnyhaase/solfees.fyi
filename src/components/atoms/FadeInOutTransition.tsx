@@ -2,19 +2,20 @@ import {
 	Transition,
 	type TransitionClasses,
 	type TransitionEvents,
-	type TransitionRootProps,
 } from "@headlessui/react"
 import { type ReactNode } from "react"
 
-const FadeInOutTransition = ({
-	children,
-	...rest
-}: TransitionClasses &
+type FadeInOutTransitionProps = TransitionClasses &
 	TransitionEvents & {
 		appear?: boolean
 		children: ReactNode
 		show?: boolean
-	}) => (
+	}
+
+const FadeInOutTransition: React.FC<FadeInOutTransitionProps> = ({
+	children,
+	...rest
+}) => (
 	<Transition
 		enter="duration-200 ease-in transition-opacity"
 		enterFrom="opacity-0"

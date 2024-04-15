@@ -1,13 +1,10 @@
 import { LoadingIndicator } from "@/components/atoms"
 import { TransactionFetchingStatusState } from "@/types"
 
-const Progress = ({
-	progress = 0,
-	state,
-}: {
+const Progress: React.FC<{
 	progress: number
 	state: TransactionFetchingStatusState
-}) => {
+}> = ({ progress = 0, state }) => {
 	const message =
 		state === "resolving"
 			? "Resolving domain."
