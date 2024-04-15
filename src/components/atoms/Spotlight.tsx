@@ -11,7 +11,7 @@ const Spotlight = ({ opacity = 0.2, size = 200 }) => {
 		y: Math.random() * (window.innerHeight - size),
 	})
 	const [isMoving, setIsMoving] = useState(false)
-	const spotlightRef = useRef(null)
+	const spotlightRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
 		const moveSpotlight = () => {
@@ -23,9 +23,9 @@ const Spotlight = ({ opacity = 0.2, size = 200 }) => {
 		}
 
 		const animationFrame = () => {
-			if (isMoving) {
-				const currentX = parseFloat(spotlightRef.current?.style.left || "0")
-				const currentY = parseFloat(spotlightRef.current?.style.top || "0")
+			if (isMoving && spotlightRef.current) {
+				const currentX = parseFloat(spotlightRef.current.style.left || "0")
+				const currentY = parseFloat(spotlightRef.current.style.top || "0")
 
 				const deltaX = position.x - currentX
 				const deltaY = position.y - currentY
