@@ -1,25 +1,56 @@
-import ky from "ky"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
-import { type PricesAndFees } from "@/types"
+const useSolPrice = () => {
+	const [solPrice, setSolPrice] = useState<number | null>(null)
+	const [fetchFailed, setFetchFailed] = useState(false)
+	const intervalRef = useRef<NodeJS.Timer | null>(null)
 
-function usePricesAndFees() {
-	const [pricesAndFees, setPricesAndFees] = useState<PricesAndFees | null>(null)
-	const [isLoading, setIsLoading] = useState(false)
+	const fetchSolPrice = useCallback(async () => {
+		if (solPrice) {
+			setFetchFailed(false)
+			return
+		}
 
-	useEffect(() => {
-		setIsLoading(true)
-		ky.get("api/fees", {
-			prefixUrl: new URL(document.baseURI).origin,
-			timeout: 30000,
-		})
-			.json()
-			.then((body) => setPricesAndFees(body as PricesAndFees))
-			.then(() => setIsLoading(false))
-			.catch(() => setPricesAndFees(null))
+		try {
+			const response = await fetch(
+				"https://lite-api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112",
+			)
+			if (!response.ok) {
+				throw new Error("Failed to fetch SOL price")
+			}
+			const body = await response.json()
+			setSolPrice(body.data.So11111111111111111111111111111111111111112.price)
+			setFetchFailed(false)
+		} catch (err) {
+			console.error("Error fetching SOL price:", err)
+			setFetchFailed(true)
+		}
 	}, [])
 
-	return { pricesAndFees, isLoading }
+	useEffect(() => {
+		fetchSolPrice()
+
+		return () => {
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current)
+				intervalRef.current = null
+			}
+		}
+	}, [])
+
+	useEffect(() => {
+		// Start retry interval if price is null or fetch failed
+		if ((solPrice === null || fetchFailed) && !intervalRef.current) {
+			intervalRef.current = setInterval(fetchSolPrice, 1000)
+		}
+		// Clear retry interval once price is fetched successfully
+		else if (solPrice !== null && intervalRef.current) {
+			clearInterval(intervalRef.current)
+			intervalRef.current = null
+		}
+	}, [solPrice, fetchFailed, fetchSolPrice])
+
+	return solPrice
 }
 
-export { usePricesAndFees }
+export { useSolPrice }

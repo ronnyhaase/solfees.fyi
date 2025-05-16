@@ -10,21 +10,15 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { clusterApiUrl } from "@solana/web3.js"
 import clx from "classnames"
-import Image from "next/image"
 import { type ReactNode, useLayoutEffect, useMemo, useState } from "react"
 import Confetti from "react-confetti"
 import { useMeasure } from "react-use"
 
 import { FadeInOutTransition, Spotlight } from "@/components/atoms"
-import {
-	About,
-	ErrorDisplay,
-	Progress,
-	SunriseAd,
-} from "@/components/molecules"
+import { About, ErrorDisplay, Progress } from "@/components/molecules"
 import { Result, WalletForm } from "@/components/templates"
-import { usePricesAndFees, useTransactions } from "@/hooks"
-import { type PricesAndFees, type WalletResult } from "@/types"
+import { useSolPrice, useTransactions } from "@/hooks"
+import { type WalletResult } from "@/types"
 
 const Providers = ({ children }: { children: ReactNode }) => {
 	const walletEndpoint = useMemo(
@@ -44,7 +38,6 @@ const Providers = ({ children }: { children: ReactNode }) => {
 
 const SolFeesApp = () => {
 	const [address, setAddress] = useState<string | null>(null)
-	const { pricesAndFees } = usePricesAndFees()
 	const {
 		addWallet: addAnotherWallet,
 		error,
@@ -54,6 +47,7 @@ const SolFeesApp = () => {
 		state,
 		wallets,
 	} = useTransactions(address)
+	const solPrice = useSolPrice()
 
 	const addWallet = () => {
 		addAnotherWallet()
@@ -144,38 +138,11 @@ const SolFeesApp = () => {
 					<div className="grow">
 						<Result
 							addWallet={addWallet}
-							pricesAndFees={pricesAndFees as PricesAndFees}
 							reset={reset}
 							summary={summary as WalletResult}
 							wallets={wallets}
+							solPrice={solPrice}
 						/>
-					</div>
-					<div>
-						<SunriseAd className="mt-12" />
-						<div className="text-center">
-							<div className="py-4">- or -</div>
-							{/* <a
-								href="https://app.hel.io/pay/6573bd77cdaabdd8ac9ac795"
-								target="_blank"
-								className="inline-flex px-8 py-4 rounded-full bg-[#fc8e03] text-lg text-white"
-							>
-								Tip me some BONK
-							</a> */}
-							<a
-								href="https://www.cubik.so/p/solfees-fyi"
-								target="_blank"
-								className="inline-flex items-center px-8 py-4 rounded-full bg-black leading-none text-lg text-white"
-							>
-								<Image
-									alt="Cubik logo"
-									src="/cubik.png"
-									width={24}
-									height={24}
-									className="mr-2"
-								/>
-								Donate on Cubik
-							</a>
-						</div>
 					</div>
 					<About className="mt-12" />
 				</Transition>
