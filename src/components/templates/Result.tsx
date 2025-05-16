@@ -111,6 +111,12 @@ const Result: React.FC<ResultProps> = ({
 					</span>
 				</p>
 			) : null}
+			{!solPrice ? (
+				<p className="flex justify-center items-center mb-2 leading-tight text-blue-500 text-base">
+					<IoInformationCircle className="inline mr-2" size={32} />
+					<span>SOL / USD price is currently not available.</span>
+				</p>
+			) : null}
 			<p className="my-2 text-xl md:text-2xl text-center">
 				{wallets.length > 1 ? (
 					<>
