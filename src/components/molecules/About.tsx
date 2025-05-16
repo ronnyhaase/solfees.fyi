@@ -32,6 +32,15 @@ const About: React.FC<{ className?: string }> = ({ className }) => (
 			<br />
 			This program comes with ABSOLUTELY NO WARRANTY.
 		</p>
+		<p className="mb-2 text-center">
+			<Image
+				src="/opos.svg"
+				alt="Only Possible on Solana"
+				width={150}
+				height={62}
+				className="inline"
+			/>
+		</p>
 	</div>
 )
 
