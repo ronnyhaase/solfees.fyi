@@ -17,7 +17,7 @@ import { useMeasure } from "react-use"
 import { FadeInOutTransition, Spotlight } from "@/components/atoms"
 import { About, ErrorDisplay, Progress } from "@/components/molecules"
 import { Result, WalletForm } from "@/components/templates"
-import { useTransactions } from "@/hooks"
+import { useSolPrice, useTransactions } from "@/hooks"
 import { type WalletResult } from "@/types"
 
 const Providers = ({ children }: { children: ReactNode }) => {
@@ -47,6 +47,7 @@ const SolFeesApp = () => {
 		state,
 		wallets,
 	} = useTransactions(address)
+	const solPrice = useSolPrice()
 
 	const addWallet = () => {
 		addAnotherWallet()
@@ -140,6 +141,7 @@ const SolFeesApp = () => {
 							reset={reset}
 							summary={summary as WalletResult}
 							wallets={wallets}
+							solPrice={solPrice}
 						/>
 					</div>
 					<About className="mt-12" />

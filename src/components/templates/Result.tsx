@@ -35,6 +35,7 @@ type ResultProps = {
 	reset: () => void
 	summary: WalletResult
 	wallets: string[]
+	solPrice: number | null
 }
 
 const Result: React.FC<ResultProps> = ({
@@ -43,6 +44,7 @@ const Result: React.FC<ResultProps> = ({
 	reset,
 	summary,
 	wallets,
+	solPrice,
 }) => {
 	const plausible = usePlausible()
 	const data = useMemo(() => {
@@ -54,17 +56,31 @@ const Result: React.FC<ResultProps> = ({
 					.multipliedBy(GAS_DENOMINATOR)
 					.decimalPlaces(5)
 					.toNumber(),
+				usdFees: solPrice
+					? new BigNumber(summary.aggregation.feesTotal)
+							.multipliedBy(GAS_DENOMINATOR)
+							.multipliedBy(solPrice)
+							.decimalPlaces(2)
+							.toNumber()
+					: undefined,
 				txCount: summary.aggregation.transactionsCount,
 				txCountUnpaid: summary.aggregation.unpaidTransactionsCount,
 				solAvgFee: new BigNumber(summary.aggregation.feesAvg)
 					.multipliedBy(GAS_DENOMINATOR)
 					.decimalPlaces(6)
 					.toNumber(),
+				usdAvgFee: solPrice
+					? new BigNumber(summary.aggregation.feesAvg)
+							.multipliedBy(GAS_DENOMINATOR)
+							.multipliedBy(solPrice)
+							.decimalPlaces(5)
+							.toNumber()
+					: undefined,
 			}
 		}
 
 		return data
-	}, [summary])
+	}, [solPrice, summary])
 
 	const handleAddWalletClick = () => {
 		plausible("Add wallet")
