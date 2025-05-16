@@ -19,6 +19,7 @@ async function GET(
 	try {
 		domainInfo = await fetchDomainInfo(connection, domain)
 	} catch (error) {
+		console.error("Error fetching domain info:", error)
 		return NextResponse.json(
 			{ error: "Unknown error with domain service" },
 			{ status: 502 },

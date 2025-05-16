@@ -30,6 +30,7 @@ async function GET(
 			.then((resp) => resp.json())
 			.then((data) => data?.result?.value)
 	} catch (error) {
+		console.error("Error fetching transactions info:", error)
 		return NextResponse.json(
 			{ error: "Unknown error with RPC" },
 			{ status: 502 },
