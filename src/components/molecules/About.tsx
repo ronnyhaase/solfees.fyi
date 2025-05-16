@@ -18,7 +18,8 @@ const About: React.FC<{ className?: string }> = ({ className }) => (
 				</a>
 			</span>
 			<span>
-				&copy; <a href="https://twitter.com/ronnyhaase">Ronny Haase</a>, 2023
+				&copy; <a href="https://twitter.com/ronnyhaase">Ronny Haase</a>,
+				2023-2025
 			</span>
 		</p>
 		<p className="mb-2">

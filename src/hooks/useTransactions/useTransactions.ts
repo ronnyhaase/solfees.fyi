@@ -3,13 +3,8 @@ import { useEffect, useRef, useState } from "react"
 import { TX_CAP } from "@/constants"
 import { isSolanaDomain } from "@/utils"
 import { categorizyTransaction, mergeCategorizations } from "./categorization"
+import { fetchDomainInfo, fetchTransactions } from "./api"
 import {
-	fetchAirdropEligibility,
-	fetchDomainInfo,
-	fetchTransactions,
-} from "./api"
-import {
-	type AirdropEligibility,
 	type HeliusParsedTransactionResponse,
 	type HeliusParsedTransaction,
 	type TransactionFetchingStatus,
@@ -218,13 +213,6 @@ function useTransactions(address: string | null) {
 			setStateLoading()
 			setProgress(0)
 
-			let airdropEligibility: AirdropEligibility | null = null
-			try {
-				airdropEligibility = await fetchAirdropEligibility(fullAddress)
-			} catch (error) {
-				airdropEligibility = null
-			}
-
 			// If wallet transactions were already fetched, "return" them
 			if (wallets.current.includes(fullAddress)) {
 				setStatus((prev) => ({
@@ -233,7 +221,6 @@ function useTransactions(address: string | null) {
 					summary: {
 						...cachedSummary.current,
 						aggregation: prev.summary?.aggregation || null,
-						airdropEligibility,
 						categorizations: prev.summary?.categorizations || null,
 					},
 					state: "done",
@@ -260,7 +247,6 @@ function useTransactions(address: string | null) {
 					error: null,
 					isLoading: false,
 					summary: {
-						airdropEligibility,
 						...aggregateTransactions(
 							fullAddress,
 							transactions,

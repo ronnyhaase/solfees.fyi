@@ -17,8 +17,8 @@ import { useMeasure } from "react-use"
 import { FadeInOutTransition, Spotlight } from "@/components/atoms"
 import { About, ErrorDisplay, Progress } from "@/components/molecules"
 import { Result, WalletForm } from "@/components/templates"
-import { usePricesAndFees, useTransactions } from "@/hooks"
-import { type PricesAndFees, type WalletResult } from "@/types"
+import { useTransactions } from "@/hooks"
+import { type WalletResult } from "@/types"
 
 const Providers = ({ children }: { children: ReactNode }) => {
 	const walletEndpoint = useMemo(
@@ -38,7 +38,6 @@ const Providers = ({ children }: { children: ReactNode }) => {
 
 const SolFeesApp = () => {
 	const [address, setAddress] = useState<string | null>(null)
-	const { pricesAndFees } = usePricesAndFees()
 	const {
 		addWallet: addAnotherWallet,
 		error,
@@ -138,7 +137,6 @@ const SolFeesApp = () => {
 					<div className="grow">
 						<Result
 							addWallet={addWallet}
-							pricesAndFees={pricesAndFees as PricesAndFees}
 							reset={reset}
 							summary={summary as WalletResult}
 							wallets={wallets}

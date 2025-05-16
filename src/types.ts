@@ -1,26 +1,3 @@
-type AirdropEligibilityItem = {
-	protocol: string
-	protocolLabel: string
-	token: string
-	ticker: string
-	eligible: boolean
-	amount: number
-	note: string
-	potentialValueUsdc: number
-	error?: string | null
-}
-
-type AirdropEligibility = {
-	address: string
-	error: string | null
-	eligibility: Array<AirdropEligibilityItem>
-}
-
-type AirdropEligibilityResponse = {
-	data: Array<AirdropEligibility>
-	error: string | null
-}
-
 type HeliusParsedTransaction = {
 	fee: number
 	feePayer: string
@@ -48,7 +25,6 @@ type Categorization = { [key: string]: { count: number; fees: number } }
 
 type WalletResult = {
 	aggregation: TransactionAggregation | null
-	airdropEligibility: AirdropEligibility | null
 	categorizations: Categorization | null
 }
 
@@ -77,21 +53,10 @@ type TransactionFetchingStatus = {
 	transactions: Array<HeliusParsedTransaction> | null
 }
 
-type PricesAndFees = {
-	avgGasFees: Record<string, number>
-	avgTxGasUsage: Record<string, number>
-	prices: Record<string, number>
-	symbols: Record<string, string>
-}
-
 export {
-	type AirdropEligibility,
-	type AirdropEligibilityItem,
-	type AirdropEligibilityResponse,
 	type Categorization,
 	type HeliusParsedTransaction,
 	type HeliusParsedTransactionResponse,
-	type PricesAndFees,
 	type TransactionAggregation,
 	type TransactionFetchingStatus,
 	type TransactionFetchingStatusState,

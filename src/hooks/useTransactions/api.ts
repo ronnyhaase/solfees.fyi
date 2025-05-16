@@ -1,19 +1,6 @@
 import ky from "ky"
 
-import {
-	type HeliusParsedTransactionResponse,
-	type AirdropEligibility,
-} from "@/types"
-
-const fetchAirdropEligibility = (
-	address: string,
-): Promise<AirdropEligibility> =>
-	ky
-		.get(`/api/airdrop/${address}`, {
-			throwHttpErrors: false,
-			timeout: 30000,
-		})
-		.json()
+import { type HeliusParsedTransactionResponse } from "@/types"
 
 const fetchDomainInfo = (domain: string) =>
 	ky
@@ -35,4 +22,4 @@ const fetchTransactions = (
 		})
 		.json()
 
-export { fetchAirdropEligibility, fetchDomainInfo, fetchTransactions }
+export { fetchDomainInfo, fetchTransactions }
