@@ -9,11 +9,11 @@ const About: React.FC<{ className?: string }> = ({ className }) => (
 				<a href="https://twitter.com/ronnyhaase">
 					<Image
 						alt="Ronny Haase PFP"
-						className="inline"
-						height={128}
+						className="inline rounded-full shadow-xl"
+						height={112}
 						priority
 						src="/ronnyhaase.png"
-						width={128}
+						width={112}
 					/>
 				</a>
 			</span>
