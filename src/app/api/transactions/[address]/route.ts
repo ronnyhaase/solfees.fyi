@@ -1,11 +1,13 @@
-import { NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 import { isSolanaAddress } from "@/utils"
 
 async function GET(
 	request: NextRequest,
-	{ params: { address } }: { params: { address: string } },
+	{ params }: { params: Promise<{ address: string }> },
 ) {
+	const { address } = await params
+
 	if (!isSolanaAddress(address)) {
 		return NextResponse.json({ error: "Invalid address" }, { status: 400 })
 	}

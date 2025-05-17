@@ -1,5 +1,5 @@
 import { resolve as resolveSolDomain } from "@bonfida/spl-name-service"
-import { TldParser } from "@onsol/tldparser"
+// import { TldParser } from "@onsol/tldparser"
 import { Connection } from "@solana/web3.js"
 import { NextResponse } from "next/server"
 
@@ -7,8 +7,10 @@ import { isSolanaDomain } from "@/utils"
 
 async function GET(
 	_: unknown,
-	{ params: { domain } }: { params: { domain: string } },
+	{ params }: { params: Promise<{ domain: string }> },
 ) {
+	const { domain } = await params
+
 	if (!isSolanaDomain(domain)) {
 		return NextResponse.json({ error: "Invalid domain" }, { status: 400 })
 	}

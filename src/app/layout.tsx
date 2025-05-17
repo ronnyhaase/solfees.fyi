@@ -3,7 +3,7 @@ import PlausibleProvider from "next-plausible"
 import { Noto_Sans } from "next/font/google"
 import { type ReactNode } from "react"
 
-require("./styles.css")
+import "./styles.css"
 
 const notoSans = Noto_Sans({
 	subsets: ["latin"],
