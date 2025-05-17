@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from "react"
 const useSolPrice = () => {
 	const [solPrice, setSolPrice] = useState<number | null>(null)
 	const [fetchFailed, setFetchFailed] = useState(false)
-	const intervalRef = useRef<NodeJS.Timer | null>(null)
+	const intervalRef = useRef<number | null>(null)
 
-	const fetchSolPrice = useCallback(async () => {
+	const fetchSolPrice = useCallback(async (): Promise<void> => {
 		if (solPrice) {
 			setFetchFailed(false)
 			return
