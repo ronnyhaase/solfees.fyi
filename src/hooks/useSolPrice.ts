@@ -41,6 +41,7 @@ const useSolPrice = () => {
 	useEffect(() => {
 		// Start retry interval if price is null or fetch failed
 		if ((solPrice === null || fetchFailed) && !intervalRef.current) {
+			// @ts-ignore
 			intervalRef.current = setInterval(fetchSolPrice, 1000)
 		}
 		// Clear retry interval once price is fetched successfully
