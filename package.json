@@ -11,14 +11,15 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@bonfida/spl-name-service": "^3.0.10",
 		"@headlessui/react": "^1.7.19",
-		"@portal-payments/solana-wallet-names": "^2.1.0",
+		"@onsol/tldparser": "^1.0.4",
 		"@solana/wallet-adapter-base": "^0.9.26",
 		"@solana/wallet-adapter-base-ui": "^0.1.5",
 		"@solana/wallet-adapter-react": "^0.15.38",
 		"@solana/wallet-adapter-react-ui": "^0.9.38",
 		"@solana/wallet-adapter-wallets": "^0.19.36",
-		"@solana/web3.js": "1.98.2",
+		"@solana/web3.js": "^1.98.2",
 		"bignumber.js": "^9.3.0",
 		"classnames": "^2.5.1",
 		"ky": "^1.2.3",

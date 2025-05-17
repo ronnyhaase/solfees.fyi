@@ -1,4 +1,5 @@
-import { walletNameToAddressAndProfilePicture as fetchDomainInfo } from "@portal-payments/solana-wallet-names"
+import { resolve as resolveSolDomain } from "@bonfida/spl-name-service"
+import { TldParser } from "@onsol/tldparser"
 import { Connection } from "@solana/web3.js"
 import { NextResponse } from "next/server"
 
@@ -15,22 +16,35 @@ async function GET(
 	const connection = new Connection(
 		`https://rpc.helius.xyz/?api-key=${process.env.HELIUS_KEY}`,
 	)
-	let domainInfo
+	let address: string
 	try {
-		domainInfo = await fetchDomainInfo(connection, domain)
+		const [, tld] = domain.split(".")
+		if (tld === "sol") {
+			address = (await resolveSolDomain(connection, domain)).toString()
+		} else {
+			// Currently breaking for unknown reasons
+			/*
+			const parser = new TldParser(connection)
+			address = (await parser.getOwnerFromDomainTld(domain))?.toString() || ""
+			*/
+			return NextResponse.json(
+				{ error: "Resolving AllDomains is temporarily disabled. Sorry" },
+				{ status: 502 },
+			)
+		}
 	} catch (error) {
-		console.error("Error fetching domain info:", error)
+		console.error("Error resolving domain:", error)
 		return NextResponse.json(
 			{ error: "Unknown error with domain service" },
 			{ status: 502 },
 		)
 	}
 
-	if (!domainInfo.walletAddress) {
+	if (!address) {
 		return NextResponse.json({ error: "Domain not found" }, { status: 404 })
 	}
 
-	return NextResponse.json({ address: domainInfo.walletAddress })
+	return NextResponse.json({ address })
 }
 
 const maxDuration = 30
