@@ -1,5 +1,5 @@
+import { Analytics } from "@vercel/analytics/next"
 import clx from "classnames"
-import PlausibleProvider from "next-plausible"
 import { Noto_Sans } from "next/font/google"
 import { type ReactNode } from "react"
 
@@ -27,10 +27,11 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
 			)}
 			lang="en"
 		>
-			<head>
-				<PlausibleProvider domain="solfees.fyi" trackOutboundLinks />
-			</head>
-			<body className="min-h-screen overflow-hidden text-lg">{children}</body>
+			<head></head>
+			<body className="min-h-screen overflow-hidden text-lg">
+				{children}
+				<Analytics />
+			</body>
 		</html>
 	)
 }

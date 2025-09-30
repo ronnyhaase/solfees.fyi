@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js"
 import clx from "classnames"
-import { usePlausible } from "next-plausible"
 import { useMemo, useState } from "react"
 import { IoInformationCircle } from "react-icons/io5"
 import { MdPlaylistAdd, MdSkipPrevious } from "react-icons/md"
@@ -46,7 +45,9 @@ const Result: React.FC<ResultProps> = ({
 	wallets,
 	solPrice,
 }) => {
-	const plausible = usePlausible()
+	// Fallback until new event tracking is available
+	const plausible = (...args: any[]) => undefined
+
 	const data = useMemo(() => {
 		let data: Partial<WalletsSummary> = {}
 		if (summary && summary.aggregation) {

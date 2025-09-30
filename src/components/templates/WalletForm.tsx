@@ -1,6 +1,5 @@
 import { useWallet } from "@solana/wallet-adapter-react"
 import clx from "classnames"
-import { usePlausible } from "next-plausible"
 import {
 	type ChangeEvent,
 	type ClipboardEvent,
@@ -108,7 +107,8 @@ const WalletForm: React.FC<WalletFormProps> = ({
 	setAddress,
 	wallets,
 }) => {
-	const plausible = usePlausible()
+	// Fallback until new event tracking is available
+	const plausible = (...args: any[]) => undefined
 	const [value, setValue] = useState("")
 	const [isValid, setIsValid] = useState(true)
 	const { publicKey, disconnect: disconnectWallet } = useWallet()
